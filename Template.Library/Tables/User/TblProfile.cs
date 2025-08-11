@@ -11,7 +11,7 @@ namespace Template.Library.Tables.User
     [Table("TblProfile", Schema = "user")]
     public class TblProfile : TblProfileProp, IAuditable
     {
-
+        public Guid UserId { get; set; }
     }
 
     public class TblProfileProp : BaseEntity
