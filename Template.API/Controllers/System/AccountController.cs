@@ -42,6 +42,8 @@ namespace Template.Service.Controllers.System
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.Message);
+
                 return new Response<ResponseRegisterAccount> { Code = Status.ServerError, Message = ex.Message };
             }
         }
@@ -52,22 +54,26 @@ namespace Template.Service.Controllers.System
         {
             try
             {
-                logger.LogInformation("User email: {email} with password: {password} is logging", model.Email, model.Password);
-
                 ApplicationUser? user = await portalService.Account.FindByNameAsync(model.Email);
 
                 var isvalid = await portalService.Account.CheckPasswordAsync(user, model.Password);
 
-                if (isvalid == false) return new Response<ResponseLoginAccount> { Code = Status.Failed, Message = "Email or password is not valid" };
+                if (isvalid == false)
+                {
+                    logger.LogWarning("User email: {email} failed to login", model.Email);
+
+                    return new Response<ResponseLoginAccount> { Code = Status.Failed, Message = "Email or password is not valid" };
+                }
 
                 var user_roles = await portalService.Account.GetUserRolesAsync(user);
 
                 var user_claims = await portalService.Account.GetUserClaimsAsync(user);
 
-
                 var claims = user.GenerateUserClaims(user_roles, user_claims);
 
                 var token = claims.GenerateJwtSecurityToken(configuration);
+
+                logger.LogInformation("User email: {email} successully logged-in", model.Email);
 
                 return new Response<ResponseLoginAccount> 
                 { 
@@ -85,6 +91,8 @@ namespace Template.Service.Controllers.System
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.Message, "User email: {email} failed to login", model.Email);
+
                 return new Response<ResponseLoginAccount> { Code = Status.ServerError, Message = ex.Message };
             }
         }
