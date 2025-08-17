@@ -18,8 +18,7 @@ namespace Template.Library.Extensions
                   new Claim(ClaimTypes.Name, model.Email ?? string.Empty),
                   new Claim("UserId",model.UserId ?? string.Empty),
                   new Claim("Token", model.Token ?? string.Empty),
-                  new Claim("Expiration", model.Expiration?.ToString() ?? string.Empty),
-                  new Claim("ProfileId", model.ProfileId.ToString() ?? string.Empty),
+                  new Claim("Expiration", model.Expiration?.ToString() ?? string.Empty)
             };
 
             foreach (var role in model.Roles)

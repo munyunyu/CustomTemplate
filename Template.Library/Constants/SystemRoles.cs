@@ -8,6 +8,8 @@ namespace Template.Library.Constants
 {
     public class SystemRoles
     {
-        public const string Admin = "Admin";      
+        public const string Admin = "Admin";
+
+        public static string Profile = "Profile";
     }
 }
