@@ -80,7 +80,7 @@ namespace Template.Service.Extensions
             //Profile
             services.AddScoped<IProfileService, ProfileService>();
           
-            services.AddHostedService<AdminUsersHostedService>();
+            //services.AddHostedService<AdminUsersHostedService>();
 
         }
 
