@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Template.Library.Models.Shedular;
 using Template.WorkerService.Job.Base;
 
-namespace Template.WorkerService.Job
+namespace Template.WorkerService.Job.SystemJob
 {
     public class EmailServiceJob : CronJobService
     {

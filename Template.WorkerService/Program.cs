@@ -1,7 +1,7 @@
 using Template.Library.Constants;
 using Template.WorkerService;
 using Template.WorkerService.Extensions;
-using Template.WorkerService.Job;
+using Template.WorkerService.Job.SystemJob;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
