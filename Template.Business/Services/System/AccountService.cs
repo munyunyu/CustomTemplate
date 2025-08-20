@@ -124,9 +124,11 @@ namespace Template.Business.Services.System
             return isvalid;
         }
 
-        public Task<IdentityResult> CreateAccountAsync(ApplicationUser user, string? password)
+        public async Task<IdentityResult> CreateAccountAsync(ApplicationUser user, string password)
         {
-            throw new NotImplementedException();
+            var result = await userManager.CreateAsync(user, password);
+
+            return result;
         }
 
         public async Task<ApplicationUser?> FindByIdAsync(Guid userId)

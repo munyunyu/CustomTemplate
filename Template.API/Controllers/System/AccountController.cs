@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using Template.Business.Interfaces;
 using Template.Database.Context;
+using Template.Library.Constants;
 using Template.Library.Enums;
 using Template.Library.Exceptions;
 using Template.Library.Models;
@@ -37,14 +38,16 @@ namespace Template.Service.Controllers.System
 
                 if (!result.Succeeded) return new Response<ResponseRegisterAccount> { Code = Status.Failed, Message = string.Join("|", result.Errors.Select(x => x.Description)) };
 
+                await portalService.Communication.SendConfirmEmailAsync(to: model.Email, template_name: EmailTemplate.ConfirmEmail);
+
                 return new Response<ResponseRegisterAccount> { Code = Status.Success, Payload = new ResponseRegisterAccount { Email = model.Email, Message = "Account was created" } };
 
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message);
+                logger.LogError(ex.Message, "User email: {email} failed to register", model.Email);
 
-                return new Response<ResponseRegisterAccount> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<ResponseRegisterAccount> { Code = Status.Failed, Message = ex.Message };
             }
         }
 
@@ -93,7 +96,7 @@ namespace Template.Service.Controllers.System
             {
                 logger.LogError(ex.Message, "User email: {email} failed to login", model.Email);
 
-                return new Response<ResponseLoginAccount> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<ResponseLoginAccount> { Code = Status.Failed, Message = ex.Message };
             }
         }
 
@@ -118,7 +121,7 @@ namespace Template.Service.Controllers.System
             }
             catch (Exception ex)
             {
-                return new Response<string> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<string> { Code = Status.Failed, Message = ex.Message };
             }
         }
 
@@ -143,7 +146,7 @@ namespace Template.Service.Controllers.System
             }
             catch (Exception ex)
             {
-                return new Response<string> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<string> { Code = Status.Failed, Message = ex.Message };
             }
         }
 
@@ -160,7 +163,7 @@ namespace Template.Service.Controllers.System
             }
             catch (Exception ex)
             {
-                return new Response<ResponseUserRolesAndClaims> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<ResponseUserRolesAndClaims> { Code = Status.Failed, Message = ex.Message };
             }
         }
 

@@ -34,7 +34,7 @@ namespace Template.Service.Controllers.Profile
             }
             catch (Exception ex)
             {
-                return new Response<ProfileViewModel> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<ProfileViewModel> { Code = Status.Failed, Message = ex.Message };
             }
         }
 
@@ -50,7 +50,7 @@ namespace Template.Service.Controllers.Profile
             }
             catch (Exception ex)
             {
-                return new Response<ProfileViewModel> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<ProfileViewModel> { Code = Status.Failed, Message = ex.Message };
             }
         }
 
@@ -68,7 +68,7 @@ namespace Template.Service.Controllers.Profile
             }
             catch (Exception ex)
             {
-                return new Response<ProfileViewModel> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<ProfileViewModel> { Code = Status.Failed, Message = ex.Message };
             }
         }
 
@@ -84,7 +84,7 @@ namespace Template.Service.Controllers.Profile
             }
             catch (Exception ex)
             {
-                return new Response<IEnumerable<ProfileViewModel>> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<IEnumerable<ProfileViewModel>> { Code = Status.Failed, Message = ex.Message };
             }
         }
 
@@ -108,7 +108,7 @@ namespace Template.Service.Controllers.Profile
             }
             catch (Exception ex)
             {
-                return new Response<Guid> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<Guid> { Code = Status.Failed, Message = ex.Message };
             }
         }
 
@@ -128,7 +128,7 @@ namespace Template.Service.Controllers.Profile
             }
             catch (Exception ex)
             {
-                return new Response<Guid> { Code = Status.ServerError, Message = ex.Message };
+                return new Response<Guid> { Code = Status.Failed, Message = ex.Message };
             }
         }
     }

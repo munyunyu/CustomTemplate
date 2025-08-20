@@ -15,7 +15,7 @@ namespace Template.Business.Interfaces.System
         Task<string> AddClaimToUser(ApplicationUser user, string? claim);
         Task<string> AddRoleToUserAsync(ApplicationUser user, string role);
         Task<bool> CheckPasswordAsync(ApplicationUser user, string? password);
-        Task<IdentityResult> CreateAccountAsync(ApplicationUser user, string? password);
+        Task<IdentityResult> CreateAccountAsync(ApplicationUser user, string password);
         Task<ApplicationUser?> FindByIdAsync(Guid userId);
         Task<ApplicationUser> FindByNameAsync(string? email);
         Task<ApplicationUser> FindByProfileIdAsync(Guid profileId);

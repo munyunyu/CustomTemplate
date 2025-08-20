@@ -68,7 +68,7 @@ namespace Template.Business.Services.Hosted
         //    {
         //        Password = configuration["Loyalty:Password"],
         //        StoreId = configuration["Loyalty:StoreId"],
-        //        Username = configuration["Loyalty:Username"],
+        //        Email = configuration["Loyalty:Email"],
         //    };
 
         //    var request = Loyalty.LoginAsync(model).Result;

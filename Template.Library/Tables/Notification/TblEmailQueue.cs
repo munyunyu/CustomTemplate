@@ -9,7 +9,7 @@ using Template.Library.Enums;
 namespace Template.Library.Tables.Notification
 {
     [Table("TblEmailQueue", Schema = "comms")]
-    public class TblEmailQueue : BaseEntity
+    public class TblEmailQueue : TblEmailQueueProp
     {
     }
 
