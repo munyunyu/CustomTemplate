@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Text;
 using Template.Library.Tables;
 using Template.Library.Tables.Audit;
+using Template.Library.Tables.Notification;
 using Template.Library.Tables.User;
 using Template.Library.Tables.Views;
 using Template.Library.Views.System;
@@ -39,7 +40,13 @@ namespace Template.Database.Context
         public virtual DbSet<TblAuditLog>? TblAuditLog { get; set; }
 
         public virtual DbSet<TblProfile>? TblProfile { get; set; }
-       
+
+        //Notification
+        public virtual DbSet<TblNotification>? TblNotification { get; set; }
+        public virtual DbSet<TblEmailQueue>? TblEmailQueue { get; set; }
+        public virtual DbSet<TblEmailTemplate>? TblEmailTemplate { get; set; }
+        public virtual DbSet<TblEmailConfig>? TblEmailConfig { get; set; }
+
 
 
         #region Views

@@ -8,9 +8,9 @@ namespace Template.Library.Enums
 {
     public enum Status
     {
-        Success = 200,
-        NotFound = 404,
-        ServerError = 500,
-        Failed = -1
+        Success = 0,
+        Failed = -1,
+        NotFound = -2,
+        ServerError = -3        
     }
 }
