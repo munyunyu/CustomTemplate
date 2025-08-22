@@ -12,7 +12,7 @@ namespace Template.Business.Interfaces.System
 {
     public interface IAccountService
     {
-        Task<string> AddClaimToUser(ApplicationUser user, string? claim);
+        Task<string> AddClaimToUser(ApplicationUser user, string claim);
         Task<string> AddRoleToUserAsync(ApplicationUser user, string role);
         Task<bool> CheckPasswordAsync(ApplicationUser user, string? password, bool requireConfirmedEmail);
         Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token);

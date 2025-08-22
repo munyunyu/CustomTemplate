@@ -50,6 +50,7 @@ namespace Template.Library.Models
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public List<string> Roles { get; set; } = new List<string>();
+        public List<string>? Claims { get; set; }
     }
 
     public class RequestUpdateUserClaimModel

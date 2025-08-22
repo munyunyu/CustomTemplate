@@ -28,7 +28,7 @@ namespace Template.Business.Services.System
             this.database = database;
         }
 
-        public async Task<string> AddClaimToUser(ApplicationUser user, string? claimType)
+        public async Task<string> AddClaimToUser(ApplicationUser user, string claimType)
         {
             var exits = new SystemClaims().GetConstantValues().Any(x =>  x == claimType);
 
@@ -38,7 +38,7 @@ namespace Template.Business.Services.System
 
             if(claims.Any(c => c.Type == claimType)) throw new GeneralException($"Claim: {claimType} already exists");
 
-            var claim = new Claim(SystemClaims.AdminCreate, SystemClaims.AdminCreate);
+            var claim = new Claim(claimType, claimType);
 
             var result = await userManager.AddClaimAsync(user, claim);
 

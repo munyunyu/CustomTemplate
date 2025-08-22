@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using Template.Business.Interfaces;
@@ -12,6 +13,7 @@ using Template.Service.Extensions;
 
 namespace Template.Service.Controllers.System
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -27,6 +29,7 @@ namespace Template.Service.Controllers.System
             this.logger = logger;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
         public async Task<Response<ResponseRegisterAccount>> Register(RequestRegisterAccount model)
@@ -61,6 +64,7 @@ namespace Template.Service.Controllers.System
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
         public async Task<Response<ResponseLoginAccount>> Login(RequestLoginAccount model)
@@ -100,7 +104,8 @@ namespace Template.Service.Controllers.System
                         UserId = user.Id,
                         Email = user.Email,
                         Phone = user.PhoneNumber,
-                        Roles = user_roles
+                        Roles = user_roles,
+                        Claims = user_claims?.Select(x => x.Value).ToList()
                     } };
 
             }
@@ -123,6 +128,8 @@ namespace Template.Service.Controllers.System
                 ApplicationUser? user = await portalService.Account.FindByIdAsync(model.UserId);
 
                 if (user == null) throw new GeneralException($"User Id: {model.UserId} was not found");
+
+                if(User.GetUserId() == Guid.Parse(user.Id)) throw new GeneralException("You cannot add or remove your own claim");
 
                 if (model.IsAdding) message = await portalService.Account.AddClaimToUser(user: user, claim: model.ClaimName);
 
@@ -162,7 +169,7 @@ namespace Template.Service.Controllers.System
             }
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetUserRolesAndClaims/{userId}")]
         public async Task<Response<ResponseUserRolesAndClaims>> GetUserRolesAndClaims(Guid userId)
