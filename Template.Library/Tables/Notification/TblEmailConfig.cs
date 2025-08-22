@@ -14,8 +14,11 @@ namespace Template.Library.Tables.Notification
 
     public class TblEmailConfigProp : BaseEntity
     {
-        public string? Email { get; set; }
-        public string? Password { get; set; }
-        public string? Port { get; set; }
+        public string? Name { get; set; }
+        public string? SmtpUser { get; set; }
+        public string? SmtpPassword { get; set; }
+        public int SmtpPort { get; set; }
+        public string? SmtpServer { get; set; }
+        public bool SmtpEnableSsl { get; set; }
     }
 }

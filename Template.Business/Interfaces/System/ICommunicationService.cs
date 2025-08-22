@@ -8,6 +8,6 @@ namespace Template.Business.Interfaces.System
 {
     public interface ICommunicationService
     {
-        Task SendConfirmEmailAsync(string to, string template_name);
+        Task SendConfirmEmailAsync(string to, string template_name, string config_name = "");
     }
 }

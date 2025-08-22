@@ -29,6 +29,11 @@ namespace Template.Database.Context
             //Seed application user roles
             data.SeedUserRoles();
 
+            //Seed email configs and template
+            data.SeedEmailConfigs();
+
+            data.SeedEmailTemplate();
+
             modelBuilder.Entity<ViewSystemUserRoles>().HasNoKey().ToView(nameof(ViewSystemUserRoles));
 
             modelBuilder.Entity<ViewApplicationUser>().HasNoKey().ToView(nameof(ViewApplicationUser));
