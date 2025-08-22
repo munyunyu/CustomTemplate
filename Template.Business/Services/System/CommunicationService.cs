@@ -40,7 +40,7 @@ namespace Template.Business.Services.System
 
                 if (configs == null)
                 {
-                    logger.LogWarning($"Failed to get email configuration: {config_name}");
+                    logger.LogWarning("Failed to get email configuration");
 
                     return;
                 }
