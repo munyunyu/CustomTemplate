@@ -28,6 +28,10 @@ namespace Template.Service.Extensions
                    option.Password.RequireNonAlphanumeric = true;
                    option.Password.RequireUppercase = true;
                    option.Password.RequireLowercase = true;
+                   option.User.RequireUniqueEmail = true;
+
+                   // Require email confirmation
+                   option.SignIn.RequireConfirmedEmail = true;
 
                    //added
                    option.ClaimsIdentity.UserIdClaimType = JwtRegisteredClaimNames.Sub;

@@ -6,6 +6,7 @@ using Template.Database.Context;
 using Template.Library.Constants;
 using Template.Library.Enums;
 using Template.Library.Exceptions;
+using Template.Library.Extensions;
 using Template.Library.Models;
 using Template.Service.Extensions;
 
@@ -32,13 +33,22 @@ namespace Template.Service.Controllers.System
         {
             try
             {
-                var user = new ApplicationUser { Email = model.Email, UserName = model.Email, SecurityStamp = Guid.NewGuid().ToString() };
+                var user = new ApplicationUser 
+                { 
+                    Email = model.Email, 
+                    UserName = model.Email, 
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    CreatedDate = DateTime.Now,
+                    LastUpdatedDate = DateTime.Now
+                };
 
                 IdentityResult result = await portalService.Account.CreateAccountAsync(user, model.Password);
 
                 if (!result.Succeeded) return new Response<ResponseRegisterAccount> { Code = Status.Failed, Message = string.Join("|", result.Errors.Select(x => x.Description)) };
 
-                await portalService.Communication.SendConfirmEmailAsync(to: model.Email, template_name: EmailTemplate.ConfirmEmail);
+                var token = await portalService.Account.GenerateEmailConfirmationTokenAsync(user);
+
+                await portalService.Communication.SendConfirmEmailAsync(to: model.Email, template_name: EmailTemplate.ConfirmEmail, token: token, config_name: EmailConfig.Default);
 
                 return new Response<ResponseRegisterAccount> { Code = Status.Success, Payload = new ResponseRegisterAccount { Email = model.Email, Message = "Account was created, please confirm your email" } };
 
@@ -59,7 +69,9 @@ namespace Template.Service.Controllers.System
             {
                 ApplicationUser? user = await portalService.Account.FindByNameAsync(model.Email);
 
-                var isvalid = await portalService.Account.CheckPasswordAsync(user, model.Password);
+                if (user == null) return new Response<ResponseLoginAccount> { Code = Status.Failed, Message = "Email or password is not valid" };
+
+                var isvalid = await portalService.Account.CheckPasswordAsync(user, model.Password, requireConfirmedEmail: true);
 
                 if (isvalid == false)
                 {
@@ -167,27 +179,29 @@ namespace Template.Service.Controllers.System
             }
         }
 
-        //[HttpGet]
-        //[Route("ConfirmEmail/{email}/{token}")]
-        //public async Task<Response<string>> ConfirmEmail(string email, string token)
-        //{
-        //    try
-        //    {
-        //        var user = await userManager.FindByEmailAsync(email);
+        [HttpGet]
+        [Route("ConfirmEmail/{email}/{token}")]
+        public async Task<Response<string>> ConfirmEmail(string email, string token)
+        {
+            try
+            {
+                var user = await portalService.Account.FindByNameAsync(email);
 
-        //        if (user == null) return new Response<string> { Code = Status.Failed, Message = "Failed to confirm email address" };
+                if (user == null) return new Response<string> { Code = Status.Failed, Message = "Failed to confirm email address" };
 
-        //        var result = await userManager.ConfirmEmailAsync(user, token.Base64Decode());
+                IdentityResult result = await portalService.Account.ConfirmEmailAsync(user, token.Base64Decode());
 
-        //        if (result.Succeeded) return new Response<string> { Code = Status.Success, Message = "Account was confirmed" };
+                if (result.Succeeded) return new Response<string> { Code = Status.Success, Message = "Account was confirmed" };
 
-        //        return new Response<string> { Code = Status.Failed, Message = "Failed to authenticate, please contact admin" };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new Response<string> { Code = Status.ServerError, Message = ex.Message };
-        //    }
-        //}
+                logger.LogWarning("User email: {email} failed to confirm email address", email);
+
+                return new Response<string> { Code = Status.Failed, Message = "Failed to authenticate, please contact admin" };
+            }
+            catch (Exception ex)
+            {
+                return new Response<string> { Code = Status.Failed, Message = ex.Message };
+            }
+        }
 
         //[HttpPost]
         //[Route("ForgotPassword")]

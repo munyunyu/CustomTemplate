@@ -14,11 +14,13 @@ namespace Template.Business.Interfaces.System
     {
         Task<string> AddClaimToUser(ApplicationUser user, string? claim);
         Task<string> AddRoleToUserAsync(ApplicationUser user, string role);
-        Task<bool> CheckPasswordAsync(ApplicationUser user, string? password);
+        Task<bool> CheckPasswordAsync(ApplicationUser user, string? password, bool requireConfirmedEmail);
+        Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token);
         Task<IdentityResult> CreateAccountAsync(ApplicationUser user, string password);
         Task<ApplicationUser?> FindByIdAsync(Guid userId);
-        Task<ApplicationUser> FindByNameAsync(string? email);
+        Task<ApplicationUser?> FindByNameAsync(string? email);
         Task<ApplicationUser> FindByProfileIdAsync(Guid profileId);
+        Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
         Task<List<Claim>> GetUserClaimsAsync(ApplicationUser user);
         Task<ResponseUserRolesAndClaims> GetUserRolesAndClaimsAsync(Guid userId);
         Task<List<string>> GetUserRolesAsync(ApplicationUser user);

@@ -100,9 +100,11 @@ namespace Template.Business.Services.System
             throw new GeneralException($"Failed to remove role: {role}");
         }
 
-        public async Task<bool> CheckPasswordAsync(ApplicationUser user, string? password)
+        public async Task<bool> CheckPasswordAsync(ApplicationUser user, string? password, bool requireConfirmedEmail)
         {
             if (string.IsNullOrEmpty(password)) throw new Exception("password is required");
+
+            if(requireConfirmedEmail && user.EmailConfirmed == false) throw new Exception($"Email is not confirmed");
 
             var isvalid = await userManager.CheckPasswordAsync(user, password);
 
@@ -140,13 +142,11 @@ namespace Template.Business.Services.System
             return user;
         }
 
-        public async Task<ApplicationUser> FindByNameAsync(string? email)
+        public async Task<ApplicationUser?> FindByNameAsync(string? email)
         {
             if (string.IsNullOrEmpty(email)) throw new Exception("Email is  required");
 
             ApplicationUser? user = await userManager.FindByNameAsync(email);
-
-            if (user == null) throw new Exception("Email or password is not valid");
 
             return user;
         }
@@ -187,6 +187,20 @@ namespace Template.Business.Services.System
             ApplicationUser? user = await userManager.FindByIdAsync(profile.UserId.ToString());
 
             return user ?? throw new GeneralException($"User Id: {profile.Id} with this profile Id: {profileId} was not found");
+        }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user)
+        {
+            var result = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            return result;
+        }
+
+        public async Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token)
+        {
+            var result = await userManager.ConfirmEmailAsync(user, token);
+
+            return result;
         }
     }
 }

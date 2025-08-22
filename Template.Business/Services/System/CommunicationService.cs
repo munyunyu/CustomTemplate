@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Template.Business.Interfaces.System;
 using Template.Library.Constants;
 using Template.Library.Enums;
+using Template.Library.Extensions;
 using Template.Library.Tables.Notification;
 
 namespace Template.Business.Services.System
@@ -21,7 +22,7 @@ namespace Template.Business.Services.System
             this.logger = logger;
             this.databaseService = databaseService;
         }
-        public async Task SendConfirmEmailAsync(string to, string template_name, string config_name = "")
+        public async Task SendConfirmEmailAsync(string to, string template_name, string token, string config_name = "")
         {
             try
             {
@@ -49,7 +50,7 @@ namespace Template.Business.Services.System
                 {
                     Id = Guid.NewGuid(),
                     Subject = template.Subject,
-                    Body = template_name,
+                    Body = template.Body?.Replace("[ConfirmationLink]", token.Base64Encode()),
                     FromEmailAddress = configs.SmtpUser,
                     CCEmailAddresses = string.Empty,
                     ToEmailAddresses = to,
