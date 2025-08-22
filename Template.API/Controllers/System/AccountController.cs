@@ -119,6 +119,7 @@ namespace Template.Service.Controllers.System
 
         [HttpPost]
         [Route("UpdateUserClaim")]
+        [Authorize(Policy = SystemPolicy.AdminPolicyUpdate)]
         public async Task<Response<string>> UpdateUserClaim(RequestUpdateUserClaimModel model)
         {
             try

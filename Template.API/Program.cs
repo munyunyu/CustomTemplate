@@ -25,6 +25,8 @@ builder.Services.AddCustomScopedServices(builder);
 
 builder.Services.AddCustomHealthChecks(builder);
 
+builder.Services.AddCustomAuthorizationPolicies();
+
 builder.AddCustomSeriLogging();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);

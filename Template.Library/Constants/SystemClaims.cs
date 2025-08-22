@@ -11,9 +11,9 @@ namespace Template.Library.Constants
     {
         //Admin claims
         public const string AdminCreate = "AdminCreate";
-        public const string AdminEdit = "AdminEdit";
+        public const string AdminUpdate = "AdminUpdate";
         public const string AdminDelete = "AdminDelete";
-        public const string AdminView = "AdminView";
+        public const string AdminRead = "AdminRead";
 
         //Profile claims
         public const string ProfileCreate = "ProfileCreate";

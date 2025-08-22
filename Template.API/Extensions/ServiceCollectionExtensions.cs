@@ -13,6 +13,7 @@ using Template.Business.Services.Hosted;
 using Template.Business.Services.Profile;
 using Template.Business.Services.System;
 using Template.Database.Context;
+using Template.Library.Constants;
 using Template.Library.Models.POCO;
 
 namespace Template.Service.Extensions
@@ -146,6 +147,17 @@ namespace Template.Service.Extensions
                 .AddCheck<CustomHealthCheck>("CustomHealthCheck");
 
             //builder.Services.AddHealthChecksUI()
+        }
+
+        public static void AddCustomAuthorizationPolicies(this IServiceCollection services)
+        {
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy(SystemPolicy.AdminPolicyCreate, policy => { policy.RequireRole(SystemRoles.Admin).RequireClaim(SystemClaims.AdminCreate); });
+                options.AddPolicy(SystemPolicy.AdminPolicyRead, policy => { policy.RequireRole(SystemRoles.Admin).RequireClaim(SystemClaims.AdminRead); });
+                options.AddPolicy(SystemPolicy.AdminPolicyUpdate, policy => { policy.RequireRole(SystemRoles.Admin).RequireClaim(SystemClaims.AdminUpdate); });
+                options.AddPolicy(SystemPolicy.AdminPolicyDelete, policy => { policy.RequireRole(SystemRoles.Admin).RequireClaim(SystemClaims.AdminDelete); });
+            });
         }
     }
 }
