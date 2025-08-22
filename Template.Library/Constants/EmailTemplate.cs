@@ -11,4 +11,9 @@ namespace Template.Library.Constants
         public const string ResetPassword = "ResetPassword";
         public const string ConfirmEmail = "ConfirmEmail";
     }
+
+    public static class EmailConfig
+    {
+        public const string Default = "Default";
+    }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Business.Interfaces.System;
+using Template.Library.Constants;
 using Template.Library.Enums;
 using Template.Library.Tables.Notification;
 
@@ -20,10 +21,12 @@ namespace Template.Business.Services.System
             this.logger = logger;
             this.databaseService = databaseService;
         }
-        public async Task SendConfirmEmailAsync(string to, string template_name)
+        public async Task SendConfirmEmailAsync(string to, string template_name, string config_name = "")
         {
             try
             {
+                if(string.IsNullOrEmpty(config_name)) config_name = EmailConfig.Default;
+
                 var template = await databaseService.GetAsync<TblEmailTemplate>(x => x.Name == template_name);
 
                 if (template == null)
@@ -33,11 +36,11 @@ namespace Template.Business.Services.System
                     return;
                 }
 
-                var configs = (await databaseService.GetAllAsync<TblEmailConfig>())?.SingleOrDefault();
+                var configs = await databaseService.GetAsync<TblEmailConfig>(x => x.Name == config_name);
 
                 if (configs == null)
                 {
-                    logger.LogWarning("Failed to get email configuration");
+                    logger.LogWarning($"Failed to get email configuration: {config_name}");
 
                     return;
                 }
@@ -47,7 +50,7 @@ namespace Template.Business.Services.System
                     Id = Guid.NewGuid(),
                     Subject = template.Subject,
                     Body = template_name,
-                    FromEmailAddress = configs.Email,
+                    FromEmailAddress = configs.SmtpUser,
                     CCEmailAddresses = string.Empty,
                     ToEmailAddresses = to,
                     SendAttempts = 0,

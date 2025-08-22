@@ -40,7 +40,7 @@ namespace Template.Service.Controllers.System
 
                 await portalService.Communication.SendConfirmEmailAsync(to: model.Email, template_name: EmailTemplate.ConfirmEmail);
 
-                return new Response<ResponseRegisterAccount> { Code = Status.Success, Payload = new ResponseRegisterAccount { Email = model.Email, Message = "Account was created" } };
+                return new Response<ResponseRegisterAccount> { Code = Status.Success, Payload = new ResponseRegisterAccount { Email = model.Email, Message = "Account was created, please confirm your email" } };
 
             }
             catch (Exception ex)

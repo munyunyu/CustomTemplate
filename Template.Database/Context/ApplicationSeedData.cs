@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Database.Metadata;
+using Template.Library.Tables.Notification;
 
 namespace Template.Database.Context
 {
@@ -39,8 +40,20 @@ namespace Template.Database.Context
             builder.Entity<IdentityUserRole<string>>().HasData(userRoles);
         }
 
-        
+        public void SeedEmailConfigs()
+        {
+            var data = DatabaseMetadata.GetEmailConfigs();
 
-       
+            builder.Entity<TblEmailConfig>().HasData(data);
+        }
+
+        public void SeedEmailTemplate()
+        {
+            var data = DatabaseMetadata.GetEmailTemplate();
+
+            builder.Entity<TblEmailTemplate>().HasData(data);
+        }
+
+
     }
 }

@@ -1,0 +1,143 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
+namespace Template.Database.Migrations
+{
+    /// <inheritdoc />
+    public partial class Addedseeddata : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.RenameColumn(
+                name: "Port",
+                schema: "comms",
+                table: "TblEmailConfig",
+                newName: "SmtpUser");
+
+            migrationBuilder.RenameColumn(
+                name: "Password",
+                schema: "comms",
+                table: "TblEmailConfig",
+                newName: "SmtpServer");
+
+            migrationBuilder.RenameColumn(
+                name: "Email",
+                schema: "comms",
+                table: "TblEmailConfig",
+                newName: "SmtpPassword");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Name",
+                schema: "comms",
+                table: "TblEmailConfig",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<bool>(
+                name: "SmtpEnableSsl",
+                schema: "comms",
+                table: "TblEmailConfig",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
+
+            migrationBuilder.AddColumn<int>(
+                name: "SmtpPort",
+                schema: "comms",
+                table: "TblEmailConfig",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.UpdateData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: "feba6c0a-e24c-4410-a8c2-0145bd3d1853",
+                columns: new[] { "ConcurrencyStamp", "CreatedDate", "PasswordHash", "SecurityStamp" },
+                values: new object[] { "d5831419-3edc-4f50-87cf-449e084dcda4", new DateTime(2025, 8, 22, 12, 40, 23, 565, DateTimeKind.Local).AddTicks(7166), "AQAAAAIAAYagAAAAEHUPiul+cDCGt1ICETO6UIVmskSv47ft+Q6uII79KM5MZeMB4phTi+IE6a+EGvDtkA==", "8da370a5-7f7c-40c1-96e9-3094e90c56ae" });
+
+            migrationBuilder.InsertData(
+                schema: "comms",
+                table: "TblEmailConfig",
+                columns: new[] { "Id", "CreatedById", "CreatedDate", "Description", "Hash", "IsDeleted", "LastUpdatedById", "LastUpdatedDate", "Name", "SmtpEnableSsl", "SmtpPassword", "SmtpPort", "SmtpServer", "SmtpUser" },
+                values: new object[] { new Guid("e7b52cbe-f96a-471d-9b8e-e5fd5c9f3c13"), new Guid("feba6c0a-e24c-4410-a8c2-0145bd3d1853"), new DateTime(2025, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, null, new DateTime(2025, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, "tc#Prog219!", 587, "smtp.gmail.com", "percy.munyunyu@gmail.com" });
+
+            migrationBuilder.InsertData(
+                schema: "comms",
+                table: "TblEmailTemplate",
+                columns: new[] { "Id", "Body", "CreatedById", "CreatedDate", "Description", "Hash", "IsDeleted", "LastUpdatedById", "LastUpdatedDate", "Name", "Subject" },
+                values: new object[,]
+                {
+                    { new Guid("21bcb9c2-1485-4b09-8691-9fcac34613a4"), "<!DOCTYPE html>\r\n                                <html lang=\"en\">\r\n                                <head>\r\n                                    <meta charset=\"UTF-8\">\r\n                                    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n                                    <title>Password Reset Request</title>\r\n                                    <style>\r\n                                        body {\r\n                                            margin: 0;\r\n                                            padding: 0;\r\n                                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\r\n                                            background-color: #f5f5f5;\r\n                                            color: #333333;\r\n                                        }\r\n                                        .email-container {\r\n                                            max-width: 600px;\r\n                                            margin: 0 auto;\r\n                                            background-color: #ffffff;\r\n                                        }\r\n                                        .email-header {\r\n                                            background-color: #4a6cf7;\r\n                                            padding: 30px;\r\n                                            text-align: center;\r\n                                            border-radius: 8px 8px 0 0;\r\n                                        }\r\n                                        .email-body {\r\n                                            padding: 30px;\r\n                                        }\r\n                                        .email-footer {\r\n                                            background-color: #f8f9fa;\r\n                                            padding: 20px;\r\n                                            text-align: center;\r\n                                            border-radius: 0 0 8px 8px;\r\n                                            font-size: 12px;\r\n                                            color: #666666;\r\n                                        }\r\n                                        .button {\r\n                                            display: inline-block;\r\n                                            padding: 12px 24px;\r\n                                            background-color: #4a6cf7;\r\n                                            color: white;\r\n                                            text-decoration: none;\r\n                                            border-radius: 4px;\r\n                                            font-weight: bold;\r\n                                            margin: 20px 0;\r\n                                        }\r\n                                        .text-center {\r\n                                            text-align: center;\r\n                                        }\r\n                                        .divider {\r\n                                            border-top: 1px solid #eaeaea;\r\n                                            margin: 25px 0;\r\n                                        }\r\n                                        .logo {\r\n                                            color: white;\r\n                                            font-size: 24px;\r\n                                            font-weight: bold;\r\n                                            text-decoration: none;\r\n                                        }\r\n                                    </style>\r\n                                </head>\r\n                                <body>\r\n                                    <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\r\n                                        <tr>\r\n                                            <td align=\"center\" style=\"padding: 40px 0;\">\r\n                                                <!-- Email Container -->\r\n                                                <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" class=\"email-container\">\r\n                                                    <!-- Header -->\r\n                                                    <tr>\r\n                                                        <td class=\"email-header\">\r\n                                                            <a href=\"#\" class=\"logo\">[CompanyName]</a>\r\n                                                        </td>\r\n                                                    </tr>\r\n                                                    \r\n                                                    <!-- Body -->\r\n                                                    <tr>\r\n                                                        <td class=\"email-body\">\r\n                                                            <h2 style=\"margin-top: 0;\">Reset Your Password</h2>\r\n                                                            <p>Hello [Username],</p>\r\n                                                            <p>We received a request to reset your password for your [UserEmail] account. Click the button below to create a new password:</p>\r\n                                                            \r\n                                                            <div class=\"text-center\">\r\n                                                                <a href=\"[ResetPasswordLink]\" class=\"button\">Reset Password</a>\r\n                                                            </div>\r\n                                                            \r\n                                                            <p>If you didn't request a password reset, please ignore this email. Your password will remain unchanged.</p>\r\n                                                            \r\n                                                            <div class=\"divider\"></div>\r\n                                                            \r\n                                                            <p style=\"margin-bottom: 0;\"><strong>Having trouble?</strong> Copy and paste the following link into your browser:</p>\r\n                                                            <p style=\"word-break: break-all; color: #4a6cf7; margin-top: 5px;\">[ResetPasswordLink]</p>\r\n                                                        </td>\r\n                                                    </tr>\r\n                                                    \r\n                                                    <!-- Footer -->\r\n                                                    <tr>\r\n                                                        <td class=\"email-footer\">\r\n                                                            <p>This email was sent to [UserEmail]. If you didn't request a password reset, <a href=\"#\" style=\"color: #4a6cf7;\">let us know</a>.</p>\r\n                                                            <p>&copy; 2023 [CompanyName]. All rights reserved.</p>\r\n                                                            <p>[CompanyName], [CompanyAddress]</p>\r\n                                                            <p>\r\n                                                                <a href=\"#\" style=\"color: #4a6cf7; text-decoration: none;\">Unsubscribe</a> | \r\n                                                                <a href=\"#\" style=\"color: #4a6cf7; text-decoration: none;\">Privacy Policy</a> | \r\n                                                                <a href=\"#\" style=\"color: #4a6cf7; text-decoration: none;\">Help Center</a>\r\n                                                            </p>\r\n                                                        </td>\r\n                                                    </tr>\r\n                                                </table>\r\n                                            </td>\r\n                                        </tr>\r\n                                    </table>\r\n                                </body>\r\n                                </html>", new Guid("feba6c0a-e24c-4410-a8c2-0145bd3d1853"), new DateTime(2025, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, null, new DateTime(2025, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "ResetPassword", "Reset Password" },
+                    { new Guid("a2ab8f49-8beb-4d80-a42b-2e5629d71a8e"), "<!DOCTYPE html>\r\n                            <html>\r\n                            \r\n                            <head>\r\n                                <meta charset=\"UTF-8\">\r\n                                <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n                                <title>Confirm Your Email Address</title>\r\n                            </head>\r\n                            \r\n                            <body style=\"margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #f5f5f5;\">\r\n                                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse;\">\r\n                                    <tr>\r\n                                        <td align=\"center\" style=\"padding: 40px 0;\">\r\n                                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"\r\n                                                style=\"max-width: 600px; border-collapse: collapse; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);\">\r\n                                                <!-- Header -->\r\n                                                <tr>\r\n                                                    <td\r\n                                                        style=\"padding: 30px 30px 20px; text-align: center; background-color: #4a6cf7; border-radius: 8px 8px 0 0;\">\r\n                                                        <h1 style=\"margin: 0; color: white; font-size: 24px;\">Confirm Your Email Address</h1>\r\n                                                    </td>\r\n                                                </tr>\r\n                            \r\n                                                <!-- Content -->\r\n                                                <tr>\r\n                                                    <td style=\"padding: 30px;\">\r\n                                                        <p style=\"margin: 0 0 20px; color: #333333; line-height: 1.6;\">Hello [First Name],</p>\r\n                                                        <p style=\"margin: 0 0 20px; color: #333333; line-height: 1.6;\">Thank you for signing up for\r\n                                                            [ProductServiceName]. Please confirm that <strong>[EmailAddress]</strong> is your\r\n                                                            email address by clicking the button below:</p>\r\n                            \r\n                                                        <!-- Button -->\r\n                                                        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"\r\n                                                            style=\"margin: 30px 0;\">\r\n                                                            <tr>\r\n                                                                <td align=\"center\">\r\n                                                                    <a href=\"[ConfirmationLink]\"\r\n                                                                        style=\"background-color: #4a6cf7; color: white; text-decoration: none; padding: 12px 24px; border-radius: 4px; display: inline-block; font-weight: bold;\">Confirm\r\n                                                                        Email Address</a>\r\n                                                                </td>\r\n                                                            </tr>\r\n                                                        </table>\r\n                            \r\n                                                        <p style=\"margin: 0 0 20px; color: #666666; line-height: 1.6; font-size: 14px;\">If you did\r\n                                                            not create an account with us, please ignore this email.</p>\r\n                            \r\n                                                        <p style=\"margin: 0 0 10px; color: #333333; line-height: 1.6;\">Thanks,<br>The [CompanyName] Team\r\n                                                        </p>\r\n                                                    </td>\r\n                                                </tr>\r\n                            \r\n                                                <!-- Footer -->\r\n                                                <tr>\r\n                                                    <td\r\n                                                        style=\"padding: 20px 30px; background-color: #f8f9fa; border-radius: 0 0 8px 8px; text-align: center;\">\r\n                                                        <p style=\"margin: 0 0 10px; color: #666666; font-size: 12px;\">&copy; 2023 [CompanyName].\r\n                                                            All rights reserved.</p>\r\n                                                        <p style=\"margin: 0 0 10px; color: #666666; font-size: 12px;\">[CompanyAddress]</p>\r\n                                                        <p style=\"margin: 0; color: #666666; font-size: 12px;\">\r\n                                                            <a href=\"#\" style=\"color: #4a6cf7; text-decoration: none;\">Unsubscribe</a> |\r\n                                                            <a href=\"#\" style=\"color: #4a6cf7; text-decoration: none;\">Privacy Policy</a> |\r\n                                                            <a href=\"#\" style=\"color: #4a6cf7; text-decoration: none;\">Help Center</a>\r\n                                                        </p>\r\n                                                    </td>\r\n                                                </tr>\r\n                                            </table>\r\n                                        </td>\r\n                                    </tr>\r\n                                </table>\r\n                            </body>\r\n                            \r\n                            </html>", new Guid("feba6c0a-e24c-4410-a8c2-0145bd3d1853"), new DateTime(2025, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, null, new DateTime(2025, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "ConfirmEmail", "Confirm Email" }
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DeleteData(
+                schema: "comms",
+                table: "TblEmailConfig",
+                keyColumn: "Id",
+                keyValue: new Guid("e7b52cbe-f96a-471d-9b8e-e5fd5c9f3c13"));
+
+            migrationBuilder.DeleteData(
+                schema: "comms",
+                table: "TblEmailTemplate",
+                keyColumn: "Id",
+                keyValue: new Guid("21bcb9c2-1485-4b09-8691-9fcac34613a4"));
+
+            migrationBuilder.DeleteData(
+                schema: "comms",
+                table: "TblEmailTemplate",
+                keyColumn: "Id",
+                keyValue: new Guid("a2ab8f49-8beb-4d80-a42b-2e5629d71a8e"));
+
+            migrationBuilder.DropColumn(
+                name: "Name",
+                schema: "comms",
+                table: "TblEmailConfig");
+
+            migrationBuilder.DropColumn(
+                name: "SmtpEnableSsl",
+                schema: "comms",
+                table: "TblEmailConfig");
+
+            migrationBuilder.DropColumn(
+                name: "SmtpPort",
+                schema: "comms",
+                table: "TblEmailConfig");
+
+            migrationBuilder.RenameColumn(
+                name: "SmtpUser",
+                schema: "comms",
+                table: "TblEmailConfig",
+                newName: "Port");
+
+            migrationBuilder.RenameColumn(
+                name: "SmtpServer",
+                schema: "comms",
+                table: "TblEmailConfig",
+                newName: "Password");
+
+            migrationBuilder.RenameColumn(
+                name: "SmtpPassword",
+                schema: "comms",
+                table: "TblEmailConfig",
+                newName: "Email");
+
+            migrationBuilder.UpdateData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: "feba6c0a-e24c-4410-a8c2-0145bd3d1853",
+                columns: new[] { "ConcurrencyStamp", "CreatedDate", "PasswordHash", "SecurityStamp" },
+                values: new object[] { "0692593e-4d53-4d35-96ba-1c8d33e3e041", new DateTime(2025, 8, 20, 16, 41, 59, 933, DateTimeKind.Local).AddTicks(8335), "AQAAAAIAAYagAAAAEF/YxhrNbqSr7dDwHREDHXD9Xvg1v1Hj+uXdwspqyd1VkOITt1DuC14OPpCA8kHfFg==", "6083753f-8f92-422f-9605-c5d05fabdaaf" });
+        }
+    }
+}
