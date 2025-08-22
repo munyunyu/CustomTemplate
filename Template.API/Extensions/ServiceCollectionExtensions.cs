@@ -13,6 +13,7 @@ using Template.Business.Services.Hosted;
 using Template.Business.Services.Profile;
 using Template.Business.Services.System;
 using Template.Database.Context;
+using Template.Library.Models.POCO;
 
 namespace Template.Service.Extensions
 {
@@ -69,11 +70,15 @@ namespace Template.Service.Extensions
             });
         }
 
-        public static void AddCustomScopedServices(this IServiceCollection services)
+        public static void AddCustomScopedServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
             //System
             services.AddScoped<IAccountService, AccountService>();
+
+            services.Configure<ApplicationSettings>(builder.Configuration.GetSection("ApplicationSettings"));
+
             services.AddScoped<ICommunicationService, CommunicationService>();
+
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IAdminService, AdminService>();
 

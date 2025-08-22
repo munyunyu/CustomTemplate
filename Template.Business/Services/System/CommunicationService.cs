@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using Template.Business.Interfaces.System;
 using Template.Library.Constants;
 using Template.Library.Enums;
 using Template.Library.Extensions;
+using Template.Library.Models.POCO;
 using Template.Library.Tables.Notification;
 
 namespace Template.Business.Services.System
@@ -16,11 +18,13 @@ namespace Template.Business.Services.System
     {
         private readonly ILogger<CommunicationService> logger;
         private readonly IDatabaseService databaseService;
+        private readonly IOptions<ApplicationSettings> options;
 
-        public CommunicationService(ILogger<CommunicationService> logger, IDatabaseService databaseService)
+        public CommunicationService(ILogger<CommunicationService> logger, IDatabaseService databaseService, IOptions<ApplicationSettings> options)
         {
             this.logger = logger;
             this.databaseService = databaseService;
+            this.options = options;
         }
         public async Task SendConfirmEmailAsync(string to, string template_name, string token, string config_name = "")
         {
@@ -50,7 +54,7 @@ namespace Template.Business.Services.System
                 {
                     Id = Guid.NewGuid(),
                     Subject = template.Subject,
-                    Body = template.Body?.Replace("[ConfirmationLink]", token.Base64Encode()),
+                    Body = template.Body?.Replace("[ConfirmationLink]", $"{options.Value.BaseUrl}/api/Account/ConfirmEmail/{to}/{token.Base64Encode()}"),
                     FromEmailAddress = configs.SmtpUser,
                     CCEmailAddresses = string.Empty,
                     ToEmailAddresses = to,

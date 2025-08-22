@@ -21,7 +21,7 @@ builder.Services.AddCustomIdentity();
 
 builder.Services.AddCustomAuthentication(builder);
 
-builder.Services.AddCustomScopedServices();
+builder.Services.AddCustomScopedServices(builder);
 
 builder.Services.AddCustomHealthChecks(builder);
 
