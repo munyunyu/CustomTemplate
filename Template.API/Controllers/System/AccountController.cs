@@ -71,6 +71,8 @@ namespace Template.Service.Controllers.System
         {
             try
             {
+                portalService.Rabbit.Publish(RabbitQueue.GeneralEmailNotification, model.Email, true);
+
                 ApplicationUser? user = await portalService.Account.FindByNameAsync(model.Email);
 
                 if (user == null) return new Response<ResponseLoginAccount> { Code = Status.Failed, Message = "Email or password is not valid" };

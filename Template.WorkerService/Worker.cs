@@ -1,20 +1,59 @@
+using AutoMapper;
+using RabbitMQ.Client.Events;
+using System.Text;
+using Template.Business.Interfaces.System;
+using Template.Library.Constants;
+
 namespace Template.WorkerService
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        private readonly IRabbitMQService rabbitMQService;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, IRabbitMQService rabbitMQService)
         {
             _logger = logger;
+            this.rabbitMQService = rabbitMQService;
         }
+
+        public override Task StartAsync(CancellationToken cancellationToken)
+        {
+            rabbitMQService.Subscribe(queueName: RabbitQueue.GeneralEmailNotification, receivedHandler: Consumer_Received, shutdownHandler: null, durable: true, autoAck: true);
+
+
+            return base.StartAsync(cancellationToken);
+        }
+
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+
+
+            //while (!stoppingToken.IsCancellationRequested)
+            //{
+            //    //rabbitMQService.Subscribe(queueName: RabbitQueue.GeneralEmailNotification,receivedHandler: Consumer_Received, shutdownHandler: null,durable: true, autoAck: false);
+
+            //    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            //    await Task.Delay(5000, stoppingToken);
+            //}
+        }
+
+        public async Task Consumer_Received(object sender, BasicDeliverEventArgs e)
+        {
+            try
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
+                var body = e.Body.ToArray();
+                var brandId = Encoding.UTF8.GetString(body);
+                _logger.LogInformation("RabbitMQ parameter: {brandId}", brandId);
+
+                //_rabbitMQHelper.Channel.BasicAck(e.DeliveryTag, false);
+
+                await Task.Yield();
+            }
+            catch (Exception)
+            {
+                //_rabbitMQHelper.Channel.BasicNack(e.DeliveryTag, false, false);
             }
         }
     }

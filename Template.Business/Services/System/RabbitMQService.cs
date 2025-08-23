@@ -23,6 +23,7 @@ namespace Template.Business.Services.System
                 UserName = rabbitMQConfiguration.Value.Username,
                 Password = rabbitMQConfiguration.Value.Password,
                 VirtualHost = rabbitMQConfiguration.Value.VirtualHost,
+                Port = rabbitMQConfiguration.Value.Port,
                 DispatchConsumersAsync = true
             };
         }
