@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Sinks.OpenTelemetry;
@@ -89,8 +90,11 @@ namespace Template.Service.Extensions
             
             //Profile
             services.AddScoped<IProfileService, ProfileService>();
-          
+
             //services.AddHostedService<AdminUsersHostedService>();
+
+            services.Configure<RabbitMQSettings>(builder.Configuration.GetSection(nameof(RabbitMQSettings)));
+            services.AddSingleton<IRabbitMQService, RabbitMQService>();
 
         }
 

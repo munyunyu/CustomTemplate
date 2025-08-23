@@ -18,6 +18,7 @@ namespace Template.Business.Interfaces
         public IAdminService Admin { get; set; }
 
         public IProfileService Profile { get; set; }
+        public IRabbitMQService Rabbit { get; set; }
 
 
     }

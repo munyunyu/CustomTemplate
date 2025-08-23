@@ -21,8 +21,7 @@ namespace Template.Business.Services
 
         //Profile
         public required IProfileService Profile { get; set; }
-
-
+        public required IRabbitMQService Rabbit { get; set; }
 
         public PortalService
         (
@@ -33,7 +32,8 @@ namespace Template.Business.Services
             ICommunicationService Communication,
             IAdminService Admin,
 
-            IProfileService Profile
+            IProfileService Profile,
+            IRabbitMQService Rabbit
 
             )
         {
@@ -46,6 +46,7 @@ namespace Template.Business.Services
 
             //Profile
             this.Profile = Profile;
+            this.Rabbit = Rabbit;
 
         }
     }
