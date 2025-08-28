@@ -14,7 +14,7 @@ namespace Template.Business.Services.System
     public class RabbitMQService : IRabbitMQService
     {
         private readonly ConnectionFactory _factory;
-
+        public IModel Channel { get; set; }
         public RabbitMQService(IOptions<RabbitMQSettings> rabbitMQConfiguration)
         {
             _factory = new ConnectionFactory()
@@ -42,16 +42,26 @@ namespace Template.Business.Services.System
         {
             _factory.RequestedHeartbeat = TimeSpan.FromSeconds(60);
             var connection = _factory.CreateConnection();
-            var channel = connection.CreateModel();
+            Channel = connection.CreateModel();
 
-            channel.BasicQos(0, 1, false);
-            channel.QueueDeclare(queue: queueName, durable: durable, exclusive: false, autoDelete: false, arguments: null);
+            Channel.BasicQos(0, 1, false);
+            Channel.QueueDeclare(queue: queueName, durable: durable, exclusive: false, autoDelete: false, arguments: null);
 
-            var consumer = new AsyncEventingBasicConsumer(channel);
+            var consumer = new AsyncEventingBasicConsumer(Channel);
             consumer.Received += receivedHandler;
             if (shutdownHandler != null) consumer.Shutdown += shutdownHandler;
 
-            channel.BasicConsume(queue: queueName, autoAck: autoAck, consumer: consumer);
+            Channel.BasicConsume(queue: queueName, autoAck: autoAck, consumer: consumer);
+        }
+
+        public void BasicNack(ulong deliveryTag, bool multiple = false, bool requeue = false)
+        {
+            Channel.BasicNack(deliveryTag, multiple, requeue);
+        }
+
+        public void BasicAck(ulong deliveryTag, bool multiple = false)
+        {
+            Channel.BasicAck(deliveryTag, multiple);
         }
     }
 }

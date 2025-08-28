@@ -25,7 +25,6 @@ namespace Template.WorkerService
             return base.StartAsync(cancellationToken);
         }
 
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
 
@@ -47,13 +46,15 @@ namespace Template.WorkerService
                 var brandId = Encoding.UTF8.GetString(body);
                 _logger.LogInformation("RabbitMQ parameter: {brandId}", brandId);
 
-                //_rabbitMQHelper.Channel.BasicAck(e.DeliveryTag, false);
+                rabbitMQService.BasicAck(e.DeliveryTag, false);
 
                 await Task.Yield();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //_rabbitMQHelper.Channel.BasicNack(e.DeliveryTag, false, false);
+                rabbitMQService.BasicNack(e.DeliveryTag, false, false);
+                
+                _logger.LogError(ex, "RabbitMQ parameter: {parameter}", e.Body.ToArray());
             }
         }
     }
