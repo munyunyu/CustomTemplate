@@ -43,6 +43,7 @@ namespace Template.Database.Context
 
 
         public virtual DbSet<TblAuditLog>? TblAuditLog { get; set; }
+        public virtual DbSet<TblPasswordHistory>? TblPasswordHistory { get; set; }
 
         public virtual DbSet<TblProfile>? TblProfile { get; set; }
 

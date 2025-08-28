@@ -26,5 +26,12 @@ namespace Template.Business.Interfaces.System
         Task<List<string>> GetUserRolesAsync(ApplicationUser user);
         Task<string> RemoveClaimToUser(ApplicationUser user, string? claim);
         Task<string> RemoveRoleToUserAsync(ApplicationUser user, string role);
+
+
+        Task<bool> IsPasswordExpiredAsync(string userId);
+        Task<bool> CheckPasswordHistoryAsync(string userId, string newPassword);
+        Task HandleFailedLoginAsync(string userId);
+        Task ResetFailedLoginAttemptsAsync(string userId);
+        Task<bool> IsAccountLockedAsync(string userId);
     }
 }

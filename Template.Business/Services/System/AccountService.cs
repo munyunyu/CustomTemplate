@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -201,6 +202,96 @@ namespace Template.Business.Services.System
             var result = await userManager.ConfirmEmailAsync(user, token);
 
             return result;
+        }
+
+        public async Task<bool> IsPasswordExpiredAsync(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null) return false;
+
+            // If password never expires, return false
+            if (user.PasswordNeverExpires) return false;
+
+            // Check if password has expired (90 days)
+            if (user.LastPasswordChangeDate.HasValue)
+            {
+                var expiryDate = user.LastPasswordChangeDate.Value.AddDays(90);
+                return DateTime.UtcNow > expiryDate;
+            }
+
+            // If no last change date, consider it expired
+            return true;
+        }
+
+        public async Task<bool> CheckPasswordHistoryAsync(string userId, string newPassword)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null) return false;
+
+            var previousPasswords = (await database.GetAllAsync<TblPasswordHistory>(x => x.UserId == userId))
+                ?.Where(ph => ph.UserId == userId)
+                ?.OrderByDescending(ph => ph.CreatedDate)
+                ?.Take(5);
+
+            foreach (var oldPassword in previousPasswords)
+            {
+                var result = userManager.PasswordHasher.VerifyHashedPassword(user, oldPassword.PasswordHash, newPassword);
+                if (result == PasswordVerificationResult.Success)
+                {
+                    return false; // Password found in history
+                }
+            }
+
+            return true; // Password not in history
+        }
+
+        public async Task HandleFailedLoginAsync(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null) return;
+
+            user.FailedLoginAttempts++;
+
+            if (user.FailedLoginAttempts >= 3)
+            {
+                user.LockoutEndDate = DateTime.UtcNow.AddMinutes(5); // Lock for 5 minutes
+                user.FailedLoginAttempts = 0; // Reset counter
+            }
+
+            await userManager.UpdateAsync(user);
+        }
+
+        public async Task ResetFailedLoginAttemptsAsync(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null) return;
+
+            user.FailedLoginAttempts = 0;
+            await userManager.UpdateAsync(user);
+        }
+
+        public async Task<bool> IsAccountLockedAsync(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null) return true;
+
+            // Check if manually locked
+            if (user.IsManuallyLocked) return true;
+
+            // Check if lockout period has ended
+            if (user.LockoutEndDate.HasValue && user.LockoutEndDate > DateTime.UtcNow)
+            {
+                return true;
+            }
+
+            // If lockout period has ended, reset it
+            if (user.LockoutEndDate.HasValue && user.LockoutEndDate <= DateTime.UtcNow)
+            {
+                user.LockoutEndDate = null;
+                await userManager.UpdateAsync(user);
+            }
+
+            return false;
         }
     }
 }
