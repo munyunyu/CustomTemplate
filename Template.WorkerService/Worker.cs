@@ -19,7 +19,6 @@ namespace Template.WorkerService
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            rabbitMQService.Subscribe(queueName: RabbitQueue.GeneralEmailNotification, receivedHandler: Consumer_Received, shutdownHandler: null, durable: true, autoAck: true);
 
 
             return base.StartAsync(cancellationToken);
@@ -29,13 +28,13 @@ namespace Template.WorkerService
         {
 
 
-            //while (!stoppingToken.IsCancellationRequested)
-            //{
-            //    //rabbitMQService.Subscribe(queueName: RabbitQueue.GeneralEmailNotification,receivedHandler: Consumer_Received, shutdownHandler: null,durable: true, autoAck: false);
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                rabbitMQService.Subscribe(queueName: RabbitQueue.GeneralEmailNotification, receivedHandler: Consumer_Received, shutdownHandler: null, durable: true, autoAck: false);
 
-            //    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            //    await Task.Delay(5000, stoppingToken);
-            //}
+                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                await Task.Delay(5000, stoppingToken);
+            }
         }
 
         public async Task Consumer_Received(object sender, BasicDeliverEventArgs e)
@@ -44,7 +43,10 @@ namespace Template.WorkerService
             {
                 var body = e.Body.ToArray();
                 var brandId = Encoding.UTF8.GetString(body);
+
                 _logger.LogInformation("RabbitMQ parameter: {brandId}", brandId);
+                
+                throw new Exception("Error");
 
                 rabbitMQService.BasicAck(e.DeliveryTag, false);
 
