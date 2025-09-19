@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Percy",
+  "classifications": ["C#", "Web", "Worker", "Library", "Console", "Solution"],
+  "identity": "Percy.CustomSolution.Template",
+  "groupIdentity": "Percy.CustomSolution",
+  "shortName": "custom-sln",
+  "name": "Custom Solution Template",
+  "description": "Multi-project solution template with API, Blazor, Worker Service, Class Libraries, Console, and Database projects.",
+  "sourceName": "Template",
+  "preferNameDirectory": true,
+  "symbols": {
+    "SolutionName": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Name of the generated solution file",
+      "replaces": "CustomTemplate",
+      "defaultValue": "SampleSolution"
+    },
+    "Company": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Company/Root namespace qualifier if you use it in code (optional)",
+      "replaces": "YourCompany",
+      "defaultValue": "MyCompany"
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "exclude": [
+            ".git/**",
+            ".github/**",
+            ".vs/**",
+            "**/[Bb]in/**",
+            "**/[Oo]bj/**",
+            "**/*.user",
+            "**/*.suo",
+            "**/*.lock.json",
+            "**/.idea/**",
+            "**/.vscode/**"
+          ]
+        }
+      ]
+    }
+  ],
+  "primaryOutputs": [
+    { "path": "Template.API/Template.API.csproj" },
+    { "path": "Template.Portal/Template.Portal.csproj" },
+    { "path": "Template.WorkerService/Template.WorkerService.csproj" },
+    { "path": "Template.Business/Template.Business.csproj" },
+    { "path": "Template.Library/Template.Library.csproj" },
+    { "path": "Template.Console/Template.Console.csproj" },
+    { "path": "Template.Database/Template.Database.csproj" },
+    { "path": "Template.sln" }
+  ]
+}
