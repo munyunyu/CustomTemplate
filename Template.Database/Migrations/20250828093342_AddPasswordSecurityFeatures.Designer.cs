@@ -517,7 +517,7 @@ namespace Template.Database.Migrations
                     b.ToTable("TblEmailQueue", "comms");
                 });
 
-            modelBuilder.Entity("Template.Library.Tables.Notification.TblEmailTemplate", b =>
+            modelBuilder.Entity("Template.Library.Tables.Notification.TblEmailTemplat", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -555,7 +555,7 @@ namespace Template.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TblEmailTemplate", "comms");
+                    b.ToTable("TblEmailTemplat", "comms");
 
                     b.HasData(
                         new

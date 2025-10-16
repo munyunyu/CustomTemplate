@@ -51,7 +51,7 @@ namespace Template.Service.Controllers.System
 
                 var token = await portalService.Account.GenerateEmailConfirmationTokenAsync(user);
 
-                await portalService.Communication.SendConfirmEmailAsync(to: model.Email, template_name: EmailTemplate.ConfirmEmail, token: token, config_name: EmailConfig.Default);
+                await portalService.Communication.SendConfirmEmailAsync(to: model.Email, template_name: EmailTemplat.ConfirmEmail, token: token, config_name: EmailConfig.Default);
 
                 return new Response<ResponseRegisterAccount> { Code = Status.Success, Payload = new ResponseRegisterAccount { Email = model.Email, Message = "Account was created, please confirm your email" } };
 

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Template.Library.Tables.Notification
 {
-    [Table("TblEmailTemplate", Schema = "comms")]
-    public class TblEmailTemplate : TblEmailTemplateProp
+    [Table("TblEmailTemplat", Schema = "comms")]
+    public class TblEmailTemplat : TblEmailTemplatProp
     {
     }
 
-    public class TblEmailTemplateProp : BaseEntity
+    public class TblEmailTemplatProp : BaseEntity
     {
         public string? Name { get; set; }
         public string? Subject { get; set; }

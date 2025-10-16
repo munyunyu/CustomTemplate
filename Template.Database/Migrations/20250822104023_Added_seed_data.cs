@@ -69,7 +69,7 @@ namespace Template.Database.Migrations
 
             migrationBuilder.InsertData(
                 schema: "comms",
-                table: "TblEmailTemplate",
+                table: "TblEmailTemplat",
                 columns: new[] { "Id", "Body", "CreatedById", "CreatedDate", "Description", "Hash", "IsDeleted", "LastUpdatedById", "LastUpdatedDate", "Name", "Subject" },
                 values: new object[,]
                 {
@@ -89,13 +89,13 @@ namespace Template.Database.Migrations
 
             migrationBuilder.DeleteData(
                 schema: "comms",
-                table: "TblEmailTemplate",
+                table: "TblEmailTemplat",
                 keyColumn: "Id",
                 keyValue: new Guid("21bcb9c2-1485-4b09-8691-9fcac34613a4"));
 
             migrationBuilder.DeleteData(
                 schema: "comms",
-                table: "TblEmailTemplate",
+                table: "TblEmailTemplat",
                 keyColumn: "Id",
                 keyValue: new Guid("a2ab8f49-8beb-4d80-a42b-2e5629d71a8e"));
 

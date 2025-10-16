@@ -47,11 +47,11 @@ namespace Template.Database.Context
             builder.Entity<TblEmailConfig>().HasData(data);
         }
 
-        public void SeedEmailTemplate()
+        public void SeedEmailTemplat()
         {
-            var data = DatabaseMetadata.GetEmailTemplate();
+            var data = DatabaseMetadata.GetEmailTemplat();
 
-            builder.Entity<TblEmailTemplate>().HasData(data);
+            builder.Entity<TblEmailTemplat>().HasData(data);
         }
 
 

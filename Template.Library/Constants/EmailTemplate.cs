@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Template.Library.Constants
 {
-    public static class EmailTemplate
+    public static class EmailTemplat
     {
         public const string ResetPassword = "ResetPassword";
         public const string ConfirmEmail = "ConfirmEmail";

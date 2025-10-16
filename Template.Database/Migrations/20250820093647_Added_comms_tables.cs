@@ -56,7 +56,7 @@ namespace Template.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TblEmailTemplate",
+                name: "TblEmailTemplat",
                 schema: "comms",
                 columns: table => new
                 {
@@ -74,7 +74,7 @@ namespace Template.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TblEmailTemplate", x => x.Id);
+                    table.PrimaryKey("PK_TblEmailTemplat", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -116,7 +116,7 @@ namespace Template.Database.Migrations
                 schema: "comms");
 
             migrationBuilder.DropTable(
-                name: "TblEmailTemplate",
+                name: "TblEmailTemplat",
                 schema: "comms");
 
             migrationBuilder.DropTable(

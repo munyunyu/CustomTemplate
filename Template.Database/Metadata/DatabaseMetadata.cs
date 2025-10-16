@@ -91,18 +91,18 @@ namespace Template.Database.Metadata
             return configs;
         }
 
-        public static TblEmailTemplate[] GetEmailTemplate()
+        public static TblEmailTemplat[] GetEmailTemplat()
         {
-            var templates = new TblEmailTemplate[]
+            var templates = new TblEmailTemplat[]
             {
-                new TblEmailTemplate()
+                new TblEmailTemplat()
                 {
                     Id = Guid.Parse("a2ab8f49-8beb-4d80-a42b-2e5629d71a8e"),
                     CreatedById = Guid.Parse(admin_userId),
                     CreatedDate = date,
                     LastUpdatedDate = date,                    
                     
-                    Name = EmailTemplate.ConfirmEmail,
+                    Name = EmailTemplat.ConfirmEmail,
                     Subject = "Confirm Email",
                     Body = @"<!DOCTYPE html>
                             <html>
@@ -177,14 +177,14 @@ namespace Template.Database.Metadata
                             
                             </html>"
                 },
-                new TblEmailTemplate()
+                new TblEmailTemplat()
                 {
                     Id = Guid.Parse("21bcb9c2-1485-4b09-8691-9fcac34613a4"),
                     CreatedById = Guid.Parse(admin_userId),
                     CreatedDate = date,
                     LastUpdatedDate = date,
 
-                    Name = EmailTemplate.ResetPassword,
+                    Name = EmailTemplat.ResetPassword,
                     Subject = "Reset Password",
                     Body = @"<!DOCTYPE html>
                                 <html lang=""en"">

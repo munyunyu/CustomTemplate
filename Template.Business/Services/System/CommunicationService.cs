@@ -32,7 +32,7 @@ namespace Template.Business.Services.System
             {
                 if(string.IsNullOrEmpty(config_name)) config_name = EmailConfig.Default;
 
-                var template = await databaseService.GetAsync<TblEmailTemplate>(x => x.Name == template_name);
+                var template = await databaseService.GetAsync<TblEmailTemplat>(x => x.Name == template_name);
 
                 if (template == null)
                 {
