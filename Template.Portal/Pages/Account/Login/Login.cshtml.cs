@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using MVA.Library.Models.Account;
-using MVA.Business.Interface;
-using MVA.Portal.Extensions;
-using MVA.Library.Extensions;
+using Template.Library.Extensions;
+using Template.Portal.Interface;
+using Template.Library.Models;
 
-namespace MVA.Portal.Pages.Account.Login
+namespace Template.Portal.Pages.Account.Login
 {
     [AllowAnonymous]
     public class LoginModel : PageModel

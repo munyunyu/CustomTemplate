@@ -1,22 +1,15 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using Microsoft.AspNetCore.Components;
-using MVA.Library.Extensions;
-using MVA.Library.Models.Account;
-using MVA.Library.Views;
-using MVA.Portal.Extensions;
-using MVA.Portal.Pages.Helper;
+﻿using Microsoft.AspNetCore.Components;
+using Template.Library.Extensions;
+using Template.Portal.Extensions;
+using Template.Portal.Pages.Helper;
 
-namespace MVA.Portal.Pages.Users.Details
+namespace Template.Portal.Pages.Users.Details
 {
     public partial class Details : BasePage
     {
         [Parameter]
         public string? UserId { get; set; }
 
-        public ViewApplicationUser? User { get; set; } = new ViewApplicationUser();
-        public UserViewModel2 UserModel { get; set; } = new UserViewModel2();
-        public List<UserRoleViewModel> Roles { get; set; } = new List<UserRoleViewModel>();
-        public string SelectedAccordation { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -24,15 +17,15 @@ namespace MVA.Portal.Pages.Users.Details
             {
                 HelperService.SetIsLoadingState(true);
 
-                User = await PortalService.Account.GetUserDetailsByUserIdAsnyc(userId: UserId);
+                //User = await PortalService.Account.GetUserDetailsByUserIdAsnyc(userId: UserId);
 
-                if (User == null) throw new Exception($"User with Id: {UserId} found");
+                //if (User == null) throw new Exception($"User with Id: {UserId} found");
 
-                UserModel = (await PortalService.Account.GetUserRolesByUserIdAsync(userId: UserId)).ToModelUserRoles(User);
+                //UserModel = (await PortalService.Account.GetUserRolesByUserIdAsync(userId: UserId)).ToModelUserRoles(User);
 
-                Roles = await PortalService.Account.GetSystemRolesAsync();
+                //Roles = await PortalService.Account.GetSystemRolesAsync();
 
-                foreach (var role in Roles) role.Checked = UserModel.UserRoles.Exists(r => r.Id == role.Id);
+                //foreach (var role in Roles) role.Checked = UserModel.UserRoles.Exists(r => r.Id == role.Id);
 
                 HelperService.SetIsLoadingState(false);
             }
@@ -50,7 +43,7 @@ namespace MVA.Portal.Pages.Users.Details
             {
                 HelperService.SetIsLoadingState(true);
 
-                await PortalService.Account.UpdatePasswordAsync(Guid.Parse(UserId), UserModel.Password);
+                //await PortalService.Account.UpdatePasswordAsync(Guid.Parse(UserId), UserModel.Password);
 
                 HelperService.SetSuccessMessage("Password has been changed");
 
@@ -62,36 +55,28 @@ namespace MVA.Portal.Pages.Users.Details
             }
         }
 
-        protected void AccordationHeaderSelected(string args)
-        {
-            if (SelectedAccordation == args)
-            {
-                SelectedAccordation = string.Empty;
-                return;
-            }
-            SelectedAccordation = args;
-        }
+      
 
-        private async Task RoleChange(UserRoleViewModel role, ChangeEventArgs e)
-        {
-            try
-            {
-                HelperService.SetIsLoadingState(true);
+        //private async Task RoleChange(UserRoleViewModel role, ChangeEventArgs e)
+        //{
+        //    try
+        //    {
+        //        HelperService.SetIsLoadingState(true);
 
-                role.Checked = (bool)e.Value;
+        //        role.Checked = (bool)e.Value;
 
-                if (role.Checked) await PortalService.Account.AssignRoleAsync(UserModel.Id, role.Id);
+        //        if (role.Checked) await PortalService.Account.AssignRoleAsync(UserModel.Id, role.Id);
 
-                else await PortalService.Account.UnassignRoleAsync(UserModel.Id, role.Id);
+        //        else await PortalService.Account.UnassignRoleAsync(UserModel.Id, role.Id);
 
-                HelperService.SetSuccessMessage("Successfully updated user roles");
+        //        HelperService.SetSuccessMessage("Successfully updated user roles");
 
-                NavigationManager.ReloadPage();
-            }
-            catch (Exception ex)
-            {
-                HelperService.SetErrorMessage(ex.GetAllMessages());
-            }
-        }
+        //        NavigationManager.ReloadPage();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        HelperService.SetErrorMessage(ex.GetAllMessages());
+        //    }
+        //}
     }
 }

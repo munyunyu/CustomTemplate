@@ -1,17 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using MVA.Business.Interface;
-using MVA.Library.Models.Client;
-using MVA.Portal.Services;
 using Radzen;
-using MVA.Library.Extensions;
-using MVA.Portal.Extensions;
-using MVA.Portal.Pages.Helper;
-using MVA.Library.Tables;
-using MVA.Library.Views;
+using Template.Library.Tables.Views;
+using Template.Portal.Pages.Helper;
 
 
-namespace MVA.Portal.Pages.Users.Index
+namespace Template.Portal.Pages.Users.Index
 {
     public partial class Index : BasePage
     {
@@ -24,7 +17,7 @@ namespace MVA.Portal.Pages.Users.Index
             {
                 HelperService.SetIsLoadingState(true);
 
-                Users = await PortalService.Account.GetAllUsersAsnyc();
+                //Users = await PortalService.Account.GetAllUsersAsnyc();
 
                 HelperService.SetIsLoadingState(false);
             }

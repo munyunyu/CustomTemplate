@@ -1,6 +1,6 @@
-﻿using MVA.Library.Extensions;
+﻿using Template.Library.Extensions;
 
-namespace MVA.Portal.Services
+namespace Template.Portal.Services.System
 {
     /// <summary>
     /// Global static services

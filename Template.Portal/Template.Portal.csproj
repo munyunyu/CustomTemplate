@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+   <ItemGroup>
+     <ProjectReference Include="..\Template.Library\Template.Library.csproj" />
+   </ItemGroup>
+
 </Project>

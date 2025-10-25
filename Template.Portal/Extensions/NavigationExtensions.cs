@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace MVA.Portal.Extensions
+namespace Template.Portal.Extensions
 {
     public static class NavigationExtensions
     {

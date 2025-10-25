@@ -1,7 +1,7 @@
-﻿using MVA.Library.Models.Account;
-using MVA.Portal.Pages.Helper;
+﻿using Template.Library.Models;
+using Template.Portal.Pages.Helper;
 
-namespace MVA.Portal.Pages.Users.Modals
+namespace Template.Portal.Pages.Users.Modals
 {
     public partial class AddUserModal : BasePage
     {
@@ -13,7 +13,7 @@ namespace MVA.Portal.Pages.Users.Modals
             {
                 HelperService.SetIsLoadingState(true);
 
-                var userId = await PortalService.Account.RegisterAccountAsync(Model);
+                string userId = await PortalService.Account.RegisterAccountAsync(Model);
 
                 HelperService.SetSuccessMessage(string.Empty);
 

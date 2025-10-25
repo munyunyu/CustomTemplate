@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MVA.Portal.Services;
+using Template.Portal.Services.System;
 
-namespace MVA.Portal.Shared.Helpers
+namespace Template.Portal.Shared.Helpers
 {
     /// <summary>
     /// Global message status

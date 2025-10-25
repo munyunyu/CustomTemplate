@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System.Security.Authentication;
 using System.Security.Claims;
 
-namespace MVA.Portal.Services
+namespace Template.Portal.Services.System
 {
     public class AuthService : ComponentBase
     {

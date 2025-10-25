@@ -1,25 +1,12 @@
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using MVA.Database.Context;
-using MVA.Library.Mapper;
-using MVA.Portal.Data;
-using MVA.Portal.Extensions;
+using Template.Library.Mapper;
+using Template.Portal.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-
-builder.Services.AddDbContext<ApplicationContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
-//builder.Services.AddScoped<Func<ApplicationContext>>((provider) => () => provider.GetService<ApplicationContext>());
-
-builder.Services.AddCustomIdentity();
 
 builder.Services.AddCustomAuthentication(builder);
 

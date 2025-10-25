@@ -1,6 +1,6 @@
-﻿using MVA.Portal.Services;
+﻿using Template.Portal.Services.System;
 
-namespace MVA.Portal.Extensions
+namespace Template.Portal.Extensions
 {
     public static class MiscellaneousExtensions
     {

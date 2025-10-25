@@ -1,27 +1,25 @@
 ﻿using ClosedXML.Excel;
-using MVA.Library.Models.Client;
-using MVA.Library.Models.Loan;
-using MVA.Portal.Attributes;
 using System.Data;
 using System.Reflection;
+using Template.Library.Attributes;
 
-namespace MVA.Portal.Extensions
+namespace Template.Portal.Extensions
 {
     public static class ExportExtensions
     {
-        public static MemoryStream GenerateItemsExport(this IEnumerable<ClientViewModel> clients)
-        {
-            var response = clients.ToList().ToDataTable();
+        //public static MemoryStream GenerateItemsExport(this IEnumerable<ClientViewModel> clients)
+        //{
+        //    var response = clients.ToList().ToDataTable();
 
-            return ExportToExcel(response);
-        }
+        //    return ExportToExcel(response);
+        //}
 
-        public static MemoryStream GenerateItemsExport(this IEnumerable<LoanApplicationViewModel> clients)
-        {
-            var response = clients.ToList().ToDataTable();
+        //public static MemoryStream GenerateItemsExport(this IEnumerable<LoanApplicationViewModel> clients)
+        //{
+        //    var response = clients.ToList().ToDataTable();
 
-            return ExportToExcel(response);
-        }
+        //    return ExportToExcel(response);
+        //}
 
         public static DataTable ToDataTable<T>(this List<T> items)
         {

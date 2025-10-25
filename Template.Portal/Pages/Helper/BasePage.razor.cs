@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MVA.Business.Interface;
-using MVA.Portal.Services;
+using Template.Portal.Interface;
+using Template.Portal.Services.System;
 
-namespace MVA.Portal.Pages.Helper
+namespace Template.Portal.Pages.Helper
 {
     public partial class BasePage
     {

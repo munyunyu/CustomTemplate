@@ -1,23 +1,18 @@
-﻿using MVA.Business.Interface;
-using MVA.Business.Service;
-using MVA.Library.Constants;
-using MVA.Library.Enums;
-using MVA.Library.Extensions;
-using MVA.Library.Models;
-using MVA.Library.Models.Account;
+﻿using Template.Library.Enums;
+using Template.Library.Models;
 
-namespace MVA.Portal.Services
+namespace Template.Portal.Services.System
 {
     public class AuthenticateHostedService : IHostedService, IDisposable
     {
         private readonly IConfiguration configuration;
-        private readonly HttpService httpService;
+        //private readonly HttpService httpService;
         private Timer? _timer;
 
         public AuthenticateHostedService(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.httpService = new HttpService();
+            //httpService = new HttpService();
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
@@ -41,20 +36,20 @@ namespace MVA.Portal.Services
                     email = configuration["AuthenticateService:Username"],
                 };
 
-                  var response = httpService.HttpPost<Response<ServiceLoginResponse>>("/api/Account/Login", model);
+                //var response = httpService.HttpPost<Response<ServiceLoginResponse>>("/api/Account/Login", model);
 
-                if (response.Code == Status.Success)
-                {
-                    Config.IveriToken = response?.Payload?.Token ?? string.Empty;
+                //if (response.Code == Status.Success)
+                //{
+                //   // Config.IveriToken = response?.Payload?.Token ?? string.Empty;
 
-                    Config.IveriToken.LogInfo(header: "Access token");
-                }
-                else
-                {
-                    Config.IveriToken = string.Empty;
+                //   // Config.IveriToken.LogInfo(header: "Access token");
+                //}
+                //else
+                //{
+                //   // Config.IveriToken = string.Empty;
 
-                    response?.Message?.LogInfo(header: "Failed to get access token");
-                }
+                //    response?.Message?.LogInfo(header: "Failed to get access token");
+                //}
 
 
                 //Check if service is allowed to run
@@ -68,16 +63,17 @@ namespace MVA.Portal.Services
             }
             catch (Exception ex)
             {
-                ex.LogInfo("Failed to get access token");
+                 //ex.LogInfo("Failed to get access token");
             }
 
+            throw new Exception("");
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
         {
             string message = "Timed Hosted Service is stopping";
 
-            message.LogInfo("Auth service stopping");
+            //message.LogInfo("Auth service stopping");
 
             _timer?.Change(Timeout.Infinite, 0);
 
