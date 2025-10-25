@@ -1,9 +1,166 @@
-﻿@page "/"
+﻿@page "/dashboard/index"
+@page "/"
 
-<PageTitle>Index</PageTitle>
+<PartaialPageTitle Title="Dashboard" Header="Dashboard">
+     <Content>
+        <div class="float-right mt-2">
+            <a id="cardvalidation" @onclick="ExecuteLoanInterestMonitor" class="float-right btn btn-sm btn-outline-primary mr-1">Execute Loan interest services</a>
+            <a id="cardvalidation" @onclick="ExecuteLoanStatusMonitor" class="float-right btn btn-sm  btn-outline-primary mr-1">Execute loan status services</a>
+            <a id="cardvalidation" @onclick="ExecuteLoanReconBatchMonitor" class="float-right btn btn-sm  btn-outline-primary mr-1">Execute batch recon services</a>
+            <PartialModal ButtonCSS="float-right btn btn-sm  btn-outline-primary mr-1"
+                          Button="Loan calculation"
+                          Heading="Loan calculation"
+                          Id="Loancalculation"
+                          Size="modal-xl"
+                          ShowFooter="false">
+                <Content>
+                    <!--boxes-->
+                    <LoanRepaymentCalculatorModal></LoanRepaymentCalculatorModal>
+                </Content>
+            </PartialModal>
+        </div>
+    </Content>
+</PartaialPageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>
+                    @DashboardStatistics01.TotalRunningClients
+                </h3>
+
+                <p>Clients</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="/clients" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>
+                    @DashboardStatistics01.TotalRunningLoans
+                </h3>
+
+                <p>Loans</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>
+                    @DashboardStatistics01.TotalRunningBalanceAmount
+                </h3>
+
+                <p>Balance</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>
+                    @DashboardStatistics01.TotalRunningDisbursalAmounts
+                </h3>
+
+                <p>Disbursal</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+
+
+
+<!--second-->
+<div class="card direct-chat direct-chat-primary">
+    <div class="card-header ui-sortable-handle" style="cursor: move;">
+        <h3 class="card-title">Current running loans</h3>
+        <div class="card-tools">
+
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            <div class="btn-group" role="group" aria-label="Basic example">
+                @* <button type="button" class="btn btn-sm btn-info" @onclick="@((x)=> OnClickStatusColor(color:Colors.Info))">View All Clients</button>
+                <button type="button" class="btn btn-sm btn-success" @onclick="@((x)=> OnClickStatusColor(color:Colors.Success))">View Valid Clients</button>
+                <button type="button" class="btn btn-sm btn-warning" @onclick="@((x)=> OnClickStatusColor(color:Colors.Warning))">View Invalid Clients</button> *@
+            </div>
+
+        </div>
+    </div>
+    <div class="card-body">
+        <Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromSeconds(1)" Delay="TimeSpan.FromSeconds(0)">
+            <RadzenGrid RowRender="RowRender" RowSelect="@((args) => RowClicked(args))" AllowPaging="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" PageSize="10" AllowSorting="true" Data="@LoanApplications" TItem="LoanApplicationViewModel">
+                <Columns>
+                    <RadzenGridColumn TItem="LoanApplicationViewModel" Property="ApplicationNumber" Title="Loan Number"></RadzenGridColumn>
+                    <RadzenGridColumn TItem="LoanApplicationViewModel" Property="FullnameFormat" Title="Fullname"></RadzenGridColumn>
+                    <RadzenGridColumn TItem="LoanApplicationViewModel" Property="EmployerFormat" Title="Employer"></RadzenGridColumn>
+                    <RadzenGridColumn TItem="LoanApplicationViewModel" Property="LoanStatusFormat" Title="Status"></RadzenGridColumn>
+                    <RadzenGridColumn TItem="LoanApplicationViewModel" Property="AmountFormat" Title="Amount"></RadzenGridColumn>
+                    <RadzenGridColumn TItem="LoanApplicationViewModel" Property="LoanRepaymentsPaidFormat" Title="Amount Paid"></RadzenGridColumn>
+                    <RadzenGridColumn TItem="LoanApplicationViewModel" Property="LoanRepaymentsFormat" Title="Repayments"></RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </Animate>
+    </div>
+    @* <div class="card-footer bg-dark">
+        <div class="row">
+            <div class="col-sm-4 col-6">
+                <div class="description-block border-right">
+                    <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 17%</span>
+                    <h5 class="description-header">$35,210.43</h5>
+                    <span class="description-text">TOTAL REPAYMENTS</span>
+                </div>
+                <!-- /.description-block -->
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-4 col-6">
+                <div class="description-block border-right">
+                    <span class="description-percentage text-warning"><i class="fas fa-caret-left"></i> 0%</span>
+                    <h5 class="description-header">$10,390.90</h5>
+                    <span class="description-text">TOTAL INTEREST</span>
+                </div>
+                <!-- /.description-block -->
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-4 col-6">
+                <div class="description-block border-right">
+                    <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 20%</span>
+                    <h5 class="description-header">$24,813.53</h5>
+                    <span class="description-text">TOTAL PROFIT</span>
+                </div>
+                <!-- /.description-block -->
+            </div>
+           
+        </div>
+        <!-- /.row -->
+    </div> *@
+</div>
+
+

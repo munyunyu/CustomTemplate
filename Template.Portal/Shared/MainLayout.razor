@@ -1,19 +1,31 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>Template.Portal</PageTitle>
+<PageTitle>MVA Portal</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<AuthorizeView>
+    <Authorized>
+        <div class="wrapper">
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <PartialNavigationBar></PartialNavigationBar>
+
+            <PartialSiderbar></PartialSiderbar>
+
+            <div class="content-wrapper">
+                <div class="content">
+                    <div class="container-fluid">
+                        <Progressbar />
+                        <Message />
+                        <div class="pt-2">
+                            @Body
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <PartialFooter></PartialFooter>
         </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        <Redirect />
+    </NotAuthorized>
+</AuthorizeView>

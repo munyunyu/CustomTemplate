@@ -1,0 +1,19 @@
+﻿@if (HelperService?.ErrorMessage.Length > 0)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Failed: </strong> @HelperService.ErrorMessage
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" @onclick="@(()=> CloseAlert("ErrorMessage"))">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@if (HelperService?.SuccessMessage.Length > 0)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success: </strong> @HelperService.SuccessMessage
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" @onclick="@(()=> CloseAlert("SuccessMessage"))">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
