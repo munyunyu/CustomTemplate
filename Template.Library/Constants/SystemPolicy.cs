@@ -15,4 +15,9 @@ namespace Template.Library.Constants
 
         public const string ProfilePolicy = "ProfilePolicy";
     }
+
+    public static class PortalPolicy
+    {
+        public const string ViewUsersPolicy = "ViewUsersPolicy";
+    }
 }

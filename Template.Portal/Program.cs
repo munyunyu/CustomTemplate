@@ -12,6 +12,8 @@ builder.Services.AddCustomAuthentication(builder);
 
 builder.Services.AddCustomScopedServices(builder);
 
+builder.Services.AddCustomAuthorizationPolicies();
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
 var app = builder.Build();
