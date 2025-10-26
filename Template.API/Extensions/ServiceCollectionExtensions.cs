@@ -74,28 +74,23 @@ namespace Template.Service.Extensions
 
         public static void AddCustomScopedServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
+            //init POCO
+            services.Configure<ApplicationSettings>(builder.Configuration.GetSection(nameof(ApplicationSettings)));
+            services.Configure<RabbitMQSettings>(builder.Configuration.GetSection(nameof(RabbitMQSettings)));
+
             //System
             services.AddScoped<IAccountService, AccountService>();
-
-            services.Configure<ApplicationSettings>(builder.Configuration.GetSection("ApplicationSettings"));
-
             services.AddScoped<ICommunicationService, CommunicationService>();
-
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IAdminService, AdminService>();
 
             //Other
-            services.AddScoped<IPortalService, PortalService>();            
-            
-            
-            //Profile
+            services.AddScoped<IPortalService, PortalService>();
             services.AddScoped<IProfileService, ProfileService>();
-
-            //services.AddHostedService<AdminUsersHostedService>();
-
-            services.Configure<RabbitMQSettings>(builder.Configuration.GetSection(nameof(RabbitMQSettings)));
             services.AddSingleton<IRabbitMQService, RabbitMQService>();
 
+
+            //services.AddHostedService<AdminUsersHostedService>();
         }
 
         public static void AddCustomSeriLogging(this WebApplicationBuilder builder)

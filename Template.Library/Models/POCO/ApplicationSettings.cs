@@ -8,6 +8,14 @@ namespace Template.Library.Models.POCO
 {
     public class ApplicationSettings
     {
-        public required string BaseUrl { get; set; }
+        /// <summary>
+        /// Application base url
+        /// </summary>
+        public required string AppBaseUrl { get; set; }
+
+        /// <summary>
+        /// Api base url
+        /// </summary>
+        public required string ApiBaseUrl { get; set; }
     }
 }

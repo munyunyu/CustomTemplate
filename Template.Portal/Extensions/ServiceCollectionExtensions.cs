@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Template.Library.Interface;
+using Template.Library.Models.POCO;
 using Template.Library.Service;
 using Template.Portal.Interface;
 using Template.Portal.Interface.System;
@@ -21,21 +22,22 @@ namespace Template.Portal.Extensions
         }
 
 
-        public static void AddCustomScopedServices(this IServiceCollection services)
+        public static void AddCustomScopedServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
-            services.AddHostedService<AuthenticateHostedService>();
+            //init POCO from appsettings
+            services.Configure<ApplicationSettings>(builder.Configuration.GetSection(nameof(ApplicationSettings)));
+
+            
             services.AddScoped<AuthService>();
             services.AddScoped<HelperService>();
-
             services.AddScoped<IHttpService, HttpService>();
 
             services.AddScoped<IPortalService, PortalService>();
-
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAdminService, AdminService>();
 
-            
 
+            //services.AddHostedService<AuthenticateHostedService>();
         }
 
     }

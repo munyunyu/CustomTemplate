@@ -10,7 +10,7 @@ builder.Services.AddServerSideBlazor();
 
 builder.Services.AddCustomAuthentication(builder);
 
-builder.Services.AddCustomScopedServices();
+builder.Services.AddCustomScopedServices(builder);
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 

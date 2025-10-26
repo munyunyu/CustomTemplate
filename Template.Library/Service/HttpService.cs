@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Microsoft.Extensions.Options;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Template.Library.Interface;
+using Template.Library.Models.POCO;
 
 namespace Template.Library.Service
 {
@@ -13,10 +15,11 @@ namespace Template.Library.Service
     {
         private readonly string _baseUrl;
 
-        public HttpService()
+        public HttpService(IOptions<ApplicationSettings> options)
         {
-            _baseUrl = "http://localhost/zivoservice.co.zw";
+            _baseUrl = options.Value.ApiBaseUrl;
         }
+
         public T HttpGet<T>(string url, string accessToken = "")
         {
             try

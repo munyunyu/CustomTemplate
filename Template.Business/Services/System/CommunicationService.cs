@@ -54,7 +54,7 @@ namespace Template.Business.Services.System
                 {
                     Id = Guid.NewGuid(),
                     Subject = template.Subject,
-                    Body = template.Body?.Replace("[ConfirmationLink]", $"{options.Value.BaseUrl}/api/Account/ConfirmEmail/{to}/{token.Base64Encode()}"),
+                    Body = template.Body?.Replace("[ConfirmationLink]", $"{options.Value.AppBaseUrl}/api/Account/ConfirmEmail/{to}/{token.Base64Encode()}"),
                     FromEmailAddress = configs.SmtpUser,
                     CCEmailAddresses = string.Empty,
                     ToEmailAddresses = to,

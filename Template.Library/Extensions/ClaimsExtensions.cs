@@ -11,8 +11,10 @@ namespace Template.Library.Extensions
 {
     public static class ClaimsExtensions
     {
-        public static Claim[] GetUserClaims(this ResponseLoginAccount model)
+        public static Claim[] GetUserClaims(this ResponseLoginAccount? model)
         {
+            if (model == null) return Array.Empty<Claim>();
+
             var claims = new List<Claim>
                 {
                   new Claim(ClaimTypes.Name, model.Email ?? string.Empty),
@@ -21,12 +23,19 @@ namespace Template.Library.Extensions
                   new Claim("Expiration", model.Expiration?.ToString() ?? string.Empty)
             };
 
-            foreach (var role in model.Roles)
-            {
-                var _claim = new Claim(ClaimTypes.Role, role);
+            if(model.Roles != null)
+                foreach (var role in model.Roles) 
+                { 
+                    var _claim = new Claim(ClaimTypes.Role, role); 
+                    claims.Add(_claim); 
+                }
 
-                claims.Add(_claim);
-            }
+            if (model.Claims != null)
+                foreach (var claim in model.Claims) 
+                { 
+                    var _claim = new Claim(ClaimTypes.Role, claim);
+                    claims.Add(_claim); 
+                }
 
             return claims.ToArray();
         }
