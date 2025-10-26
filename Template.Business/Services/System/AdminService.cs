@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Template.Business.Interfaces.System;
 using Template.Library.Models;
+using Template.Library.Tables.Views;
 using Template.Library.Views.System;
 using Template.Library.ViewsModels.System;
 
@@ -20,6 +21,13 @@ namespace Template.Business.Services.System
         {
             this.databaseService = databaseService;
             this.mapper = mapper;
+        }
+
+        public async Task<IEnumerable<SystemUserViewModel>?> GetSystemUsersAsync()
+        {
+            var records = await databaseService.GetAllAsync<ViewApplicationUser>();
+
+            return mapper.Map<IEnumerable<SystemUserViewModel>>(records);
         }
 
         public async Task<IEnumerable<SystemUserRolesViewModel>?> GetUsersRolesAsync()

@@ -10,6 +10,7 @@ using AutoMapper;
 using Template.Library.Views.System;
 using Template.Library.ViewsModels.Profile;
 using Template.Library.ViewsModels.System;
+using Template.Library.Tables.Views;
 
 namespace Template.Library.Mapper
 {
@@ -29,6 +30,9 @@ namespace Template.Library.Mapper
             //CreateMap<TblAgent, ProfileViewModel.ProfileViewAgent>();
 
             
+
+            CreateMap<ViewApplicationUser, SystemUserViewModel>();
+
 
             //CreateMap<TblMerchant, MerchantViewModel>();
             //CreateMap<TblProfile, MerchantViewModel.MerchantViewModelProfile>();

@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Template.Business.Interfaces;
+using Template.Library.Constants;
 using Template.Library.Enums;
 using Template.Library.Models;
 using Template.Library.ViewsModels.System;
 
 namespace Template.Service.Controllers.System
 {
+    //[Authorize(Roles = SystemRoles.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -18,5 +21,20 @@ namespace Template.Service.Controllers.System
             this.portalService = portalService;
         }
 
+        [HttpGet]
+        [Route("GetSystemUsers")]
+        public async Task<Response<IEnumerable<SystemUserViewModel>>> GetSystemUsers()
+        {
+            try
+            {
+                var users = await portalService.Admin.GetSystemUsersAsync();
+
+                return new Response<IEnumerable<SystemUserViewModel>> { Code = Status.Success, Payload = users };
+            }
+            catch (Exception ex)
+            {
+                return new Response<IEnumerable<SystemUserViewModel>> { Code = Status.Failed, Message = ex.Message };
+            }
+        }
     }
 }
