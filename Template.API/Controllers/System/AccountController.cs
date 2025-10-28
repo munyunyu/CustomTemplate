@@ -42,7 +42,9 @@ namespace Template.Service.Controllers.System
                     UserName = model.Email, 
                     SecurityStamp = Guid.NewGuid().ToString(),
                     CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now
+                    LastUpdatedDate = DateTime.Now,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName
                 };
 
                 IdentityResult result = await portalService.Account.CreateAccountAsync(user, model.Password);
@@ -206,6 +208,24 @@ namespace Template.Service.Controllers.System
                 logger.LogWarning("User email: {email} failed to confirm email address", email);
 
                 return new Response<string> { Code = Status.Failed, Message = "Failed to authenticate, please contact admin" };
+            }
+            catch (Exception ex)
+            {
+                return new Response<string> { Code = Status.Failed, Message = ex.Message };
+            }
+        }
+
+        [HttpGet]
+        [Route("GetUserIdByEmail/{email}")]
+        public async Task<Response<string>> GetUserIdByEmail(string email)
+        {
+            try
+            {
+                var user = await portalService.Account.FindByNameAsync(email);
+
+                if (user == null) return new Response<string> { Code = Status.Failed, Message = $"User with email: {email} address was not found" };
+
+                return new Response<string> { Code = Status.Success, Payload = user.Id };
             }
             catch (Exception ex)
             {

@@ -14,6 +14,15 @@ namespace Template.Portal.Services.System
             this.httpService = httpService;
         }
 
+        public async Task<string> GetUserIdByEmailAsync(string email, string token)
+        {
+            var response = await httpService.HttpGetAsync<Response<string>>($"/api/Account/GetUserIdByEmail/{email}", accessToken: token);
+
+            if (response.Code == Status.Success) return response?.Payload ?? string.Empty;
+
+            throw new Exception(response?.Message);
+        }
+
         public async Task<ResponseLoginAccount?> LoginUserUserAsync(RequestLoginAccount model)
         {
             var response = await httpService.HttpPostAsync<Response<ResponseLoginAccount>>("/api/Account/Login", model);
@@ -23,9 +32,13 @@ namespace Template.Portal.Services.System
             throw new Exception(response?.Message);
         }
 
-        public Task<string> RegisterAccountAsync(RequestRegisterAccount model)
+        public async Task<string?> RegisterAccountAsync(RequestRegisterAccount model)
         {
-            throw new NotImplementedException();
+            var response = await httpService.HttpPostAsync<Response<ResponseRegisterAccount>>("/api/Account/Register", model);
+
+            if (response.Code == Status.Success) return response?.Payload?.Message;
+
+            throw new Exception(response?.Message);
         }
     }
 }

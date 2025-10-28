@@ -8,7 +8,7 @@ namespace Template.Portal.Pages.Helper
     {
         [Inject] public required IPortalService PortalService { get; set; }
         [Inject] public required HelperService HelperService { get; set; }
-        [Inject] public required AuthService? AuthService { get; set; }
+        [Inject] public required AuthService AuthService { get; set; }
         [Inject] public required NavigationManager NavigationManager { get; set; }
     }
 }

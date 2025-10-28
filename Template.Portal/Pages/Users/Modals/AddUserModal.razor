@@ -5,7 +5,7 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-6">
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="Email">Email</label>
@@ -22,9 +22,25 @@
                     </div>                
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="ConfirmPassword">ConfirmPassword</label>
+                            <label for="ConfirmPassword">Confirm Password</label>
                             <InputText id="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" @bind-Value="@Model.ConfirmPassword"></InputText>
                             <ValidationMessage For="@(()=> Model.ConfirmPassword)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="FirstName">FirstName</label>
+                            <InputText id="FirstName" class="form-control" placeholder="FirstName" @bind-Value="@Model.FirstName"></InputText>
+                            <ValidationMessage For="@(()=> Model.FirstName)" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="LastName">Surname</label>
+                            <InputText id="LastName" class="form-control" placeholder="LastName" @bind-Value="@Model.LastName"></InputText>
+                            <ValidationMessage For="@(()=> Model.LastName)" />
                         </div>
                     </div>
                 </div>

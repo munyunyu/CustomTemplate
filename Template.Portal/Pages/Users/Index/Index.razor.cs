@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 using Template.Library.Tables.Views;
+using Template.Library.ViewsModels.System;
 using Template.Portal.Pages.Helper;
 
 
@@ -8,7 +9,7 @@ namespace Template.Portal.Pages.Users.Index
 {
     public partial class Index : BasePage
     {
-        public IEnumerable<ViewApplicationUser> Users { get; set; } = new List<ViewApplicationUser>();
+        public IEnumerable<SystemUserViewModel> Users { get; set; } = new List<SystemUserViewModel>();
 
 
         protected override async Task OnInitializedAsync()
@@ -17,7 +18,7 @@ namespace Template.Portal.Pages.Users.Index
             {
                 HelperService.SetIsLoadingState(true);
 
-                //Users = await PortalService.Account.GetAllUsersAsnyc();
+                Users = await PortalService.Admin.GetAllUsersAsnyc();
 
                 HelperService.SetIsLoadingState(false);
             }
@@ -29,12 +30,12 @@ namespace Template.Portal.Pages.Users.Index
 
         public void RowClicked(object args)
         {
-            var record = (ViewApplicationUser)args;
+            var record = (SystemUserViewModel)args;
 
             NavigationManager.NavigateTo($"/user/details/{record.Id}", true);
         }
 
-        public void RowRender(RowRenderEventArgs<ViewApplicationUser> args)
+        public void RowRender(RowRenderEventArgs<SystemUserViewModel> args)
         {
             try
             {

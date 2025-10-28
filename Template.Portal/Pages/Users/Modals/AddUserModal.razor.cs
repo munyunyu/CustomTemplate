@@ -1,4 +1,5 @@
-﻿using Template.Library.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using Template.Library.Models;
 using Template.Portal.Pages.Helper;
 
 namespace Template.Portal.Pages.Users.Modals
@@ -13,9 +14,13 @@ namespace Template.Portal.Pages.Users.Modals
             {
                 HelperService.SetIsLoadingState(true);
 
-                string userId = await PortalService.Account.RegisterAccountAsync(Model);
+                var message = await PortalService.Account.RegisterAccountAsync(Model);
 
-                HelperService.SetSuccessMessage(string.Empty);
+                HelperService.SetSuccessMessage(message ?? "User registered successfully.");
+
+                var token = await AuthService.GetCurrentUserToken();
+
+                string userId = await PortalService.Account.GetUserIdByEmailAsync(email: Model.Email, token: token);
 
                 NavigationManager.NavigateTo($"/user/details/{userId}", true);
             }
