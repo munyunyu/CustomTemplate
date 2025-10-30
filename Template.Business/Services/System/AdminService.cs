@@ -23,11 +23,11 @@ namespace Template.Business.Services.System
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<SystemUserViewModel>?> GetSystemUsersAsync()
+        public async Task<IEnumerable<ViewUserViewModel>?> GetSystemUsersAsync()
         {
             var records = await databaseService.GetAllAsync<ViewApplicationUser>();
 
-            return mapper.Map<IEnumerable<SystemUserViewModel>>(records);
+            return mapper.Map<IEnumerable<ViewUserViewModel>>(records);
         }
 
         public async Task<IEnumerable<SystemUserRolesViewModel>?> GetUsersRolesAsync()

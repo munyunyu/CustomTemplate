@@ -5,6 +5,7 @@ using Template.Database.Context;
 using Template.Library.Constants;
 using Template.Library.Enums;
 using Template.Library.Models;
+using Template.Library.Tables.User;
 using Template.Library.ViewsModels.Profile;
 using Template.Service.Extensions;
 

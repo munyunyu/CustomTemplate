@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Database.Context;
+using Template.Library.Tables.User;
 
 namespace Template.Business.Interfaces.System
 {

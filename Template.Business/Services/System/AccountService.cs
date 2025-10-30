@@ -16,6 +16,7 @@ using Template.Library.Extensions;
 using Template.Library.Models;
 using Template.Library.Tables.Audit;
 using Template.Library.Tables.User;
+using Template.Library.ViewsModels.System;
 
 namespace Template.Business.Services.System
 {
@@ -23,10 +24,12 @@ namespace Template.Business.Services.System
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IDatabaseService database;
-        public AccountService(UserManager<ApplicationUser> userManager, IDatabaseService database)
+        private readonly IMapper mapper;
+        public AccountService(UserManager<ApplicationUser> userManager, IDatabaseService database, IMapper mapper)
         {
             this.userManager = userManager;
             this.database = database;
+            this.mapper = mapper;
         }
 
         public async Task<string> AddClaimToUser(ApplicationUser user, string claimType)
@@ -292,6 +295,24 @@ namespace Template.Business.Services.System
             }
 
             return false;
+        }
+
+        public async Task<ApplicationUserViewModel?> GetUserDetailsAsync(Guid userId)
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null) throw new Exception($"User Id: {userId} was not found");
+
+            var roles = (await userManager.GetRolesAsync(user)).ToList();
+
+            var claims = (await userManager.GetClaimsAsync(user)).Select(x => x.Type).ToList();
+
+            var _mapped = mapper.Map<ApplicationUserViewModel>(user);
+
+            _mapped.Roles = roles;
+            _mapped.Claims = claims;   
+
+            return _mapped;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Template.Database.Context;
+using Template.Library.Tables.User;
 
 namespace Template.Service.Extensions
 {

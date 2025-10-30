@@ -14,11 +14,11 @@ namespace Template.Portal.Services.System
         {
             this.httpService = httpService;
         }
-        public async Task<IEnumerable<SystemUserViewModel>> GetAllUsersAsnyc()
+        public async Task<IEnumerable<ViewUserViewModel>> GetAllUsersAsnyc()
         {
-            var response = await httpService.HttpGetAsync<Response<IEnumerable<SystemUserViewModel>>>("/api/Admin/GetSystemUsers");
+            var response = await httpService.HttpGetAsync<Response<IEnumerable<ViewUserViewModel>>>("/api/Admin/GetSystemUsers");
 
-            if (response.Code == Status.Success) return response?.Payload ?? Enumerable.Empty<SystemUserViewModel>();
+            if (response.Code == Status.Success) return response?.Payload ?? Enumerable.Empty<ViewUserViewModel>();
 
             throw new Exception(response?.Message);
         }

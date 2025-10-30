@@ -2,6 +2,7 @@
 using Template.Database.Context;
 using Template.Library.Constants;
 using Template.Library.Tables.Notification;
+using Template.Library.Tables.User;
 
 namespace Template.Database.Metadata
 {

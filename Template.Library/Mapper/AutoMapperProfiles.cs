@@ -31,7 +31,11 @@ namespace Template.Library.Mapper
 
             
 
-            CreateMap<ViewApplicationUser, SystemUserViewModel>();
+            CreateMap<ViewApplicationUser, ViewUserViewModel>();
+
+            CreateMap<ApplicationUser, ApplicationUserViewModel>()
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => new List<string>()))
+                .ForMember(dest => dest.Claims, opt => opt.MapFrom(src => new List<string>()));
 
 
             //CreateMap<TblMerchant, MerchantViewModel>();

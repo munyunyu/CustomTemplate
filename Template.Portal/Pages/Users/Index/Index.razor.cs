@@ -9,7 +9,7 @@ namespace Template.Portal.Pages.Users.Index
 {
     public partial class Index : BasePage
     {
-        public IEnumerable<SystemUserViewModel> Users { get; set; } = new List<SystemUserViewModel>();
+        public IEnumerable<ViewUserViewModel> Users { get; set; } = new List<ViewUserViewModel>();
 
 
         protected override async Task OnInitializedAsync()
@@ -30,12 +30,12 @@ namespace Template.Portal.Pages.Users.Index
 
         public void RowClicked(object args)
         {
-            var record = (SystemUserViewModel)args;
+            var record = (ViewUserViewModel)args;
 
             NavigationManager.NavigateTo($"/user/details/{record.Id}", true);
         }
 
-        public void RowRender(RowRenderEventArgs<SystemUserViewModel> args)
+        public void RowRender(RowRenderEventArgs<ViewUserViewModel> args)
         {
             try
             {

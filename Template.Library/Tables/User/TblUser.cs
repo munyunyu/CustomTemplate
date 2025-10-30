@@ -5,9 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Template.Library.Tables;
 
-namespace Template.Database.Context
+namespace Template.Library.Tables.User
 {
     public class ApplicationUser : IdentityUser
     {
@@ -34,7 +33,7 @@ namespace Template.Database.Context
 
     [Table("TblPasswordHistory", Schema = "user")]
     public class TblPasswordHistory : BaseEntity
-    {        
+    {
         public string? PasswordHash { get; set; }
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }

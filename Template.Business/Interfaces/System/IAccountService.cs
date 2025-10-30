@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Template.Database.Context;
 using Template.Library.Models;
+using Template.Library.Tables.User;
+using Template.Library.ViewsModels.System;
 
 namespace Template.Business.Interfaces.System
 {
@@ -33,5 +35,6 @@ namespace Template.Business.Interfaces.System
         Task HandleFailedLoginAsync(string userId);
         Task ResetFailedLoginAttemptsAsync(string userId);
         Task<bool> IsAccountLockedAsync(string userId);
+        Task<ApplicationUserViewModel?> GetUserDetailsAsync(Guid userId);
     }
 }

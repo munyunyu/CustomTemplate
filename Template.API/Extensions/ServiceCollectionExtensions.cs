@@ -16,6 +16,7 @@ using Template.Business.Services.System;
 using Template.Database.Context;
 using Template.Library.Constants;
 using Template.Library.Models.POCO;
+using Template.Library.Tables.User;
 
 namespace Template.Service.Extensions
 {

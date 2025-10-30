@@ -11,7 +11,7 @@ namespace Template.Business.Interfaces.System
 {
     public interface IAdminService
     {
-        Task<IEnumerable<SystemUserViewModel>?> GetSystemUsersAsync();
+        Task<IEnumerable<ViewUserViewModel>?> GetSystemUsersAsync();
         Task<IEnumerable<SystemUserRolesViewModel>?> GetUsersRolesAsync();
     }
 }

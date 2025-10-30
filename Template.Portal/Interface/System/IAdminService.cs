@@ -4,6 +4,6 @@ namespace Template.Portal.Interface.System
 {
     public interface IAdminService
     {
-        Task<IEnumerable<SystemUserViewModel>> GetAllUsersAsnyc();
+        Task<IEnumerable<ViewUserViewModel>> GetAllUsersAsnyc();
     }
 }

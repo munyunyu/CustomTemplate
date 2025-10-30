@@ -9,6 +9,8 @@ using Template.Library.Enums;
 using Template.Library.Exceptions;
 using Template.Library.Extensions;
 using Template.Library.Models;
+using Template.Library.Tables.User;
+using Template.Library.ViewsModels.System;
 using Template.Service.Extensions;
 
 namespace Template.Service.Controllers.System
@@ -188,6 +190,23 @@ namespace Template.Service.Controllers.System
             catch (Exception ex)
             {
                 return new Response<ResponseUserRolesAndClaims> { Code = Status.Failed, Message = ex.Message };
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("GetUserDetails/{userId}")]
+        public async Task<Response<ApplicationUserViewModel>> GetUserDetails(Guid userId)
+        {
+            try
+            {
+                var users = await portalService.Account.GetUserDetailsAsync(userId: userId);
+
+                return new Response<ApplicationUserViewModel> { Code = Status.Success, Payload = users };
+            }
+            catch (Exception ex)
+            {
+                return new Response<ApplicationUserViewModel> { Code = Status.Failed, Message = ex.Message };
             }
         }
 

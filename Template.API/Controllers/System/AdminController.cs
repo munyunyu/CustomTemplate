@@ -23,17 +23,17 @@ namespace Template.Service.Controllers.System
 
         [HttpGet]
         [Route("GetSystemUsers")]
-        public async Task<Response<IEnumerable<SystemUserViewModel>>> GetSystemUsers()
+        public async Task<Response<IEnumerable<ViewUserViewModel>>> GetSystemUsers()
         {
             try
             {
                 var users = await portalService.Admin.GetSystemUsersAsync();
 
-                return new Response<IEnumerable<SystemUserViewModel>> { Code = Status.Success, Payload = users };
+                return new Response<IEnumerable<ViewUserViewModel>> { Code = Status.Success, Payload = users };
             }
             catch (Exception ex)
             {
-                return new Response<IEnumerable<SystemUserViewModel>> { Code = Status.Failed, Message = ex.Message };
+                return new Response<IEnumerable<ViewUserViewModel>> { Code = Status.Failed, Message = ex.Message };
             }
         }
     }
