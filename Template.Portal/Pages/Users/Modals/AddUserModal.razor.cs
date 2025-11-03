@@ -18,7 +18,7 @@ namespace Template.Portal.Pages.Users.Modals
 
                 HelperService.SetSuccessMessage(message ?? "User registered successfully.");
 
-                var token = await AuthService.GetCurrentUserToken();
+                var token = await AuthService.GetCurrentUserTokenAsync();
 
                 string userId = await PortalService.Account.GetUserIdByEmailAsync(email: Model.Email, token: token);
 

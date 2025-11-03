@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Template.Library.Extensions;
+using Template.Library.ViewsModels.System;
 using Template.Portal.Extensions;
 using Template.Portal.Pages.Helper;
 
@@ -10,6 +11,8 @@ namespace Template.Portal.Pages.Users.Details
         [Parameter]
         public string? UserId { get; set; }
 
+        public ApplicationUserViewModel? User { get; set; } = new ApplicationUserViewModel();
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -17,15 +20,11 @@ namespace Template.Portal.Pages.Users.Details
             {
                 HelperService.SetIsLoadingState(true);
 
-                //User = await PortalService.Account.GetUserDetailsByUserIdAsnyc(userId: UserId);
+                var token = await AuthService.GetCurrentUserTokenAsync();
 
-                //if (User == null) throw new Exception($"User with Id: {UserId} found");
+                User = await PortalService.Account.GetUserDetailsByUserIdAsnyc(userId: UserId, token: token);
 
-                //UserModel = (await PortalService.Account.GetUserRolesByUserIdAsync(userId: UserId)).ToModelUserRoles(User);
-
-                //Roles = await PortalService.Account.GetSystemRolesAsync();
-
-                //foreach (var role in Roles) role.Checked = UserModel.UserRoles.Exists(r => r.Id == role.Id);
+                if (User == null) throw new Exception($"User with Id: {UserId} found");
 
                 HelperService.SetIsLoadingState(false);
             }

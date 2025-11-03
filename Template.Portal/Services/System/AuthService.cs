@@ -34,7 +34,7 @@ namespace Template.Portal.Services.System
             }
         }
 
-        public async Task<string> GetCurrentUserToken()
+        public async Task<string> GetCurrentUserTokenAsync()
         {
             try
             {

@@ -1,6 +1,8 @@
-﻿using Template.Library.Enums;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Template.Library.Enums;
 using Template.Library.Interface;
 using Template.Library.Models;
+using Template.Library.ViewsModels.System;
 using Template.Portal.Interface.System;
 
 namespace Template.Portal.Services.System
@@ -12,6 +14,15 @@ namespace Template.Portal.Services.System
         public AccountService(IHttpService httpService)
         {
             this.httpService = httpService;
+        }
+
+        public async Task<ApplicationUserViewModel?> GetUserDetailsByUserIdAsnyc(string? userId, string token)
+        {
+            var response = await httpService.HttpGetAsync<Response<ApplicationUserViewModel>>($"/api/Account/GetUserDetails/{userId}", accessToken: token);
+
+            if (response.Code == Status.Success) return response?.Payload;
+
+            throw new Exception(response?.Message);
         }
 
         public async Task<string> GetUserIdByEmailAsync(string email, string token)
