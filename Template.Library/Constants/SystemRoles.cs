@@ -10,6 +10,6 @@ namespace Template.Library.Constants
     {
         public const string Admin = "Admin";
 
-        public static string Profile = "Profile";
+        public const string Profile = "Profile";
     }
 }

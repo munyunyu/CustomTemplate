@@ -51,5 +51,23 @@ namespace Template.Portal.Services.System
 
             throw new Exception(response?.Message);
         }
+
+        public async Task<string> UpdateUserClaimAsync(RequestUpdateUserClaimModel model, string token)
+        {
+            var response = await httpService.HttpPostAsync<Response<string>>("/api/Account/UpdateUserClaim", model, accessToken: token);
+
+            if (response.Code == Status.Success) return response?.Payload ?? string.Empty;
+
+            throw new Exception(response?.Message);
+        }
+
+        public async Task<string> UpdateUserRoleAsync(RequestUpdateUserRoleModel model, string token)
+        {
+            var response = await httpService.HttpPostAsync<Response<string>>("/api/Account/UpdateUserRole", model, accessToken: token);
+
+            if (response.Code == Status.Success) return response?.Payload ?? string.Empty;
+
+            throw new Exception(response?.Message);
+        }
     }
 }

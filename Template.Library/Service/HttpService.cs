@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Template.Library.Enums;
 using Template.Library.Interface;
+using Template.Library.Models;
 using Template.Library.Models.POCO;
 
 namespace Template.Library.Service
@@ -20,7 +22,7 @@ namespace Template.Library.Service
             _baseUrl = options.Value.ApiBaseUrl;
         }
 
-        public T HttpGet<T>(string url, string accessToken = "")
+        public T HttpGet<T>(string url, string accessToken = "") where T : IResponse, new()
         {
             try
             {
@@ -37,14 +39,17 @@ namespace Template.Library.Service
                 throw new Exception("request response was null");
 
             }
-            catch (Exception)
+            catch (HttpRequestException ex)
             {
-
-                throw;
+                return new T { Code = Status.Failed, Message = $"Network error: {ex.Message}" };
+            }
+            catch (Exception ex)
+            {
+                return new T { Code = Status.Failed, Message = $"Unexpected error: {ex.Message}" };
             }
         }
 
-        public async Task<T> HttpGetAsync<T>(string url, string accessToken = "")
+        public async Task<T> HttpGetAsync<T>(string url, string accessToken = "") where T : IResponse, new()
         {
             try
             {
@@ -52,23 +57,37 @@ namespace Template.Library.Service
 
                 _restClient.AddDefaultHeader("Authorization", $"Bearer {accessToken}");
 
-                var _request = new RestRequest(resource: url, method: Method.Post);
+                var _request = new RestRequest(resource: url, method: Method.Get);
 
-                var response = await _restClient.GetAsync<T>(_request);
+                var response = await _restClient.ExecuteAsync(_request);
 
-                if (response != null) return response;
+                if (response.IsSuccessful)
+                {
+                    if (string.IsNullOrEmpty(response.Content)) return new T { Code = Status.SuccessWithWarning, Message = response.Content };
 
-                throw new Exception("request response was null");
+                    var model1 = JsonSerializer.Deserialize<T>(response.Content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (model1 == null) return new T { Code = Status.SuccessWithWarning, Message = response.Content };
+
+                    return model1;
+                }
+                else
+                {
+                    return new T { Code = Status.Failed, Message = response.StatusDescription };
+                }
 
             }
-            catch (Exception)
+            catch (HttpRequestException ex)
             {
-
-                throw;
+                return new T { Code = Status.Failed, Message = $"Network error: {ex.Message}" };
+            }
+            catch (Exception ex)
+            {
+                return new T { Code = Status.Failed, Message = $"Unexpected error: {ex.Message}" };
             }
         }
 
-        public T HttpPost<T>(string url, object model, string accessToken = "")
+        public T HttpPost<T>(string url, object model, string accessToken = "") where T : IResponse, new()
         {
 
             try
@@ -87,31 +106,32 @@ namespace Template.Library.Service
 
                 if (response.IsSuccessful)
                 {
-                    if (response.Content != null)
-                    {
-                        var model1 = JsonSerializer.Deserialize<T>(response.Content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (string.IsNullOrEmpty(response.Content)) return new T { Code = Status.SuccessWithWarning, Message = response.Content };
 
-                        if (model1 == null) throw new Exception(response.Content);
+                    var model1 = JsonSerializer.Deserialize<T>(response.Content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                        return model1;
-                    }
+                    if (model1 == null) return new T { Code = Status.SuccessWithWarning, Message = response.Content };
 
-                    throw new Exception(response.Content);
+                    return model1;
+                    
                 }
                 else
                 {
-                    throw new Exception(response.Content);
+                    return new T { Code = Status.Failed, Message = response.StatusDescription };
                 }
 
             }
-            catch (Exception)
+            catch (HttpRequestException ex)
             {
-
-                throw;
+                return new T { Code = Status.Failed, Message = $"Network error: {ex.Message}" };
+            }
+            catch (Exception ex)
+            {
+                return new T { Code = Status.Failed, Message = $"Unexpected error: {ex.Message}" };
             }
         }
 
-        public async Task<T> HttpPostAsync<T>(string url, object model, string accessToken = "")
+        public async Task<T> HttpPostAsync<T>(string url, object model, string accessToken = "") where T : IResponse, new()
         {
 
             try
@@ -130,28 +150,27 @@ namespace Template.Library.Service
 
                 if (response.IsSuccessful)
                 {
-                    if (response.Content != null)
-                    {
+                    if (string.IsNullOrEmpty(response.Content)) return new T { Code = Status.SuccessWithWarning, Message = response.Content };
 
-                        var model1 = JsonSerializer.Deserialize<T>(response.Content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var model1 = JsonSerializer.Deserialize<T>(response.Content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                        if (model1 == null) throw new Exception(response.Content);
+                    if (model1 == null) return new T { Code = Status.SuccessWithWarning, Message = response.Content };
 
-                        return model1;
-                    }
-
-                    throw new Exception(response.Content);
+                    return model1;
                 }
                 else
                 {
-                    throw new Exception(response.Content);
+                    return new T { Code = Status.Failed, Message = response.StatusDescription };
                 }
 
             }
-            catch (Exception)
+            catch (HttpRequestException ex)
             {
-
-                throw;
+                return new T { Code = Status.Failed, Message = $"Network error: {ex.Message}" };
+            }
+            catch (Exception ex)
+            {
+                return new T { Code = Status.Failed, Message = $"Unexpected error: {ex.Message}" };
             }
         }
     }

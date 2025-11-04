@@ -1,0 +1,21 @@
+ <div class="form-group col-md-6">
+     <label for="Disbursal">Disbursal</label>
+     <InputSelect id="Disbursal" class="form-control" placeholder="Disbursal" @bind-Value="@ModelDisbursalLoan.LoanDisbursalMethod">
+         @foreach (var item in Enum.GetValues(typeof(LoanDisbursalMethod)))
+         {
+             <option value="@item">@item</option>
+         }
+     </InputSelect>
+     <ValidationMessage For="@(()=> ModelDisbursalLoan.LoanDisbursalMethod)" />
+ </div>
+
+ private string UserIdString
+        {
+            get => Model.UserId.ToString();
+            set
+            {
+                if (Guid.TryParse(value, out var guid)) Model.UserId = guid;
+                else Model.UserId = Guid.Empty;
+            }
+        }
+

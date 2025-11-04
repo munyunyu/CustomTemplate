@@ -62,7 +62,7 @@ namespace Template.Library.Models
     public class RequestUpdateUserClaimModel
     {
         [Required]
-        public required string ClaimName { get; set; }
+        public string ClaimName { get; set; } = string.Empty;
 
         [Required]
         public Guid UserId { get; set; }
@@ -74,7 +74,7 @@ namespace Template.Library.Models
     public class RequestUpdateUserRoleModel
     {
         [Required]
-        public required string Role { get; set; }
+        public string Role { get; set; } = string.Empty;
 
         [Required]
         public Guid UserId { get; set; }

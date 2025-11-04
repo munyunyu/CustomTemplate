@@ -7,7 +7,12 @@ using Template.Library.Enums;
 
 namespace Template.Library.Models
 {
-    public class Response<T>
+    public interface IResponse
+    {
+        Status Code { get; set; }
+        string? Message { get; set; }
+    }
+    public class Response<T> : IResponse
     {
         public Status Code { get; set; }
         public string? Message { get; set; }

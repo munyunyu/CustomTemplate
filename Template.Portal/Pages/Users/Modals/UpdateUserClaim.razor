@@ -1,0 +1,39 @@
+﻿@inherits BasePage
+
+<EditForm Model="@Model" OnValidSubmit="HandleValidUserRegistrationSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="ClaimName">Claim</label>
+                            <InputSelect id="ClaimName" class="form-control" placeholder="ClaimName" @bind-Value="@Model.ClaimName">
+                                @foreach (var item in typeof(SystemClaims).GetConstantValues())
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <InputCheckbox id="IsAdding" class="form-check-input" @bind-Value="@Model.IsAdding" />
+                                <label class="form-check-label" for="IsAdding">
+                                    Add Claim (uncheck to Remove Role)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+
+</EditForm>

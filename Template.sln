@@ -17,6 +17,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.Console", "Templat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.WorkerService", "Template.WorkerService\Template.WorkerService.csproj", "{C4C2E2AA-2611-48BB-AAA6-8929DCC81CF2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9FAA7620-9706-47DF-9EF8-528F25284FFB}"
+	ProjectSection(SolutionItems) = preProject
+		DumyCodes.txt = DumyCodes.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

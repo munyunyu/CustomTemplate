@@ -38,9 +38,10 @@ namespace Template.Business.Services.System
 
             if (exits == false) throw new GeneralException($"Claim: {claimType} was not found");
             
-            var claims = await userManager.GetClaimsAsync(user); // Check if the user has the specified claim
+            var claims = await userManager.GetClaimsAsync(user);
 
-            if(claims.Any(c => c.Type == claimType)) throw new GeneralException($"Claim: {claimType} already exists");
+            // Check if the user has the specified claim
+            if (claims.Any(c => c.Type == claimType)) throw new GeneralException($"Claim: {claimType} already exists");
 
             var claim = new Claim(claimType, claimType);
 
@@ -55,15 +56,16 @@ namespace Template.Business.Services.System
         {
             var exits = new SystemClaims().GetConstantValues().Any(x => x == claimType);
 
-            if (exits == false) throw new GeneralException($"Claim: {claimType} was not found");
+            if (exits == false) throw new GeneralException($"Claim: {claimType}of this type is not registered");
 
             var claims = await userManager.GetClaimsAsync(user);
 
+            // Check if the user has the specified claim
             if (claims.Any(c => c.Type == claimType) == false) throw new GeneralException($"Claim: {claimType} was not found for this user");
 
-            var claim = new Claim(SystemClaims.AdminCreate, SystemClaims.AdminCreate);
+            var claim = new List<Claim> { new Claim(claimType ?? "", claimType ?? "") };
 
-            var result = await userManager.RemoveClaimsAsync(user, claims.ToArray());
+            var result = await userManager.RemoveClaimsAsync(user, claim);
 
             if (result.Succeeded) return "Success";
 

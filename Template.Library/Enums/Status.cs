@@ -9,6 +9,7 @@ namespace Template.Library.Enums
     public enum Status
     {
         Success = 0,        // Successfully finished
+        SuccessWithWarning = -1,        // Successfully finished
         Draft = 1,          // Initial creation, not finalized
         Active = 2,         // Currently active and working
         InProgress = 3,     // Being worked on

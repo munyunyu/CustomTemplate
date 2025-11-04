@@ -9,5 +9,7 @@ namespace Template.Portal.Interface.System
         Task<string> GetUserIdByEmailAsync(string email, string token);
         Task<ResponseLoginAccount?> LoginUserUserAsync(RequestLoginAccount model);
         Task<string?> RegisterAccountAsync(RequestRegisterAccount model);
+        Task<string> UpdateUserClaimAsync(RequestUpdateUserClaimModel model, string token);
+        Task<string> UpdateUserRoleAsync(RequestUpdateUserRoleModel model, string token);
     }
 }
