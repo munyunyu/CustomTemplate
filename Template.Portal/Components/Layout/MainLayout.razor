@@ -1,4 +1,59 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inherits LayoutComponentBase
+
+@* <PageTitle>Template Portal</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="wrapper">
+
+            <PartialNavigationBar></PartialNavigationBar>
+
+            <PartialSiderbar></PartialSiderbar>
+
+            <div class="content-wrapper">
+                <div class="content">
+                    <div class="container-fluid">
+                        <Progressbar />
+                        <Message />
+                        <div class="pt-2">
+                            @Body
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <PartialFooter></PartialFooter>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <Redirect />
+    </NotAuthorized>
+</AuthorizeView> *@
+
+<div class="wrapper">
+
+    <PartialNavigationBar></PartialNavigationBar>
+
+    <PartialSiderbar></PartialSiderbar>
+
+    <div class="content-wrapper">
+        <div class="content">
+            <div class="container-fluid">
+                <Progressbar />
+                <Message />
+                <div class="pt-2">
+                    @Body
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <PartialFooter></PartialFooter>
+</div>
+
+
+@* @inherits LayoutComponentBase
 
 <div class="page">
     <div class="sidebar">
@@ -20,4 +75,4 @@
     An unhandled error has occurred.
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
-</div>
+</div> *@
