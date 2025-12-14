@@ -13,11 +13,10 @@ namespace Template.Portal.Components.Pages.Account.Login
 {
     public partial class Login : BasePage
     {
-        [Inject] public required AuthenticationStateProvider _authProvider { get; set; }
+        //[Inject] public required AuthenticationStateProvider _authProvider { get; set; }
         [Inject] public required IHttpContextAccessor _httpContextAccessor { get; set; }
         protected override async Task OnInitializedAsync()
         {
-           
 
             var user = await PortalService.Account.LoginUserUserAsync(model: new Library.Models.RequestLoginAccount
             {

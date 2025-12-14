@@ -1,4 +1,5 @@
-﻿@* <AuthorizeView>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+<AuthorizeView>
     <Authorized>
         <a href="/user/profile">@context?.User?.Identity?.Name!</a>
         <form method="post" action="/Account/LogOut">
@@ -8,4 +9,4 @@
     <NotAuthorized>
         <a href="/Account/Login">Log in</a>
     </NotAuthorized>
-</AuthorizeView> *@
+</AuthorizeView>
