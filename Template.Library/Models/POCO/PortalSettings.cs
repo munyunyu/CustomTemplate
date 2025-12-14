@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Template.Library.Models.POCO
 {
-    public class ApplicationSettings
+    public class PortalSettings
     {
         /// <summary>
         /// Application base url

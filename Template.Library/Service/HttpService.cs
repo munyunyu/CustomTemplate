@@ -17,7 +17,7 @@ namespace Template.Library.Service
     {
         private readonly string _baseUrl;
 
-        public HttpService(IOptions<ApplicationSettings> options)
+        public HttpService(IOptions<PortalSettings> options)
         {
             _baseUrl = options.Value.ApiBaseUrl;
         }

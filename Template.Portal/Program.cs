@@ -1,11 +1,11 @@
 using Template.Portal.Components;
+using Template.Portal.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
-
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddCustomScopedServices(builder);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,7 +21,6 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 app.Run();
