@@ -39,13 +39,13 @@ namespace Template.Library.Models
 
     public class RequestLoginAccount
     {
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        public string? Email { get; set; }
+        //[Required]
+        //[DataType(DataType.EmailAddress)]
+        public string Email { get; set; } = string.Empty;
 
-        [Required]
-        [DataType(DataType.Password)]
-        public string? Password { get; set; }
+        //[Required]
+        //[DataType(DataType.Password)]
+        public string  Password { get; set; } = string.Empty;
     }
 
     public class ResponseLoginAccount

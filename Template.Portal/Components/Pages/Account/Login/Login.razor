@@ -1,6 +1,9 @@
 ﻿@page "/account/login"
 @layout LoginLayout
 @inherits BasePage
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+@inject HttpClient Http
 
 <!-- Google Font: Source Sans Pro -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -22,18 +25,21 @@
             <div class="card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form id="account" method="post">
-                    <div asp-validation-summary="All" class="text-danger"></div>                 
-
-                    <div class="form-group">
-                        <input asp-for="Input.Email" class="form-control" placeholder="Email address" />
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <EditForm Model="@Model"
+                          OnValidSubmit="HandleValidUserLoginSubmit"
+                          OnInvalidSubmit="HandleInvalidSubmit"
+                          FormName="HandleValidUserLoginSubmit">
+                    <DataAnnotationsValidator />
+                    <div class="form-group col-md-12">
+                        @* <label for="Email">Email</label> *@
+                        <InputText id="Email" class="form-control" placeholder="Email" @bind-Value="@Model.Email"></InputText>
+                        <ValidationMessage For="@(() => Model.Email)" />
                     </div>
-                    <div class="form-group">
-                        <input asp-for="Input.Password" class="form-control" placeholder="Password" />
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    <div class="form-group col-md-12">
+                        @* <label for="Password">Password</label> *@
+                        <InputText id="Password" class="form-control" placeholder="Password" @bind-Value="@Model.Password"></InputText>
+                        <ValidationMessage For="@(() => Model.Password)" />
                     </div>
-
 
                     <div class="row">
                         <div class="col-8">
@@ -50,8 +56,10 @@
                         </div>
                         <!-- /.col -->
                     </div>
-                </form>
 
+                </EditForm>
+
+               
 
                 <p class="mb-1">
                     <a href="/account/forgotPassword">I forgot my password</a>

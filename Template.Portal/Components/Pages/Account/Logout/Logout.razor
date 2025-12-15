@@ -1,4 +1,11 @@
-﻿@page "/account/logout"
-@using Microsoft.AspNetCore.Mvc
-@inherits BasePage
-@attribute [IgnoreAntiforgeryToken]
+﻿@* @page "/account/logout"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+@code {
+    private async Task UserLogout()
+    {
+        await Http.PostAsync("/logout", null);
+        Navigation.NavigateTo("/", forceLoad: true);
+    }
+} *@
