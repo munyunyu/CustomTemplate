@@ -1,7 +1,16 @@
 ﻿@page "/users/index"
 
-<h3>Index</h3>
-
-@code {
-
-}
+<PartaialPageTitle Header="System Users" Title="System Users">
+    <Content>
+        <PartialModal ButtonCSS="float-right btn btn-info btn-sm mr-1"
+                      Button="Register New User"
+                      Heading="Register New User"
+                      Id="RegisterNewUser"
+                      Size="modal-xl"
+                      ShowFooter="false">
+            <Content>
+                <AddUserModal></AddUserModal>
+            </Content>
+        </PartialModal>
+    </Content>
+</PartaialPageTitle>

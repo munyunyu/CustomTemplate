@@ -49,10 +49,7 @@ namespace Template.Portal.Services.System
 
         public void SetErrorMessage(Exception input)
         {
-            IsLoading = false;
-            SuccessMessage = string.Empty;
-            ErrorMessage = input.GetAllMessages();
-            NotifyStateChanged();
+            SetErrorMessage(input.GetAllMessages());
         }
 
         public void SetSuccessMessage(string input)

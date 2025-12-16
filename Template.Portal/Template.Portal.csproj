@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Template.Library\Template.Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Pages\Users\Modals\" />
+  </ItemGroup>
+
 </Project>
