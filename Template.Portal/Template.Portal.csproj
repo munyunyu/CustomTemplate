@@ -15,4 +15,9 @@
     <Folder Include="Components\Pages\Users\Modals\" />
   </ItemGroup>
 
+  <ItemGroup>
+	  <PackageReference Include="BlazorAnimate" Version="3.0.0" />
+    <PackageReference Include="Radzen.Blazor" Version="8.4.0" />
+  </ItemGroup>
+
 </Project>

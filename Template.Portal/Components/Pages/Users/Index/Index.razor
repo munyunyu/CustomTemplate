@@ -1,4 +1,5 @@
 ﻿@page "/users/index"
+@inherits BasePage
 
 <PartaialPageTitle Header="System Users" Title="System Users">
     <Content>
@@ -14,3 +15,40 @@
         </PartialModal>
     </Content>
 </PartaialPageTitle>
+
+@* <RadzenGrid 
+    RowRender="RowRender"  
+    AllowPaging="true" 
+    AllowFiltering="true" 
+    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" 
+    PageSize="10" 
+    AllowSorting="true" 
+    Data="@Users" 
+    TItem="ViewUserViewModel">
+        <Columns>
+            <RadzenGridColumn TItem="ViewUserViewModel" Property="CreatedDate" Title="CreatedDate"></RadzenGridColumn>
+            <RadzenGridColumn TItem="ViewUserViewModel" Property="Email" Title="Email"></RadzenGridColumn>
+            <RadzenGridColumn TItem="ViewUserViewModel" Property="FirstName" Title="FirstName"></RadzenGridColumn>
+            <RadzenGridColumn TItem="ViewUserViewModel" Property="LastName" Title="LastName"></RadzenGridColumn>
+            <RadzenGridColumn TItem="ViewUserViewModel" Property="EmailConfirmed" Title="EmailConfirmed"></RadzenGridColumn>
+            <RadzenGridColumn TItem="ViewUserViewModel" Property="AccessFailedCount" Title="AccessFailedCount"></RadzenGridColumn>
+        </Columns>
+    </RadzenGrid> *@
+
+<RadzenDataGrid Data="@Users"
+    AllowVirtualization="true" 
+    Style="height:400px"                
+    AllowFiltering="true" 
+    FilterPopupRenderMode="PopupRenderMode.OnDemand" 
+    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" 
+    LogicalFilterOperator="LogicalFilterOperator.Or"                
+    AllowSorting="true">
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.CreatedDate)" Title="CreatedDate" />     
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.Email)" Title="Email" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.FirstName)" Title="FirstName" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LastName)" Title="LastName" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.EmailConfirmed)" Title="EmailConfirmed" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.AccessFailedCount)" Title="AccessFailedCount" />
+    </Columns>
+</RadzenDataGrid>

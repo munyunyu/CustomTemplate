@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-//using Template.Portal.Services.System;
+using Template.Portal.Services.System;
 
-namespace Template.Portal.Shared.Helpers
+namespace Template.Portal.Components.Shared.Helpers
 {
     /// <summary>
     /// Global message status
@@ -10,36 +10,36 @@ namespace Template.Portal.Shared.Helpers
     {
         #region services injects
 
-        //[Inject]
-        //public HelperService? HelperService { get; set; }
+        [Inject]
+        public HelperService? HelperService { get; set; }
 
         #endregion
 
         protected void CloseAlert(string input)
         {
-            //switch (input)
-            //{
-            //    case "ErrorMessage":
-            //        if (HelperService != null) HelperService.ErrorMessage = string.Empty;
-            //        break;
-            //    case "SuccessMessage":
-            //        if (HelperService != null) HelperService.SuccessMessage = string.Empty;
-            //        break;
-            //    default:
-            //        break;
-            //}
+            switch (input)
+            {
+                case "ErrorMessage":
+                    if (HelperService != null) HelperService.ErrorMessage = string.Empty;
+                    break;
+                case "SuccessMessage":
+                    if (HelperService != null) HelperService.SuccessMessage = string.Empty;
+                    break;
+                default:
+                    break;
+            }
 
-            //StateHasChanged();
+            StateHasChanged();
         }
 
-        //protected override void OnInitialized()
-        //{
-        //    //if (HelperService != null) HelperService.OnChange += StateHasChanged;
-        //}
+        protected override void OnInitialized()
+        {
+            if (HelperService != null) HelperService.OnChange += StateHasChanged;
+        }
 
-        //public void Dispose()
-        //{
-        //    if (HelperService != null) HelperService.OnChange -= StateHasChanged;
-        //}
+        public void Dispose()
+        {
+            if (HelperService != null) HelperService.OnChange -= StateHasChanged;
+        }
     }
 }

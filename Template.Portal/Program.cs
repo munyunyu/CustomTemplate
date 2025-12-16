@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Radzen;
 using Template.Portal.Components;
 using Template.Portal.Extensions;
 
@@ -25,7 +26,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddAuthorization();
-
+// Register Radzen.Blazor services
+builder.Services.AddRadzenComponents();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

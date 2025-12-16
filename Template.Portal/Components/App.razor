@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
 
+    @*Radzen packages*@
+    <RadzenTheme Theme="material" />
 
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
@@ -38,6 +40,8 @@
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="plugins/jquery/jquery.min.js"></script>
     <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
 </body>
 
 </html>
