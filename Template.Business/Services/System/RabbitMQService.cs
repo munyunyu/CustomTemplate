@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Template.Business.Interfaces.System;
 using Template.Library.Models.POCO;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Template.Business.Services.System
 {
