@@ -5,9 +5,18 @@ namespace Template.Business.Interfaces.System
 {
     public interface IRabbitMQService
     {
-        void Subscribe(string queueName, AsyncEventHandler<BasicDeliverEventArgs> receivedHandler, AsyncEventHandler<ShutdownEventArgs> shutdownHandler = null, bool durable = false, bool autoAck = false);
-        void Publish(string queueName, string message, bool durable = false);
-        void BasicAck(ulong deliveryTag, bool multiple = false);
-        void BasicNack(ulong deliveryTag, bool multiple = false, bool requeue = false);
+        Task PublishAsync(string queueName, string message, bool durable = false);
+
+        Task SubscribeAsync(
+            string queueName,
+            AsyncEventHandler<BasicDeliverEventArgs> receivedHandler,
+            AsyncEventHandler<ShutdownEventArgs>? shutdownHandler = null,
+            bool durable = false,
+            bool autoAck = false);
+
+        ValueTask BasicAckAsync(ulong deliveryTag, bool multiple = false);
+        ValueTask BasicNackAsync(ulong deliveryTag, bool multiple = false, bool requeue = false);
+
     }
+
 }

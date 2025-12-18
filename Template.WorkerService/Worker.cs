@@ -30,7 +30,7 @@ namespace Template.WorkerService
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                rabbitMQService.Subscribe(queueName: RabbitQueue.GeneralEmailNotification, receivedHandler: Consumer_Received, shutdownHandler: null, durable: true, autoAck: false);
+                //rabbitMQService.Subscribe(queueName: RabbitQueue.GeneralEmailNotification, receivedHandler: Consumer_Received, shutdownHandler: null, durable: true, autoAck: false);
 
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(5000, stoppingToken);
@@ -48,13 +48,13 @@ namespace Template.WorkerService
                 
                 throw new Exception("Error");
 
-                rabbitMQService.BasicAck(e.DeliveryTag, false);
+                //rabbitMQService.BasicAck(e.DeliveryTag, false);
 
                 await Task.Yield();
             }
             catch (Exception ex)
             {
-                rabbitMQService.BasicNack(e.DeliveryTag, false, false);
+                //rabbitMQService.BasicNack(e.DeliveryTag, false, false);
                 
                 _logger.LogError(ex, "RabbitMQ parameter: {parameter}", e.Body.ToArray());
             }

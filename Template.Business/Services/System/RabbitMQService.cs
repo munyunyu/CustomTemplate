@@ -1,68 +1,103 @@
 ﻿using Microsoft.Extensions.Options;
-using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using RabbitMQ.Client.Events;
 using System.Text;
-using System.Threading.Tasks;
 using Template.Business.Interfaces.System;
 using Template.Library.Models.POCO;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Template.Business.Services.System
 {
     public class RabbitMQService : IRabbitMQService
     {
         private readonly ConnectionFactory _factory;
-        public IModel Channel { get; set; }
+        private IConnection? _connection;
+        public IChannel? Channel { get; private set; }
+
         public RabbitMQService(IOptions<RabbitMQSettings> rabbitMQConfiguration)
         {
-            _factory = new ConnectionFactory()
+            _factory = new ConnectionFactory
             {
                 HostName = rabbitMQConfiguration.Value.RabbitMQUrl,
                 UserName = rabbitMQConfiguration.Value.Username,
                 Password = rabbitMQConfiguration.Value.Password,
                 VirtualHost = rabbitMQConfiguration.Value.VirtualHost,
                 Port = rabbitMQConfiguration.Value.Port,
-                DispatchConsumersAsync = true
+                RequestedHeartbeat = TimeSpan.FromSeconds(60)
             };
         }
 
-        public void Publish(string queueName, string message, bool durable = false)
+        /* ------------------ PUBLISH ------------------ */
+
+        public async Task PublishAsync(string queueName, string message, bool durable = false)
         {
-            using var connection = _factory.CreateConnection();
-            using var channel = connection.CreateModel();
-            channel.QueueDeclare(queue: queueName, durable: durable, exclusive: false, autoDelete: false, arguments: null);
+            await using var connection = await _factory.CreateConnectionAsync();
+            await using var channel = await connection.CreateChannelAsync();
+
+            await channel.QueueDeclareAsync(
+                queue: queueName,
+                durable: durable,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
             var body = Encoding.UTF8.GetBytes(message);
 
-            channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body);
+            await channel.BasicPublishAsync(
+                exchange: "",
+                routingKey: queueName,
+                body: body);
         }
 
-        public void Subscribe(string queueName, AsyncEventHandler<BasicDeliverEventArgs> receivedHandler, AsyncEventHandler<ShutdownEventArgs> shutdownHandler = null, bool durable = false, bool autoAck = false)
-        {
-            _factory.RequestedHeartbeat = TimeSpan.FromSeconds(60);
-            var connection = _factory.CreateConnection();
-            Channel = connection.CreateModel();
+        /* ------------------ SUBSCRIBE ------------------ */
 
-            Channel.BasicQos(0, 1, false);
-            Channel.QueueDeclare(queue: queueName, durable: durable, exclusive: false, autoDelete: false, arguments: null);
+        public async Task SubscribeAsync(
+            string queueName,
+            AsyncEventHandler<BasicDeliverEventArgs> receivedHandler,
+            AsyncEventHandler<ShutdownEventArgs>? shutdownHandler = null,
+            bool durable = false,
+            bool autoAck = false)
+        {
+            _connection = await _factory.CreateConnectionAsync();
+            Channel = await _connection.CreateChannelAsync();
+
+            await Channel.BasicQosAsync(0, 1, false);
+
+            await Channel.QueueDeclareAsync(
+                queue: queueName,
+                durable: durable,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
 
             var consumer = new AsyncEventingBasicConsumer(Channel);
-            consumer.Received += receivedHandler;
-            if (shutdownHandler != null) consumer.Shutdown += shutdownHandler;
+            consumer.ReceivedAsync += receivedHandler;
 
-            Channel.BasicConsume(queue: queueName, autoAck: autoAck, consumer: consumer);
+            if (shutdownHandler != null)
+                consumer.ShutdownAsync += shutdownHandler;
+
+            await Channel.BasicConsumeAsync(
+                queue: queueName,
+                autoAck: autoAck,
+                consumer: consumer);
         }
 
-        public void BasicNack(ulong deliveryTag, bool multiple = false, bool requeue = false)
+        /* ------------------ ACK / NACK ------------------ */
+
+        public ValueTask BasicAckAsync(ulong deliveryTag, bool multiple = false)
         {
-            Channel.BasicNack(deliveryTag, multiple, requeue);
+            if (Channel == null)
+                throw new InvalidOperationException("Channel not initialized");
+
+            return Channel.BasicAckAsync(deliveryTag, multiple);
         }
 
-        public void BasicAck(ulong deliveryTag, bool multiple = false)
+        public ValueTask BasicNackAsync(ulong deliveryTag, bool multiple = false, bool requeue = false)
         {
-            Channel.BasicAck(deliveryTag, multiple);
+            if (Channel == null)
+                throw new InvalidOperationException("Channel not initialized");
+
+            return Channel.BasicNackAsync(deliveryTag, multiple, requeue);
         }
+
     }
 }
