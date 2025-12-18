@@ -12,7 +12,12 @@ namespace Template.Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
-            CREATE OR ALTER VIEW [dbo].[ViewApplicationUserRoles]
+            IF OBJECT_ID('dbo.ViewApplicationUserRoles', 'V') IS NOT NULL
+            DROP VIEW dbo.ViewApplicationUserRoles;
+            ");
+
+            migrationBuilder.Sql(@"
+            CREATE VIEW [dbo].[ViewApplicationUserRoles]
             AS
             SELECT TOP (1000) 
                    [UserId][Id]
@@ -30,7 +35,12 @@ namespace Template.Database.Migrations
             ");
 
             migrationBuilder.Sql(@"
-            CREATE OR ALTER VIEW [dbo].[ViewApplicationUser]
+            IF OBJECT_ID('dbo.ViewApplicationUser', 'V') IS NOT NULL
+            DROP VIEW dbo.ViewApplicationUser;
+            ");
+
+            migrationBuilder.Sql(@"
+            CREATE VIEW [dbo].[ViewApplicationUser]
             AS
             SELECT  
                 [Id],

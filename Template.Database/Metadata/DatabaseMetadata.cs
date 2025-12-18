@@ -42,13 +42,26 @@ namespace Template.Database.Metadata
 
             List<ApplicationUser> users = new List<ApplicationUser>()
             {
-                new ApplicationUser(){Id = admin_userId, Email = "percy.munyunyu@gmail.com", EmailConfirmed = true, FirstName = "admin", LastName = "admin", UserName = "percy.munyunyu@gmail.com", NormalizedUserName = "percy.munyunyu@gmail.com".ToUpper() }
+                new ApplicationUser()
+                {
+                    Id = admin_userId, 
+                    Email = "percy.munyunyu@gmail.com", 
+                    EmailConfirmed = true, 
+                    FirstName = "admin", 
+                    LastName = "admin", 
+                    UserName = "percy.munyunyu@gmail.com", 
+                    NormalizedUserName = "percy.munyunyu@gmail.com".ToUpper() ,
+                    ConcurrencyStamp = "b29f4cda-42ca-496c-9170-ccd54c2c8e7f",
+                    CreatedDate = new DateTime(2025, 12, 18, 14, 42, 6, 873, DateTimeKind.Local).AddTicks(9208),
+                    PasswordHash = "AQAAAAIAAYagAAAAEBYiAwJWV5Ovgxv08Ov+gqyH3jZgvoWhlSiiA9HY6EzEPH9sA5NcaZuxnu/0LcGiKg==",
+                    SecurityStamp = "a59b4b28-f530-4b8e-979f-73f8eac45ff1"
+                }
             };
 
-            foreach (var user in users)
-            {
-                user.PasswordHash = ph.HashPassword(user, "tc#Prog219!");
-            }
+            //foreach (var user in users)
+            //{
+            //    user.PasswordHash = ph.HashPassword(user, "tc#Prog219!");
+            //}
 
             return users;
         }
