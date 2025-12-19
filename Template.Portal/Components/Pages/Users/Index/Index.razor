@@ -1,6 +1,7 @@
 ﻿@page "/users/index"
 @inherits BasePage
 
+
 <PartaialPageTitle Header="System Users" Title="System Users">
     <Content>
         <PartialModal ButtonCSS="float-right btn btn-info btn-sm mr-1"
@@ -36,7 +37,7 @@
     </RadzenGrid> *@
 
 <RadzenDataGrid Data="@Users"
-    AllowVirtualization="true" 
+    AllowVirtualization="false" 
     Style="height:400px"                
     AllowFiltering="true" 
     FilterPopupRenderMode="PopupRenderMode.OnDemand" 
