@@ -36,20 +36,36 @@
         </Columns>
     </RadzenGrid> *@
 
-<RadzenDataGrid Data="@Users"
-    AllowVirtualization="false" 
-    Style="height:400px"                
+<RadzenDataGrid 
+    Data="@Users"
+    AllowVirtualization="false"                  
     AllowFiltering="true" 
+    AllowColumnResize="true"
+    AllowAlternatingRows="false"
+    FilterMode="FilterMode.Advanced" 
+    PageSize="5" 
+    AllowPaging="true" 
+    ColumnWidth="300px" 
+    PagerHorizontalAlign="HorizontalAlign.Left" 
+    ShowPagingSummary="true"
     FilterPopupRenderMode="PopupRenderMode.OnDemand" 
     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" 
-    LogicalFilterOperator="LogicalFilterOperator.Or"                
+    LogicalFilterOperator="LogicalFilterOperator.Or"   
+    SelectionMode="DataGridSelectionMode.Single"
+    TItem="ViewUserViewModel"
+    RowClick="@OnRowClick"
+    RowSelect="@OnRowSelect"
+    RowRender="@RowRender"
     AllowSorting="true">
     <Columns>
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.CreatedDate)" Title="CreatedDate" />     
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.Email)" Title="Email" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.Email)" Title="Email" Frozen="true" width="250px"/>
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.CreatedDate)" Title="CreatedDate" width="160px"/>  
         <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.FirstName)" Title="FirstName" />
         <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LastName)" Title="LastName" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.PhoneNumber)" Title="PhoneNumber" />
         <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.EmailConfirmed)" Title="EmailConfirmed" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LockoutEnd)" Title="LockoutEnd" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LockoutEnabled)" Title="LockoutEnabled" />
         <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.AccessFailedCount)" Title="AccessFailedCount" />
     </Columns>
 </RadzenDataGrid>

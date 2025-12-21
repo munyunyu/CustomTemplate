@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Radzen;
+using Radzen.Blazor;
 using Template.Library.ViewsModels.System;
 using Template.Portal.Components.Shared.Helpers;
 using Template.Portal.Services;
@@ -28,12 +29,47 @@ namespace Template.Portal.Components.Pages.Users.Index
             }
         }
 
-        public void RowClicked(object args)
+        // RowClick event handler
+        private void OnRowClick(DataGridRowMouseEventArgs<ViewUserViewModel> args)
         {
-            var record = (ViewUserViewModel)args;
+            Console.WriteLine($"Row clicked: {args.Data?.Email}");
 
-            NavigationManager.NavigateTo($"/user/details/{record.Id}", true);
+            // Store the clicked user
+            //selectedUser = args.Data;
+
+            // Force UI update
+            //StateHasChanged();
         }
+
+        // RowSelect event handler (for single selection mode)
+        private void OnRowSelect(ViewUserViewModel user)
+        {
+            Console.WriteLine($"Row selected: {user?.Email}");
+
+            //selectedUser = user;
+
+            //// If you need to programmatically select/deselect
+            //if (dataGridRef != null && user != null)
+            //{
+            //    // This ensures the grid knows about the selection
+            //    dataGridRef.SelectRow(user);
+            //}
+
+            //StateHasChanged();
+        }
+        //public void OnRowSelect(ViewUserViewModel args)
+        //{
+        //    var record = args as ViewUserViewModel;
+
+        //    NavigationManager.NavigateTo($"/user/details/{record.Id}", true);
+        //}
+
+        //public void OnRowClick(DataGridRowMouseEventArgs<ViewUserViewModel> args)
+        //{
+        //    var record = args.Data as ViewUserViewModel;
+
+        //    NavigationManager.NavigateTo($"/user/details/{record.Id}", true);
+        //}
 
         public void RowRender(RowRenderEventArgs<ViewUserViewModel> args)
         {
