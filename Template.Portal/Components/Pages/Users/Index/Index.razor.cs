@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Radzen;
-using Radzen.Blazor;
 using Template.Library.ViewsModels.System;
 using Template.Portal.Components.Shared.Helpers;
 using Template.Portal.Services;
 using Template.Portal.Services.System;
+using Template.Portal.Components.Shared.DataTable;
 
 namespace Template.Portal.Components.Pages.Users.Index
 {
     public partial class Index : BasePage
     {
         public IEnumerable<ViewUserViewModel> Users { get; set; } = new List<ViewUserViewModel>();
+
+        private ViewUserViewModel? _lastClickedUser;
 
 
         protected override async Task OnInitializedAsync()
@@ -30,15 +31,11 @@ namespace Template.Portal.Components.Pages.Users.Index
         }
 
         // RowClick event handler
-        private void OnRowClick(DataGridRowMouseEventArgs<ViewUserViewModel> args)
+        private void OnRowClick(ViewUserViewModel user)
         {
-            Console.WriteLine($"Row clicked: {args.Data?.Email}");
-
-            // Store the clicked user
-            //selectedUser = args.Data;
-
-            // Force UI update
-            //StateHasChanged();
+            _lastClickedUser = user;
+            Console.WriteLine($"Row clicked: {user?.Email}");
+            StateHasChanged();
         }
 
         // RowSelect event handler (for single selection mode)

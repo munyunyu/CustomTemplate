@@ -1,0 +1,354 @@
+@namespace Template.Portal.Components.Shared.DataTable
+
+@attribute [Microsoft.AspNetCore.Components.CascadingTypeParameter(nameof(TItem))]
+
+<CascadingValue Value="this" IsFixed="true">
+    @if (Columns is not null)
+    {
+        @Columns
+    }
+</CascadingValue>
+
+<div class="datatable">
+    <table class="table">
+        <thead>
+            <tr>
+                @foreach (var col in _columns)
+                {
+                    <th style="@(col.Width is null ? null : $"width:{col.Width};")">
+                        @if (AllowSorting && col.Sortable)
+                        {
+                            <button type="button" class="btn btn-link p-0" @onclick="() => ToggleSort(col)">
+                                @col.Title
+                                @if (_sortColumn == col)
+                                {
+                                    <span>@(_sortDescending ? "▼" : "▲")</span>
+                                }
+                            </button>
+                        }
+                        else
+                        {
+                            @col.Title
+                        }
+                    </th>
+                }
+            </tr>
+            @if (AllowFiltering)
+            {
+                <tr>
+                    @foreach (var col in _columns)
+                    {
+                        <th>
+                            @if (col.Filterable)
+                            {
+                                <input class="form-control form-control-sm"
+                                       value="@GetFilterValue(col)"
+                                       @oninput="(e) => OnFilterChanged(col, e.Value?.ToString())" />
+                            }
+                        </th>
+                    }
+                </tr>
+            }
+        </thead>
+        <tbody>
+            @foreach (var row in GetPagedRows())
+            {
+                var attrs = BuildRowAttributes(row);
+                <tr class="@(IsSelected(row) ? "table-active" : null)"
+                    @attributes="attrs"
+                    style="cursor: pointer;"
+                    @onclick="async () => await OnRowClickedInternal(row)">
+                    @foreach (var col in _columns)
+                    {
+                        <td @onclick="async () => await OnRowClickedInternal(row)">
+                            @if (col.Template is not null)
+                            {
+                                @col.Template(row)
+                            }
+                            else
+                            {
+                                @RenderPropertyValue(row, col.Property)
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (AllowPaging)
+    {
+        <div class="datatable-pager d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="PrevPage" disabled="@(_pageIndex <= 0)">Prev</button>
+            <span>Page @(_pageIndex + 1) of @Math.Max(1, TotalPages)</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="NextPage" disabled="@(_pageIndex >= TotalPages - 1)">Next</button>
+
+            @if (ShowPagingSummary)
+            {
+                <span class="ms-2 text-muted">@PagingSummary</span>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public IReadOnlyList<TItem>? Items { get; set; }
+    [Parameter] public RenderFragment? Columns { get; set; }
+
+    [Parameter] public bool AllowFiltering { get; set; }
+    [Parameter] public FilterCaseSensitivity FilterCaseSensitivity { get; set; } = FilterCaseSensitivity.CaseInsensitive;
+    [Parameter] public LogicalFilterOperator LogicalFilterOperator { get; set; } = LogicalFilterOperator.Or;
+
+    [Parameter] public bool AllowSorting { get; set; }
+
+    [Parameter] public bool AllowPaging { get; set; }
+    [Parameter] public int PageSize { get; set; } = 10;
+    [Parameter] public bool ShowPagingSummary { get; set; }
+
+    [Parameter] public DataTableSelectionMode SelectionMode { get; set; } = DataTableSelectionMode.None;
+
+    [Parameter] public EventCallback<TItem> RowClick { get; set; }
+    [Parameter] public EventCallback<TItem> RowSelect { get; set; }
+    [Parameter] public Action<RowRenderEventArgs<TItem>>? RowRender { get; set; }
+
+    private readonly List<DataTableColumnDefinition<TItem>> _columns = new();
+    private readonly Dictionary<DataTableColumnDefinition<TItem>, string?> _filters = new();
+
+    private int _pageIndex;
+    private DataTableColumnDefinition<TItem>? _sortColumn;
+    private bool _sortDescending;
+    private TItem? _selectedItem;
+
+    internal void RegisterColumn(DataTableColumnDefinition<TItem> column)
+    {
+        if (_columns.Contains(column))
+        {
+            return;
+        }
+
+        _columns.Add(column);
+        _filters.TryAdd(column, null);
+
+        StateHasChanged();
+    }
+
+    private IEnumerable<TItem> GetFilteredRows()
+    {
+        var source = Items ?? Array.Empty<TItem>();
+
+        if (!AllowFiltering)
+        {
+            return source;
+        }
+
+        var active = _filters
+            .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value))
+            .Select(kvp => (Column: kvp.Key, Value: kvp.Value!))
+            .ToList();
+
+        if (active.Count == 0)
+        {
+            return source;
+        }
+
+        bool Matches(TItem item, DataTableColumnDefinition<TItem> col, string filter)
+        {
+            var val = GetPropertyValue(item, col.Property);
+            var text = val?.ToString() ?? string.Empty;
+
+            if (FilterCaseSensitivity == FilterCaseSensitivity.CaseInsensitive)
+            {
+                return text.Contains(filter, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return text.Contains(filter, StringComparison.Ordinal);
+        }
+
+        return source.Where(item =>
+        {
+            if (LogicalFilterOperator == LogicalFilterOperator.Or)
+            {
+                return active.Any(a => Matches(item, a.Column, a.Value));
+            }
+
+            return active.All(a => Matches(item, a.Column, a.Value));
+        });
+    }
+
+    private IEnumerable<TItem> GetSortedRows()
+    {
+        var filtered = GetFilteredRows();
+
+        if (!AllowSorting || _sortColumn is null)
+        {
+            return filtered;
+        }
+
+        object? KeySelector(TItem x) => GetPropertyValue(x, _sortColumn.Property);
+
+        return _sortDescending
+            ? filtered.OrderByDescending(KeySelector, DataTableComparers.ObjectComparer)
+            : filtered.OrderBy(KeySelector, DataTableComparers.ObjectComparer);
+    }
+
+    private IReadOnlyList<TItem> GetPagedRows()
+    {
+        var sorted = GetSortedRows().ToList();
+
+        if (!AllowPaging)
+        {
+            return sorted;
+        }
+
+        if (PageSize <= 0)
+        {
+            return sorted;
+        }
+
+        var totalPages = TotalPagesFromCount(sorted.Count);
+        if (_pageIndex >= totalPages)
+        {
+            _pageIndex = Math.Max(0, totalPages - 1);
+        }
+
+        return sorted.Skip(_pageIndex * PageSize).Take(PageSize).ToList();
+    }
+
+    private int TotalPages
+    {
+        get
+        {
+            var count = GetSortedRows().Count();
+            return TotalPagesFromCount(count);
+        }
+    }
+
+    private int TotalPagesFromCount(int count)
+    {
+        if (!AllowPaging || PageSize <= 0)
+        {
+            return 1;
+        }
+
+        return (int)Math.Ceiling(count / (double)PageSize);
+    }
+
+    private string PagingSummary
+    {
+        get
+        {
+            var total = GetSortedRows().Count();
+            if (!AllowPaging || PageSize <= 0)
+            {
+                return $"{total} item(s)";
+            }
+
+            var start = total == 0 ? 0 : (_pageIndex * PageSize) + 1;
+            var end = Math.Min(total, (_pageIndex + 1) * PageSize);
+            return $"{start}-{end} of {total}";
+        }
+    }
+
+    private void PrevPage()
+    {
+        if (_pageIndex > 0)
+        {
+            _pageIndex--;
+        }
+    }
+
+    private void NextPage()
+    {
+        if (_pageIndex < TotalPages - 1)
+        {
+            _pageIndex++;
+        }
+    }
+
+    private void ToggleSort(DataTableColumnDefinition<TItem> col)
+    {
+        if (_sortColumn != col)
+        {
+            _sortColumn = col;
+            _sortDescending = false;
+        }
+        else
+        {
+            _sortDescending = !_sortDescending;
+        }
+
+        _pageIndex = 0;
+    }
+
+    private string? GetFilterValue(DataTableColumnDefinition<TItem> col)
+    {
+        return _filters.TryGetValue(col, out var v) ? v : null;
+    }
+
+    private void OnFilterChanged(DataTableColumnDefinition<TItem> col, string? value)
+    {
+        _filters[col] = value;
+        _pageIndex = 0;
+    }
+
+    private async Task OnRowClickedInternal(TItem row)
+    {
+        if (RowClick.HasDelegate)
+        {
+            await RowClick.InvokeAsync(row);
+        }
+
+        if (SelectionMode == DataTableSelectionMode.Single)
+        {
+            _selectedItem = row;
+            if (RowSelect.HasDelegate)
+            {
+                await RowSelect.InvokeAsync(row);
+            }
+        }
+    }
+
+    private bool IsSelected(TItem row)
+    {
+        if (SelectionMode != DataTableSelectionMode.Single)
+        {
+            return false;
+        }
+
+        return EqualityComparer<TItem>.Default.Equals(_selectedItem, row);
+    }
+
+    private IReadOnlyDictionary<string, object>? BuildRowAttributes(TItem row)
+    {
+        if (RowRender is null)
+        {
+            return null;
+        }
+        var args = new RowRenderEventArgs<TItem>(row);
+        RowRender(args);
+        return args.Attributes.Count == 0
+            ? null
+            : new System.Collections.ObjectModel.ReadOnlyDictionary<string, object>(args.Attributes);
+    }
+
+   
+
+    private static object? GetPropertyValue(TItem item, string? propertyName)
+    {
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            return null;
+        }
+
+        var prop = typeof(TItem).GetProperty(propertyName);
+        return prop?.GetValue(item);
+    }
+
+    private RenderFragment RenderPropertyValue(TItem item, string? propertyName) => builder =>
+    {
+        var val = GetPropertyValue(item, propertyName);
+        builder.AddContent(0, val?.ToString());
+    };
+}
+
+@typeparam TItem

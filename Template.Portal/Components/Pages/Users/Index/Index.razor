@@ -17,6 +17,13 @@
     </Content>
 </PartaialPageTitle>
 
+@if (_lastClickedUser is not null)
+{
+    <div class="alert alert-info">
+        Last clicked: @_lastClickedUser.Email
+    </div>
+}
+
 @* <RadzenGrid 
     RowRender="RowRender"  
     AllowPaging="true" 
@@ -36,36 +43,26 @@
         </Columns>
     </RadzenGrid> *@
 
-<RadzenDataGrid 
-    Data="@Users"
-    AllowVirtualization="false"                  
-    AllowFiltering="true" 
-    AllowColumnResize="true"
-    AllowAlternatingRows="false"
-    FilterMode="FilterMode.Advanced" 
-    PageSize="5" 
-    AllowPaging="true" 
-    ColumnWidth="300px" 
-    PagerHorizontalAlign="HorizontalAlign.Left" 
-    ShowPagingSummary="true"
-    FilterPopupRenderMode="PopupRenderMode.OnDemand" 
-    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" 
-    LogicalFilterOperator="LogicalFilterOperator.Or"   
-    SelectionMode="DataGridSelectionMode.Single"
-    TItem="ViewUserViewModel"
-    RowClick="@OnRowClick"
-    RowSelect="@OnRowSelect"
-    RowRender="@RowRender"
-    AllowSorting="true">
+<DataTable Items="@Users.ToList()"
+           AllowFiltering="true"
+           AllowPaging="true"
+           PageSize="5"
+           ShowPagingSummary="true"
+           AllowSorting="true"
+           SelectionMode="DataTableSelectionMode.Single"
+           RowClick="@OnRowClick"
+           RowSelect="@OnRowSelect"
+           RowRender="@RowRender"
+           TItem="ViewUserViewModel">
     <Columns>
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.Email)" Title="Email" Frozen="true" width="250px"/>
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.CreatedDate)" Title="CreatedDate" width="160px"/>  
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.FirstName)" Title="FirstName" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LastName)" Title="LastName" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.PhoneNumber)" Title="PhoneNumber" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.EmailConfirmed)" Title="EmailConfirmed" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LockoutEnd)" Title="LockoutEnd" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LockoutEnabled)" Title="LockoutEnabled" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.AccessFailedCount)" Title="AccessFailedCount" />
+        <DataTableColumn Property="@nameof(ViewUserViewModel.Email)" Title="Email" Width="250px" />
+        <DataTableColumn Property="@nameof(ViewUserViewModel.CreatedDate)" Title="CreatedDate" Width="160px" />
+        <DataTableColumn Property="@nameof(ViewUserViewModel.FirstName)" Title="FirstName" />
+        <DataTableColumn Property="@nameof(ViewUserViewModel.LastName)" Title="LastName" />
+        <DataTableColumn Property="@nameof(ViewUserViewModel.PhoneNumber)" Title="PhoneNumber" />
+        <DataTableColumn Property="@nameof(ViewUserViewModel.EmailConfirmed)" Title="EmailConfirmed" />
+        <DataTableColumn Property="@nameof(ViewUserViewModel.LockoutEnd)" Title="LockoutEnd" />
+        <DataTableColumn Property="@nameof(ViewUserViewModel.LockoutEnabled)" Title="LockoutEnabled" />
+        <DataTableColumn Property="@nameof(ViewUserViewModel.AccessFailedCount)" Title="AccessFailedCount" />
     </Columns>
-</RadzenDataGrid>
+</DataTable>

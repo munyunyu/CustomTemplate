@@ -1,0 +1,36 @@
+@namespace Template.Portal.Components.Shared.DataTable
+
+@attribute [Microsoft.AspNetCore.Components.CascadingTypeParameter(nameof(TItem))]
+
+@code {
+    [CascadingParameter] internal DataTable<TItem>? Owner { get; set; }
+
+    [Parameter] public string? Property { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Width { get; set; }
+
+    [Parameter] public bool Sortable { get; set; } = true;
+    [Parameter] public bool Filterable { get; set; } = true;
+
+    [Parameter] public RenderFragment<TItem>? Template { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Owner is null)
+        {
+            return;
+        }
+
+        Owner.RegisterColumn(new DataTableColumnDefinition<TItem>
+        {
+            Property = Property,
+            Title = Title ?? Property,
+            Width = Width,
+            Sortable = Sortable,
+            Filterable = Filterable,
+            Template = Template
+        });
+    }
+}
+
+@typeparam TItem
