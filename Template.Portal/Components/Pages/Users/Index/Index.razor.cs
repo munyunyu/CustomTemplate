@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Radzen;
+using Radzen.Blazor;
 using Template.Library.ViewsModels.System;
 using Template.Portal.Components.Shared.Helpers;
 using Template.Portal.Services;
 using Template.Portal.Services.System;
-using Template.Portal.Components.Shared.DataTable;
 
 namespace Template.Portal.Components.Pages.Users.Index
 {
@@ -12,6 +13,7 @@ namespace Template.Portal.Components.Pages.Users.Index
         public IEnumerable<ViewUserViewModel> Users { get; set; } = new List<ViewUserViewModel>();
 
         private ViewUserViewModel? _lastClickedUser;
+        private ViewUserViewModel? _lastSelectedUser;
 
 
         protected override async Task OnInitializedAsync()
@@ -30,29 +32,20 @@ namespace Template.Portal.Components.Pages.Users.Index
             }
         }
 
-        // RowClick event handler
-        private void OnRowClick(ViewUserViewModel user)
+        // Radzen RowClick event handler
+        private void OnRowClick(DataGridRowMouseEventArgs<ViewUserViewModel> args)
         {
-            _lastClickedUser = user;
-            Console.WriteLine($"Row clicked: {user?.Email}");
+            _lastClickedUser = args.Data;
+            Console.WriteLine($"Row clicked: {args.Data?.Email}");
             StateHasChanged();
         }
 
-        // RowSelect event handler (for single selection mode)
+        // Radzen RowSelect event handler (SelectionMode="Single")
         private void OnRowSelect(ViewUserViewModel user)
         {
+            _lastSelectedUser = user;
             Console.WriteLine($"Row selected: {user?.Email}");
-
-            //selectedUser = user;
-
-            //// If you need to programmatically select/deselect
-            //if (dataGridRef != null && user != null)
-            //{
-            //    // This ensures the grid knows about the selection
-            //    dataGridRef.SelectRow(user);
-            //}
-
-            //StateHasChanged();
+            StateHasChanged();
         }
         //public void OnRowSelect(ViewUserViewModel args)
         //{
@@ -68,14 +61,14 @@ namespace Template.Portal.Components.Pages.Users.Index
         //    NavigationManager.NavigateTo($"/user/details/{record.Id}", true);
         //}
 
-        public void RowRender(RowRenderEventArgs<ViewUserViewModel> args)
+        public void RowRender(Radzen.RowRenderEventArgs<ViewUserViewModel> args)
         {
             try
             {
-                //var color = args.Data.GetRowRenderColor();
-
-                //args.Attributes.Add("Style", $"background-color:{color};");
-
+                if (args.Data?.EmailConfirmed == false)
+                {
+                    args.Attributes["style"] = "background-color: #ffe7e7;";
+                }
             }
             catch (Exception)
             {
