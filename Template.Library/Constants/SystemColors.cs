@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Template.Library.Constants
 {
-    public static class Colors
+    public static class SystemColors
     {        
         public const string Blue =  "#007bff";
         public const string Indigo =  "#6610f2";

@@ -24,6 +24,7 @@ namespace Template.Library.ViewsModels.System
     public class ApplicationUserViewModel : BaseEntity
     {
         public new string? Id { get; set; }
+        public string? Email { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public DateTime? PasswordExpiryDate { get; set; }
@@ -32,6 +33,14 @@ namespace Template.Library.ViewsModels.System
         public int FailedLoginAttempts { get; set; }
         public DateTime? LockoutEndDate { get; set; }
         public bool IsManuallyLocked { get; set; }
+
+
+        public virtual bool EmailConfirmed { get; set; }
+        public virtual bool PhoneNumberConfirmed { get; set; }
+        public virtual bool TwoFactorEnabled { get; set; }
+        public virtual DateTimeOffset? LockoutEnd { get; set; }
+        public virtual bool LockoutEnabled { get; set; }
+        public virtual int AccessFailedCount { get; set; }
 
         public List<string>? Roles { get; set; }
         public List<string>? Claims { get; set; }

@@ -2,6 +2,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Template.API.Extensions;
 using Template.Business.Services.Hosted;
 using Template.Database.Context;
 using Template.Library.Mapper;
@@ -37,6 +38,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    await app.Services.SeedAsync(); // Seed roles & claims
 }
 else
 {

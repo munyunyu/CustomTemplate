@@ -1,0 +1,21 @@
+﻿/*common display bar*/
+
+.common-display-box {
+    background-color: #17a2b8;
+}
+
+.common-display-left-pill {
+    min-width: 100px;
+    /*border-radius: 6px 0 0 6px;*/
+}
+
+.common-display-right-pill {
+    /*border-radius: 0 6px 6px 0;*/
+}
+
+.common-display-mode-badge {
+    /*background-color: #ffc107;*/
+    /*padding: 2px 6px;*/
+    /*border-radius: 4px;*/
+    /*font-weight: 600;*/
+}

@@ -12,10 +12,6 @@ namespace Template.Portal.Components.Pages.Users.Index
     {
         public IEnumerable<ViewUserViewModel> Users { get; set; } = new List<ViewUserViewModel>();
 
-        private ViewUserViewModel? _lastClickedUser;
-        private ViewUserViewModel? _lastSelectedUser;
-
-
         protected override async Task OnInitializedAsync()
         {
             try
@@ -32,34 +28,10 @@ namespace Template.Portal.Components.Pages.Users.Index
             }
         }
 
-        // Radzen RowClick event handler
         private void OnRowClick(DataGridRowMouseEventArgs<ViewUserViewModel> args)
         {
-            _lastClickedUser = args.Data;
-            Console.WriteLine($"Row clicked: {args.Data?.Email}");
-            StateHasChanged();
+            NavigationManager.NavigateTo($"/user/details/{args.Data.Id}", true);
         }
-
-        // Radzen RowSelect event handler (SelectionMode="Single")
-        private void OnRowSelect(ViewUserViewModel user)
-        {
-            _lastSelectedUser = user;
-            Console.WriteLine($"Row selected: {user?.Email}");
-            StateHasChanged();
-        }
-        //public void OnRowSelect(ViewUserViewModel args)
-        //{
-        //    var record = args as ViewUserViewModel;
-
-        //    NavigationManager.NavigateTo($"/user/details/{record.Id}", true);
-        //}
-
-        //public void OnRowClick(DataGridRowMouseEventArgs<ViewUserViewModel> args)
-        //{
-        //    var record = args.Data as ViewUserViewModel;
-
-        //    NavigationManager.NavigateTo($"/user/details/{record.Id}", true);
-        //}
 
         public void RowRender(Radzen.RowRenderEventArgs<ViewUserViewModel> args)
         {
@@ -74,11 +46,6 @@ namespace Template.Portal.Components.Pages.Users.Index
             {
                 //mark it black
             }
-
-        }
-
-        public void OnClickStatusColor(string color)
-        {
 
         }
 

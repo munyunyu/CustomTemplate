@@ -8,7 +8,7 @@ namespace Template.Database.Metadata
 {
     public static class DatabaseMetadata
     {
-        const string admin_userId = "feba6c0a-e24c-4410-a8c2-0145bd3d1853";
+        const string admin_userId = SystemUserAdmin.Admin_UserId;
 
         static DateTime date = DateTime.Parse("2025-08-11");
 

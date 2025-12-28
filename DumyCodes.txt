@@ -19,3 +19,18 @@
             }
         }
 
+###############################################################################
+
+   private void OnRowSelect(ViewUserViewModel user)
+        {
+            _lastSelectedUser = user;
+            Console.WriteLine($"Row selected: {user?.Email}");
+            StateHasChanged();
+        }
+
+  TItem="ViewUserViewModel"
+                RowClick="@OnRowClick"
+                RowSelect="@OnRowSelect"
+                RowRender="@RowRender"
+
+###############################################################################

@@ -1,0 +1,180 @@
+﻿@page "/user/details/{userId}"
+@inherits BasePage
+
+
+
+<PartaialPageTitle Header="User Details" Title="User Details">
+    <Content>
+        <PartialModal ButtonCSS="float-right btn btn-info btn-sm mr-1"
+                      Button="Update Roles"
+                      Heading="Update Roles"
+                      Id="UpdateRoles"
+                      Size="modal-xl"
+                      ShowFooter="false">
+            <Content>
+                <UpdateUserRole UserId="@UserId"></UpdateUserRole>
+            </Content>
+        </PartialModal>
+        <PartialModal ButtonCSS="float-right btn btn-info btn-sm mr-1"
+                      Button="Update Claims"
+                      Heading="Update Claims"
+                      Id="UpdateClaims"
+                      Size="modal-xl"
+                      ShowFooter="false">
+            <Content>
+                <UpdateUserClaim UserId="@UserId"></UpdateUserClaim>
+            </Content>
+        </PartialModal>
+        <PartialModal ButtonCSS="float-right btn btn-primary btn-sm mr-1"
+                      Button="Edit Profile"
+                      Heading="Update Claims"
+                      Id="UpdateClaims"
+                      Size="modal-xl"
+                      ShowFooter="false">
+            <Content>
+                <UpdateUserClaim UserId="@UserId"></UpdateUserClaim>
+            </Content>
+        </PartialModal>
+        <PartialModal ButtonCSS="float-right btn btn-warning btn-sm mr-1"
+                      Button="Reset Password"
+                      Heading="Update Claims"
+                      Id="UpdateClaims"
+                      Size="modal-xl"
+                      ShowFooter="false">
+            <Content>
+                <UpdateUserClaim UserId="@UserId"></UpdateUserClaim>
+            </Content>
+        </PartialModal>
+        
+         <PartialModal ButtonCSS="float-right btn btn-danger btn-sm mr-1"
+                      Button="Lock Account"
+                      Heading="Update Claims"
+                      Id="UpdateClaims"
+                      Size="modal-xl"
+                      ShowFooter="false">
+            <Content>
+                <UpdateUserClaim UserId="@UserId"></UpdateUserClaim>
+            </Content>
+        </PartialModal>
+    </Content>
+</PartaialPageTitle>
+
+<div class="d-flex mb-3 common-display-box">
+    <div class="p-1 bg-dark common-display-left-pill">Account: @(User?.IsDeleted == true ? "Active" : "Disabled")</div>
+    <div class="p-1 mr-auto">Description: <span class="common-display-mode-badge">@(User?.Description ?? "N/A") </span> </div>
+    <div class="p-1 bg-dark common-display-right-pill">CREATED: @User?.CreatedDate</div>
+</div> 
+
+
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-sm-2">
+                <!-- Left: Avatar + name -->
+                <div class="text-center text-md-start">
+                    <div class="avatar mb-2 mx-auto mx-md-0">AD</div>
+                    
+                    <!-- Audit trail -->
+                    <div class="mb-3">
+                        <span class="meta-label">Last Login</span>
+                        <div class="muted-small">
+                            yyyy-MM-dd HH:mm
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7 d-flex flex-column h-100">
+                <table class="table table-sm table-borderless table-striped mb-5">
+                    <tbody>
+
+                        <tr>
+                            <td>Email: @User?.Email</td>
+                            <td>Firstname: percy </td>
+                            <td>Lastname: Munyunyu </td>
+                        </tr>
+                        <tr>
+                            <td>ID#: 63-1477801 N26  </td>
+                            <td>DOB: 07 Dec 1993</td>
+                            <td>Phone: 263 777 086 674</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Addess#: ResedentialAddess </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+
+
+
+                <!-- Push roles & claims to bottom -->
+                <div class="mt-auto">
+                    <!-- Status & Roles -->
+                    @if (User?.Roles?.Any() == true)
+                    {
+                        <div class="mb-2">
+                            <span class="badge bg-success me-1">Active</span>
+
+                            @foreach (var role in User.Roles)
+                            {
+                                <span class="badge bg-info me-1">Role: @role</span>
+                            }
+                        </div>
+                    }
+
+                    <!-- Claims -->
+                    <div>
+                        <span class="meta-label">Claims / Permissions</span>
+
+                        @if (User?.Claims?.Any() == true)
+                        {
+                            <div class="mt-1">
+                                @foreach (var claim in User.Claims)
+                                {
+                                    <span class="badge bg-secondary claim-badge me-1 mb-1">
+                                        @claim
+                                    </span>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="muted-small">No claims assigned</div>
+                        }
+                    </div>
+                </div>
+
+               
+            </div>
+
+            <div class="col-sm-3">
+                <span class="meta-label">Status flags</span>
+
+
+                <span class="muted-small d-block">Email Confirmed: <strong>@User.EmailConfirmed</strong></span>
+                <span class="muted-small d-block">PhoneNumberConfirmed: <strong>@User.PhoneNumberConfirmed</strong></span>
+                <span class="muted-small d-block">TwoFactorEnabled: <strong>@User.TwoFactorEnabled</strong></span>
+                <span class="muted-small d-block">Lockout End: <strong>@User.LockoutEnd</strong></span>
+                <span class="muted-small d-block">LockoutEnabled: <strong>@User.LockoutEnabled</strong></span>
+                <span class="muted-small d-block">AccessFailedCount: <strong>@User.AccessFailedCount</strong></span>
+
+                <span class="muted-small d-block">FailedLoginAttempts: <strong>@User.FailedLoginAttempts</strong></span>
+                <span class="muted-small d-block">IsManuallyLocked: <strong>@User.IsManuallyLocked</strong></span>
+                <span class="muted-small d-block">LastPasswordChangeDate: <strong>@User.LastPasswordChangeDate</strong></span>
+                <span class="muted-small d-block">LockoutEndDate: <strong>@User.LockoutEndDate</strong></span>
+                <span class="muted-small d-block">PasswordExpiryDate: <strong>@User.PasswordExpiryDate</strong></span>
+                <span class="muted-small d-block">PasswordNeverExpires: <strong>@User.PasswordNeverExpires</strong></span>
+
+            </div>
+        </div>
+
+
+    </div> <!-- card-body -->
+</div> <!-- card -->
+<!-- Bootstrap JS (optional for some components like dropdowns) - not required for this page -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
