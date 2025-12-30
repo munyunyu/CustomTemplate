@@ -146,6 +146,24 @@ namespace Template.Business.Services.System
             return response;
         }
 
+        public async Task<IdentityResult> ChangePasswordAsync(ApplicationUser user, string oldPassword, string newPassword)
+        {
+            var response = await userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+
+            return response;
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string newPassword)
+        {
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            if (string.IsNullOrEmpty(newPassword)) throw new GeneralException("Failed to generate reset token");      
+
+            var response = await userManager.ResetPasswordAsync(user, token, newPassword);
+
+            return response;
+        }
+
         public async Task<ApplicationUser?> FindByIdAsync(Guid userId)
         {
             ApplicationUser? user = await userManager.FindByIdAsync(userId.ToString());

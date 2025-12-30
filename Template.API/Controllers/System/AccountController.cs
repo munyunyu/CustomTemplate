@@ -311,28 +311,72 @@ namespace Template.Service.Controllers.System
         //    }
         //}
 
-        //[HttpPost]
-        //[Route("ChangePassword")]
-        //public async Task<Response<ResponseChangePasswordViewModel>> ChangePassword(RequestChangePasswordViewModel model)
-        //{
-        //    try
-        //    {
-        //        var user = await userManager.FindByEmailAsync(model.Email);
+        [HttpPost]
+        [Route("ChangePassword")]
+        public async Task<Response<string>> ChangePassword(RequestChangePassword model)
+        {
+            try
+            {
+                var user = await portalService.Account.FindByIdAsync(model.UserId);
 
-        //        if (user == null) return new Response<ResponseChangePasswordViewModel> { Code = Status.Failed, Message = "Failed to confirm email address" };
+                if (user == null) throw new GeneralException($"UserId: {model.UserId} was not found");
 
-        //        IdentityResult result = await userManager.ResetPasswordAsync(user: user, token: model.Token.Base64Decode(), newPassword: model.NewPassword);
+                IdentityResult result = await portalService.Account.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
 
-        //        if (!result.Succeeded) return new Response<ResponseChangePasswordViewModel> { Code = Status.Failed, Message = string.Join("|", result.Errors.Select(x => x.Description)) };
+                if (!result.Succeeded) return new Response<string> { Code = Status.Failed, Message = string.Join("|", result.Errors.Select(x => x.Description)) };
 
-        //        return new Response<ResponseChangePasswordViewModel> { Code = Status.Success, Payload = new ResponseChangePasswordViewModel { Message = "Password was changed" } };
+                user.LastUpdatedDate = DateTime.Now;
+                user.LastUpdatedById = User.GetUserId();
+                user.LastPasswordChangeDate = DateTime.Now;
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new Response<ResponseChangePasswordViewModel> { Code = Status.ServerError, Message = ex.Message };
-        //    }
+                if (user.PasswordNeverExpires) user.PasswordExpiryDate = DateTime.Now.AddDays(60);
 
-        //}
+                await portalService.Account.UpdateAccountAsync(user);
+
+                return new Response<string> { Code = Status.Success, Payload = "Password was changed" };
+
+            }
+            catch (Exception ex)
+            {
+                return new Response<string> { Code = Status.Failed, Message = ex.Message };
+            }
+
+        }
+
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<Response<string>> ResetPassword(RequestResetPassword model)
+        {
+            try
+            {
+                var user = await portalService.Account.FindByIdAsync(model.UserId);
+
+                if (user == null) throw new GeneralException($"UserId: {model.UserId} was not found");
+
+                IdentityResult result = await portalService.Account.ResetPasswordAsync(user, model.NewPassword);
+
+                if (!result.Succeeded) return new Response<string> { Code = Status.Failed, Message = string.Join("|", result.Errors.Select(x => x.Description)) };
+
+                user.LastUpdatedDate = DateTime.Now;
+                user.LastUpdatedById = User.GetUserId();
+                user.LastPasswordChangeDate = DateTime.Now;                
+                user.PasswordNeverExpires = model.PasswordNeverExpires;
+
+                if (model.PasswordNeverExpires) user.PasswordExpiryDate = null;
+                else user.PasswordExpiryDate = model.PasswordExpiryDate;
+
+                await portalService.Account.UpdateAccountAsync(user);
+
+                //send email to the client with the password
+
+                return new Response<string> { Code = Status.Success, Payload = "Password was changed" };
+
+            }
+            catch (Exception ex)
+            {
+                return new Response<string> { Code = Status.Failed, Message = ex.Message };
+            }
+
+        }
     }
 }

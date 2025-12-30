@@ -60,6 +60,24 @@ namespace Template.Portal.Services.System
             throw new Exception(response?.Message);
         }
 
+        public async Task<string?> ResetPasswordAsync(RequestResetPassword model, string token)
+        {
+            var response = await httpService.HttpPostAsync<Response<string>>("/api/Account/ResetPassword", model, accessToken: token);
+
+            if (response.Code == Status.Success) return response?.Payload;
+
+            throw new Exception(response?.Message);
+        }
+
+        public async Task<string?> ChangePasswordAsync(RequestChangePassword model, string token)
+        {
+            var response = await httpService.HttpPostAsync<Response<string>>("/api/Account/ChangePassword", model, accessToken: token);
+
+            if (response.Code == Status.Success) return response?.Payload;
+
+            throw new Exception(response?.Message);
+        }
+
         public async Task<string> UpdateUserClaimAsync(RequestUpdateUserClaimModel model, string token)
         {
             var response = await httpService.HttpPostAsync<Response<string>>("/api/Account/UpdateUserClaim", model, accessToken: token);

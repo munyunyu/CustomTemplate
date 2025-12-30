@@ -7,6 +7,42 @@ using System.Threading.Tasks;
 
 namespace Template.Library.Models
 {
+    public class RequestResetPassword
+    {
+        [Required]
+        public Guid UserId { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string NewPassword { get; set; } = string.Empty;
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare("NewPassword")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+
+        public DateTime? PasswordExpiryDate { get; set; } = DateTime.Now.AddDays(60);
+        public bool PasswordNeverExpires { get; set; }
+    }
+
+    public class RequestChangePassword
+    {
+        [Required]
+        public Guid UserId { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string OldPassword { get; set; } = string.Empty;
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string NewPassword { get; set; } = string.Empty;
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare("NewPassword")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
     public class RequestUpdateAccount
     {
         [Required]

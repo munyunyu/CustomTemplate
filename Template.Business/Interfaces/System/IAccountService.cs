@@ -37,5 +37,7 @@ namespace Template.Business.Interfaces.System
         Task<bool> IsAccountLockedAsync(string userId);
         Task<ApplicationUserViewModel?> GetUserDetailsAsync(Guid userId);
         Task<IdentityResult> UpdateAccountAsync(ApplicationUser user);
+        Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string newPassword);
+        Task<IdentityResult> ChangePasswordAsync(ApplicationUser user, string oldPassword, string newPassword);
     }
 }
