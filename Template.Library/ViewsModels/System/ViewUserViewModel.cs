@@ -33,7 +33,7 @@ namespace Template.Library.ViewsModels.System
         public int FailedLoginAttempts { get; set; }
         public DateTime? LockoutEndDate { get; set; }
         public bool IsManuallyLocked { get; set; }
-
+        public string? PhoneNumber { get; set; }
 
         public virtual bool EmailConfirmed { get; set; }
         public virtual bool PhoneNumberConfirmed { get; set; }

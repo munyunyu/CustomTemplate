@@ -27,12 +27,12 @@
         </PartialModal>
         <PartialModal ButtonCSS="float-right btn btn-primary btn-sm mr-1"
                       Button="Edit Profile"
-                      Heading="Update Claims"
-                      Id="UpdateClaims"
+                      Heading="Edit Profile"
+                      Id="EditProfile"
                       Size="modal-xl"
                       ShowFooter="false">
             <Content>
-                <UpdateUserClaim UserId="@UserId"></UpdateUserClaim>
+                <UpdateUserModal UserId="@UserId"></UpdateUserModal>
             </Content>
         </PartialModal>
         <PartialModal ButtonCSS="float-right btn btn-warning btn-sm mr-1"
@@ -60,7 +60,7 @@
 </PartaialPageTitle>
 
 <div class="d-flex mb-3 common-display-box">
-    <div class="p-1 bg-dark common-display-left-pill">Account: @(User?.IsDeleted == true ? "Active" : "Disabled")</div>
+    <div class="p-1 bg-dark common-display-left-pill">Account: @(User?.IsDeleted != true ? "Active" : "Disabled")</div>
     <div class="p-1 mr-auto">Description: <span class="common-display-mode-badge">@(User?.Description ?? "N/A") </span> </div>
     <div class="p-1 bg-dark common-display-right-pill">CREATED: @User?.CreatedDate</div>
 </div> 
@@ -93,13 +93,13 @@
 
                         <tr>
                             <td>Email: @User?.Email</td>
-                            <td>Firstname: percy </td>
-                            <td>Lastname: Munyunyu </td>
+                            <td>Firstname: @User?.FirstName </td>
+                            <td>Lastname: @User?.LastName </td>
                         </tr>
                         <tr>
                             <td>ID#: 63-1477801 N26  </td>
                             <td>DOB: 07 Dec 1993</td>
-                            <td>Phone: 263 777 086 674</td>
+                            <td>Phone: @User?.PhoneNumber</td>
                         </tr>
                         <tr>
                             <td colspan="3">Addess#: ResedentialAddess </td>

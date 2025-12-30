@@ -139,6 +139,13 @@ namespace Template.Business.Services.System
             return result;
         }
 
+        public async Task<IdentityResult> UpdateAccountAsync(ApplicationUser user)
+        {
+            var response = await userManager.UpdateAsync(user);
+
+            return response;
+        }
+
         public async Task<ApplicationUser?> FindByIdAsync(Guid userId)
         {
             ApplicationUser? user = await userManager.FindByIdAsync(userId.ToString());

@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Pages\Users\Modals\" />
     <Folder Include="Components\Shared\DataTable\" />
   </ItemGroup>
 

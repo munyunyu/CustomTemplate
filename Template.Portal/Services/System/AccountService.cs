@@ -51,6 +51,15 @@ namespace Template.Portal.Services.System
             throw new Exception(response?.Message);
         }
 
+        public async Task<string?> UpdateAccountAsync(RequestUpdateAccount model, string token)
+        {
+            var response = await httpService.HttpPostAsync<Response<string>>("/api/Account/UpdateAccount", model, accessToken: token);
+
+            if (response.Code == Status.Success) return response?.Payload;
+
+            throw new Exception(response?.Message);
+        }
+
         public async Task<string> UpdateUserClaimAsync(RequestUpdateUserClaimModel model, string token)
         {
             var response = await httpService.HttpPostAsync<Response<string>>("/api/Account/UpdateUserClaim", model, accessToken: token);

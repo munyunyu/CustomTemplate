@@ -7,6 +7,15 @@ using System.Threading.Tasks;
 
 namespace Template.Library.Models
 {
+    public class RequestUpdateAccount
+    {
+        [Required]
+        public Guid UserId { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; } = string.Empty;
+    }
     public class RequestRegisterAccount
     {
         [Required]

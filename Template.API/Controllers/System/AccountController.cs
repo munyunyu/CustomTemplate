@@ -31,6 +31,40 @@ namespace Template.Service.Controllers.System
             this.logger = logger;
         }
 
+        [HttpPost]
+        [Route("UpdateAccount")]
+        public async Task<Response<string>> UpdateAccount(RequestUpdateAccount model)
+        {
+            try
+            {
+                var user = await portalService.Account.FindByIdAsync(model.UserId);
+
+                if (user == null) throw new GeneralException($"Failed to find userId: {model.UserId}");
+
+                if(!string.IsNullOrEmpty(model.FirstName)) user.FirstName = model.FirstName;
+                if (!string.IsNullOrEmpty(model.LastName)) user.LastName = model.LastName;
+                if (!string.IsNullOrEmpty(model.Description)) user.Description = model.Description;
+                if (!string.IsNullOrEmpty(model.PhoneNumber)) user.PhoneNumber = model.PhoneNumber;
+
+                user.LastUpdatedDate = DateTime.Now;
+                user.LastUpdatedById = User.GetUserId();                
+                user.PhoneNumberConfirmed = false;             
+
+                IdentityResult result = await portalService.Account.UpdateAccountAsync(user);
+
+                if (!result.Succeeded) return new Response<string> { Code = Status.Failed, Message = string.Join("|", result.Errors.Select(x => x.Description)) };
+                               
+                return new Response<string> { Code = Status.Success, Payload = "Account was updated" };
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, "UserId: {UserId} failed to update account", model.UserId);
+
+                return new Response<string> { Code = Status.Failed, Message = ex.Message };
+            }
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("Register")]

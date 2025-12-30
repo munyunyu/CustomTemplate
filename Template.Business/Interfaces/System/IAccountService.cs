@@ -36,5 +36,6 @@ namespace Template.Business.Interfaces.System
         Task ResetFailedLoginAttemptsAsync(string userId);
         Task<bool> IsAccountLockedAsync(string userId);
         Task<ApplicationUserViewModel?> GetUserDetailsAsync(Guid userId);
+        Task<IdentityResult> UpdateAccountAsync(ApplicationUser user);
     }
 }

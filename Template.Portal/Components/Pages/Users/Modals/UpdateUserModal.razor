@@ -1,0 +1,47 @@
+﻿@inherits BasePage
+
+<EditForm Model="@Model" OnValidSubmit="HandleValidUserUpdateSubmit">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="Email">FirstName</label>
+                            <InputText id="FirstName" class="form-control" placeholder="FirstName" @bind-Value="@Model.FirstName"></InputText>
+                            <ValidationMessage For="@(() => Model.FirstName)" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="LastName">LastName</label>
+                            <InputText id="LastName" class="form-control" placeholder="LastName" @bind-Value="@Model.LastName"></InputText>
+                            <ValidationMessage For="@(() => Model.LastName)" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="PhoneNumber">PhoneNumber</label>
+                            <InputText id="PhoneNumber" class="form-control" placeholder="PhoneNumber" @bind-Value="@Model.PhoneNumber"></InputText>
+                            <ValidationMessage For="@(() => Model.PhoneNumber)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="Description">Description</label>
+                            <InputTextArea id="Description" class="form-control" placeholder="Description" @bind-Value="@Model.Description"></InputTextArea>
+                            <ValidationMessage For="@(() => Model.Description)" />
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+
+</EditForm>
