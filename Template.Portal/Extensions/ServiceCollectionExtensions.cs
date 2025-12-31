@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Design;
+using Template.Library.Constants;
 using Template.Library.Interface;
 using Template.Library.Models.POCO;
 using Template.Library.Service;
@@ -27,6 +28,17 @@ namespace Template.Portal.Extensions
 
 
             //services.AddHostedService<AuthenticateHostedService>();
+        }
+
+        public static void AddCustomAuthorizationPolicies(this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(PortalPolicy.ViewUsersPolicy, policy =>
+                {
+                    policy.RequireRole(SystemRoles.Admin);
+                });
+            });
         }
     }
 }

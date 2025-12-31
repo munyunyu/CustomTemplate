@@ -1,0 +1,36 @@
+﻿@page "/access-denied"
+@inject NavigationManager Navigation
+
+<div class="d-flex justify-content-center align-items-center" style="min-height:70vh;">
+    <div class="text-center">
+        <i class="fas fa-ban text-danger mb-3" style="font-size:4rem;"></i>
+
+        <h1 class="display-6">Access Denied</h1>
+
+        <p class="text-muted mt-3">
+            You do not have permission to view this page.
+        </p>
+
+        <div class="mt-4">
+            <button class="btn btn-primary me-2" @onclick="GoHome">
+                <i class="fas fa-home me-1"></i> Home
+            </button>
+
+            <button class="btn btn-outline-secondary" @onclick="GoBack">
+                <i class="fas fa-arrow-left me-1"></i> Go Back
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    void GoHome()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    void GoBack()
+    {
+        Navigation.NavigateTo(Navigation.Uri, true);
+    }
+}

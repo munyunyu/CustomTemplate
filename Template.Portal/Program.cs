@@ -10,6 +10,8 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 builder.Services.AddCustomScopedServices(builder);
 
+builder.Services.AddCustomAuthorizationPolicies();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

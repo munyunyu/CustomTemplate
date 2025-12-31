@@ -37,50 +37,9 @@
                     
                 </li>
               
-                <li class="nav-item">
-                    <a href="/users/index" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            Users
-                        </p>
-                    </a>
-                </li>
+            
               
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-edit"></i>
-                        <p>
-                            Deports
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview" style="display: none;">
-                        <li class="nav-item">
-                            <a href="/payments/index" class="nav-link">
-                                <i class="nav-icon fas fa-circle"></i>
-                                <p>
-                                    Loan Repayments
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/loan/interest" class="nav-link">
-                                <i class="nav-icon fas fa-circle"></i>
-                                <p>
-                                    Loan Interests
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/batch" class="nav-link">
-                                <i class="nav-icon fas fa-circle"></i>
-                                <p>
-                                    Batch Payments
-                                </p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+               
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
@@ -91,15 +50,8 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview" style="display: none;">
-                        <li class="nav-item">
-                            <a href="/product/index" class="nav-link">
-                                <i class="nav-icon fas fa-circle"></i>
-                                <p>
-                                    Loan Products
-                                </p>
-                            </a>
-                        </li>
-                        @* <AuthorizeView Policy="@PortalPolicy.ViewUsersPolicy">
+                        
+                        <AuthorizeView Policy="@PortalPolicy.ViewUsersPolicy">
                             <Authorized>
                                 <li class="nav-item">
                                     <a href="/users/index" class="nav-link">
@@ -110,16 +62,16 @@
                                     </a>
                                 </li>
                             </Authorized>
-                        </AuthorizeView> *@
+                        </AuthorizeView>
 
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a href="/users/index" class="nav-link">
                                 <i class="nav-icon fas fa-circle"></i>
                                 <p>
                                     Users
                                 </p>
                             </a>
-                        </li>
+                        </li> *@
                     </ul>
                 </li>
             </ul>
