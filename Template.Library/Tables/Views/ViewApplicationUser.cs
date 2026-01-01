@@ -9,6 +9,8 @@ namespace Template.Library.Tables.Views
     public class ViewApplicationUser : BaseEntity
     {
         public new string? Id { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
         public string? UserName { get; set; }
         public string? NormalizedUserName { get; set; }
         public string? Email { get; set; }
@@ -23,6 +25,6 @@ namespace Template.Library.Tables.Views
         public DateTimeOffset? LockoutEnd { get; set; }
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
-
+        public DateTime? LastLogin { get; set; }
     }
 }

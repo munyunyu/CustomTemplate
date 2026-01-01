@@ -18,6 +18,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9FAA7620-9706-47DF-9EF8-528F25284FFB}"
 	ProjectSection(SolutionItems) = preProject
 		DumyCodes.txt = DumyCodes.txt
+		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.Portal", "Template.Portal\Template.Portal.csproj", "{E5201C71-FCC0-4D6A-A2A5-762A448E66C8}"

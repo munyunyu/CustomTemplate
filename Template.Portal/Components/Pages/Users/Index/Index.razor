@@ -50,14 +50,21 @@
                 RowRender="@RowRender"
                 AllowSorting="true">
     <Columns>
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.Email)" Title="Email" Frozen="true" width="250px" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.CreatedDate)" Title="CreatedDate" width="160px" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.FirstName)" Title="FirstName" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LastName)" Title="LastName" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.PhoneNumber)" Title="PhoneNumber" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.EmailConfirmed)" Title="EmailConfirmed" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.CreatedDate)" Title="CreatedDate" width="150px" Frozen="true" FormatString="{0:dd MMM yyyy}" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.Email)" Title="Email" Frozen="true" width="250px" />   
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.Id)" Title="Id" />
+        <RadzenDataGridColumn Title="Full Name" SortProperty="FirstName" width="200px">
+            <Template Context="user">
+                @($"{user.FirstName} {user.LastName}")
+            </Template>
+        </RadzenDataGridColumn>
+       @*  <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.FirstName)" Title="FirstName" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LastName)" Title="LastName" /> *@
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.PhoneNumber)" Title="PhoneNumber" width="150px" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LastLogin)" Title="Last Login" width="160px" Frozen="true" FormatString="{0:dd MMM yyyy hh:mm tt}" />
+  @*       <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.EmailConfirmed)" Title="EmailConfirmed" />
         <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LockoutEnd)" Title="LockoutEnd" />
         <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.LockoutEnabled)" Title="LockoutEnabled" />
-        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.AccessFailedCount)" Title="AccessFailedCount" />
+        <RadzenDataGridColumn Property="@nameof(ViewUserViewModel.AccessFailedCount)" Title="AccessFailedCount" /> *@
     </Columns>
 </RadzenDataGrid>

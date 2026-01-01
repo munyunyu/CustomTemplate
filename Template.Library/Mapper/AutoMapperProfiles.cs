@@ -33,6 +33,9 @@ namespace Template.Library.Mapper
 
             CreateMap<ViewApplicationUser, ViewUserViewModel>();
 
+            CreateMap<ViewApplicationUser, ViewUserViewModel>()
+            .ForMember(d => d.Id, o => o.MapFrom(s => Guid.Parse(s.Id ?? "00000000-0000-0000-0000-000000000000")));
+
             CreateMap<ApplicationUser, ApplicationUserViewModel>()
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => new List<string>()))
                 .ForMember(dest => dest.Claims, opt => opt.MapFrom(src => new List<string>()));
