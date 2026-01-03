@@ -26,5 +26,7 @@ namespace Template.Business.Interfaces.System
         Task<T> UpdateAsync<T>(T model, bool unsaveChanges = false) where T : BaseEntity;
         Task<IEnumerable<T>> UpdateRangeAsync<T>(IEnumerable<T> model) where T : BaseEntity;
         Task SaveChangesAsync();
+        Task<T?> GetLastAsync<T>(Expression<Func<T, bool>> func, Expression<Func<T, object>> orderBy, int maxDepth = 0) where T : BaseEntity;
+        Task<T?> GetFirstAsync<T>(Expression<Func<T, bool>> func, int maxDepth = 0) where T : BaseEntity;
     }
 }

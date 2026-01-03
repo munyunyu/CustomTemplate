@@ -99,6 +99,30 @@ namespace Template.Business.Services.System
 
             return result;
         }
+
+
+        public async Task<T?> GetFirstAsync<T>(Expression<Func<T, bool>> func,int maxDepth = 0) where T : BaseEntity
+        {
+            IQueryable<T> query = maxDepth <= 0
+                ? context.Set<T>()
+                : context.Set<T>().IncludeAllRecursively(maxDepth);
+
+            return await query.FirstOrDefaultAsync(func);
+        }
+
+        public async Task<T?> GetLastAsync<T>(Expression<Func<T, bool>> func,Expression<Func<T, object>> orderBy,int maxDepth = 0) where T : BaseEntity
+        {
+            IQueryable<T> query = maxDepth <= 0
+                ? context.Set<T>()
+                : context.Set<T>().IncludeAllRecursively(maxDepth);
+
+            return await query
+                .OrderBy(orderBy)
+                .LastOrDefaultAsync(func);
+        }
+
+
+
         public T? GetAll<T>(Expression<Func<T, bool>> func, params string[] includes) where T : BaseEntity
         {
             IQueryable<T> query = context.Set<T>().IncludeMultiple(includes);

@@ -334,10 +334,13 @@ namespace Template.Business.Services.System
 
             var claims = (await userManager.GetClaimsAsync(user)).Select(x => x.Type).ToList();
 
+            var lastLogin = await database.GetLastAsync<TblAuditLog>(x => x.EntityName == "ApplicationUser" && x.Action == "Login" && x.EntityId == userId, o => o.CreatedDate);
+
             var _mapped = mapper.Map<ApplicationUserViewModel>(user);
 
             _mapped.Roles = roles;
-            _mapped.Claims = claims;   
+            _mapped.Claims = claims;
+            _mapped.LastLogin = lastLogin?.LastUpdatedDate;
 
             return _mapped;
         }

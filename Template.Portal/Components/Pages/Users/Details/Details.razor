@@ -71,7 +71,7 @@
                     <div class="mb-3">
                         <span class="meta-label">Last Login</span>
                         <div class="muted-small">
-                            yyyy-MM-dd HH:mm
+                            @(User?.LastLogin?.ToString("dd-MM-yyyy hh:mm tt") ?? "N/A")
                         </div>
 
 
