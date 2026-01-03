@@ -9,7 +9,7 @@
                       Button="Update Roles"
                       Heading="Update Roles"
                       Id="UpdateRoles"
-                      Size="modal-xl"
+                      Size="modal-lg"
                       ShowFooter="false">
             <Content>
                 <UpdateUserRole UserId="@UserId"></UpdateUserRole>
@@ -19,7 +19,7 @@
                       Button="Update Claims"
                       Heading="Update Claims"
                       Id="UpdateClaims"
-                      Size="modal-xl"
+                      Size="modal-lg"
                       ShowFooter="false">
             <Content>
                 <UpdateUserClaim UserId="@UserId"></UpdateUserClaim>
@@ -30,14 +30,14 @@
                       Button="Reset Password"
                       Heading="Reset Password"
                       Id="ResetPassword"
-                      Size="modal-xl"
+                      Size="modal-lg"
                       ShowFooter="false">
             <Content>
                 <ResetPasswordModal UserId="@UserId"></ResetPasswordModal>
             </Content>
         </PartialModal>
         
-        <PartialModal ButtonCSS="float-right btn btn-outline-danger btn-sm mr-1"
+      @*   <PartialModal ButtonCSS="float-right btn btn-outline-danger btn-sm mr-1"
                       Button="Lock Account"
                       Heading="Update Claims"
                       Id="UpdateClaims"
@@ -46,7 +46,7 @@
             <Content>
                 <UpdateUserClaim UserId="@UserId"></UpdateUserClaim>
             </Content>
-        </PartialModal>
+        </PartialModal> *@
     </Content>
 </PartaialPageTitle>
 
@@ -109,18 +109,18 @@
                 <table class="table table-sm table-borderless table-striped mb-5">
                     <tbody>
 
+                         <tr>
+                            <td colspan="3">ID#: @User.Id </td>
+                        </tr>
                         <tr>
                             <td>Email: @User?.Email</td>
                             <td>Firstname: @User?.FirstName </td>
                             <td>Lastname: @User?.LastName </td>
                         </tr>
                         <tr>
-                            <td>ID#: 63-1477801 N26  </td>
-                            <td>DOB: 07 Dec 1993</td>
+                            <td></td>
+                            <td></td>
                             <td>Phone: @User?.PhoneNumber</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">Addess#: ResedentialAddess </td>
                         </tr>
                     </tbody>
                 </table>
