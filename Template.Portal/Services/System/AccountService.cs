@@ -42,9 +42,9 @@ namespace Template.Portal.Services.System
             throw new Exception(response?.Message);
         }
 
-        public async Task<string?> RegisterAccountAsync(RequestRegisterAccount model)
+        public async Task<string?> RegisterAccountAsync(RequestRegisterAccount model, string token)
         {
-            var response = await httpService.HttpPostAsync<Response<ResponseRegisterAccount>>("/api/Account/Register", model);
+            var response = await httpService.HttpPostAsync<Response<ResponseRegisterAccount>>("/api/Account/Register", model, accessToken: token);
 
             if (response.Code == Status.Success) return response?.Payload?.Message;
 

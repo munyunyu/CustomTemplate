@@ -14,11 +14,11 @@ namespace Template.Portal.Components.Pages.Users.Modals
             {
                 HelperService.SetIsLoadingState(true);
 
-                var message = await PortalService.Account.RegisterAccountAsync(Model);
-
-                HelperService.SetSuccessMessage(message ?? "User registered successfully.");
-
                 var token = await AuthService.GetCurrentUserTokenAsync();
+
+                var message = await PortalService.Account.RegisterAccountAsync(Model, token);
+
+                HelperService.SetSuccessMessage(message ?? "User registered successfully.");                
 
                 string userId = await PortalService.Account.GetUserIdByEmailAsync(email: Model.Email, token: token);
 

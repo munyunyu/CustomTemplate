@@ -72,6 +72,7 @@ namespace Template.Library.Models
         [DataType(DataType.Password)]
         [Compare("Password")]
         public string? ConfirmPassword { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
     }
 
     public class ResponseRegisterAccount

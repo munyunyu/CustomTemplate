@@ -65,7 +65,8 @@ namespace Template.Service.Controllers.System
             }
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
+        [Authorize(Roles = SystemRoles.Admin)]
         [HttpPost]
         [Route("Register")]
         public async Task<Response<ResponseRegisterAccount>> Register(RequestRegisterAccount model)
@@ -80,7 +81,8 @@ namespace Template.Service.Controllers.System
                     CreatedDate = DateTime.Now,
                     LastUpdatedDate = DateTime.Now,
                     FirstName = model.FirstName,
-                    LastName = model.LastName
+                    LastName = model.LastName, 
+                    PhoneNumber = model.PhoneNumber
                 };
 
                 IdentityResult result = await portalService.Account.CreateAccountAsync(user, model.Password);

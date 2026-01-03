@@ -17,14 +17,14 @@
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="Password">Password</label>
-                            <InputText id="Password" class="form-control" placeholder="Password" @bind-Value="@Model.Password"></InputText>
+                            <InputText id="Password" class="form-control" placeholder="Password" @bind-Value="@Model.Password" type="password"></InputText>
                             <ValidationMessage For="@(()=> Model.Password)" />
                         </div>
                     </div>                
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="ConfirmPassword">Confirm Password</label>
-                            <InputText id="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" @bind-Value="@Model.ConfirmPassword"></InputText>
+                            <InputText id="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" @bind-Value="@Model.ConfirmPassword" type="password"></InputText>
                             <ValidationMessage For="@(()=> Model.ConfirmPassword)" />
                         </div>
                     </div>
@@ -32,7 +32,7 @@
                 <div class="col-sm-6">
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="FirstName">FirstName</label>
+                            <label for="FirstName">First Name</label>
                             <InputText id="FirstName" class="form-control" placeholder="FirstName" @bind-Value="@Model.FirstName"></InputText>
                             <ValidationMessage For="@(()=> Model.FirstName)" />
                         </div>
@@ -42,6 +42,13 @@
                             <label for="LastName">Surname</label>
                             <InputText id="LastName" class="form-control" placeholder="LastName" @bind-Value="@Model.LastName"></InputText>
                             <ValidationMessage For="@(()=> Model.LastName)" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="PhoneNumber">Phone Number</label>
+                            <InputText id="PhoneNumber" class="form-control" placeholder="PhoneNumber" @bind-Value="@Model.PhoneNumber"></InputText>
+                            <ValidationMessage For="@(() => Model.PhoneNumber)" />
                         </div>
                     </div>
                 </div>
