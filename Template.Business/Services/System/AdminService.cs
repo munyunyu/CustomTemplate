@@ -25,14 +25,14 @@ namespace Template.Business.Services.System
 
         public async Task<IEnumerable<ViewUserViewModel>?> GetSystemUsersAsync()
         {
-            var records = await databaseService.GetAllAsync<ViewApplicationUser>();
+            var records = await databaseService.GetAllAsync<ViewApplicationUser>(count: int.MaxValue);
 
             return mapper.Map<IEnumerable<ViewUserViewModel>>(records);
         }
 
         public async Task<IEnumerable<SystemUserRolesViewModel>?> GetUsersRolesAsync()
         {
-            var records = await databaseService.GetAllAsync<ViewSystemUserRoles>();
+            var records = await databaseService.GetAllAsync<ViewSystemUserRoles>(count: int.MaxValue);
 
             return mapper.Map<IEnumerable<SystemUserRolesViewModel>>(records);
         }

@@ -258,10 +258,7 @@ namespace Template.Business.Services.System
             var user = await userManager.FindByIdAsync(userId);
             if (user == null) return false;
 
-            var previousPasswords = (await database.GetAllAsync<TblPasswordHistory>(x => x.UserId == userId))
-                ?.Where(ph => ph.UserId == userId)
-                ?.OrderByDescending(ph => ph.CreatedDate)
-                ?.Take(5);
+            var previousPasswords = await database.GetAllAsync<TblPasswordHistory>(x => x.UserId == userId, count: 5);
 
             foreach (var oldPassword in previousPasswords)
             {

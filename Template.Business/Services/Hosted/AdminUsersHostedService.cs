@@ -49,7 +49,7 @@ namespace Template.Business.Services.Hosted
 
                 var database = scope.ServiceProvider.GetRequiredService<IDatabaseService>();
 
-                var admin_users = await database.GetAllAsync<ViewApplicationUser>();
+                var admin_users = await database.GetAllAsync<ViewApplicationUser>(count: int.MaxValue);
 
                 SystemUsers.Admins = admin_users;
 

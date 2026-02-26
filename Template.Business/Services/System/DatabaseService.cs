@@ -11,7 +11,6 @@ using Template.Database.Context;
 using Template.Database.Extensions;
 using Template.Library.Extensions;
 using Template.Library.Tables;
-using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 
@@ -62,27 +61,27 @@ namespace Template.Business.Services.System
         }
         public bool Exist<T>(Expression<Func<T, bool>> func) where T : BaseEntity
         {
-            bool result = context.Set<T>().Any(func);
+            bool result = context.Set<T>().AsNoTracking().Any(func);
             return result;
         }
         public async Task<bool> ExistAsync<T>(Expression<Func<T, bool>> func) where T : BaseEntity
         {
-            bool result = await context.Set<T>().AnyAsync(func);
+            bool result = await context.Set<T>().AsNoTracking().AnyAsync(func);
             return result;
         }
         public int Count<T>(Expression<Func<T, bool>> func) where T : BaseEntity
         {
-            var result = context.Set<T>().Count(func);
+            var result = context.Set<T>().AsNoTracking().Count(func);
             return result;
         }
         public async Task<int> CountAsync<T>(Expression<Func<T, bool>> func) where T : BaseEntity
         {
-            var result = await context.Set<T>().CountAsync(func);
+            var result = await context.Set<T>().AsNoTracking().CountAsync(func);
             return result;
         }
         public async Task<T?> GetAsync<T>(Expression<Func<T, bool>> func, params string[] includes) where T : BaseEntity
         {
-            IQueryable<T> query = context.Set<T>().IncludeMultiple(includes);
+            IQueryable<T> query = context.Set<T>().AsNoTracking().IncludeMultiple(includes);
 
             var result = await query.SingleOrDefaultAsync(func);
 
@@ -92,8 +91,8 @@ namespace Template.Business.Services.System
         {
             IQueryable<T> query;
 
-            if (maxDepth <= 0) query = context.Set<T>();
-            else query = context.Set<T>().IncludeAllRecursively(maxDepth);
+            if (maxDepth <= 0) query = context.Set<T>().AsNoTracking();
+            else query = context.Set<T>().AsNoTracking().IncludeAllRecursively(maxDepth);
 
             var result = await query.SingleOrDefaultAsync(func);
 
@@ -104,8 +103,8 @@ namespace Template.Business.Services.System
         public async Task<T?> GetFirstAsync<T>(Expression<Func<T, bool>> func,int maxDepth = 0) where T : BaseEntity
         {
             IQueryable<T> query = maxDepth <= 0
-                ? context.Set<T>()
-                : context.Set<T>().IncludeAllRecursively(maxDepth);
+                ? context.Set<T>().AsNoTracking()
+                : context.Set<T>().AsNoTracking().IncludeAllRecursively(maxDepth);
 
             return await query.FirstOrDefaultAsync(func);
         }
@@ -113,39 +112,42 @@ namespace Template.Business.Services.System
         public async Task<T?> GetLastAsync<T>(Expression<Func<T, bool>> func,Expression<Func<T, object>> orderBy,int maxDepth = 0) where T : BaseEntity
         {
             IQueryable<T> query = maxDepth <= 0
-                ? context.Set<T>()
-                : context.Set<T>().IncludeAllRecursively(maxDepth);
+                ? context.Set<T>().AsNoTracking()
+                : context.Set<T>().AsNoTracking().IncludeAllRecursively(maxDepth);
 
             return await query
-                .OrderBy(orderBy)
-                .LastOrDefaultAsync(func);
+                .Where(func)
+                .OrderByDescending(orderBy)
+                .FirstOrDefaultAsync();
         }
 
 
 
         public T? GetAll<T>(Expression<Func<T, bool>> func, params string[] includes) where T : BaseEntity
         {
-            IQueryable<T> query = context.Set<T>().IncludeMultiple(includes);
+            IQueryable<T> query = context.Set<T>().AsNoTracking().IncludeMultiple(includes);
 
             var result = query.SingleOrDefault(func);
 
             return result;
         }
-        public async Task<IEnumerable<T>> GetAllAsync<T>(int maxDepth = 0, int count = 50, params string[] includes) where T : BaseEntity
+        public async Task<IEnumerable<T>> GetAllAsync<T>(int maxDepth = 0, int skip = 0, int count = 50, params string[] includes) where T : BaseEntity
         {
-            IQueryable<T> query = context.Set<T>().IncludeMultiple(includes);
+            IQueryable<T> query = context.Set<T>().AsNoTracking().IncludeMultiple(includes);
 
-            //var result = await query.IncludeAllRecursively(maxDepth).OrderByDescending(o => o.Created).Take(count).ToListAsync();
-            var result = await query.IncludeAllRecursively(maxDepth).ToListAsync();
+            if (maxDepth > 0) query = query.IncludeAllRecursively(maxDepth);
+
+            var result = await query.OrderByDescending(o => o.CreatedDate).Skip(skip).Take(count).ToListAsync();
 
             return result;
         }
-        public async Task<IEnumerable<T>> GetAllAsync<T>(Expression<Func<T, bool>> func, int maxDepth = 0, int count = 50, params string[] includes) where T : BaseEntity
+        public async Task<IEnumerable<T>> GetAllAsync<T>(Expression<Func<T, bool>> func, int maxDepth = 0, int skip = 0, int count = 50, params string[] includes) where T : BaseEntity
         {
-            IQueryable<T> query = context.Set<T>().IncludeMultiple(includes);
+            IQueryable<T> query = context.Set<T>().AsNoTracking().IncludeMultiple(includes);
 
-            //var result = await query.Where(func).OrderByDescending(o => o.Created).Take(count).ToListAsync();
-            var result = await query.Where(func).ToListAsync();
+            if (maxDepth > 0) query = query.IncludeAllRecursively(maxDepth);
+
+            var result = await query.Where(func).OrderByDescending(o => o.CreatedDate).Skip(skip).Take(count).ToListAsync();
 
             return result;
         }
@@ -156,7 +158,6 @@ namespace Template.Business.Services.System
                 model.Hash = model.GenerateHash();
 
                 context.Update(model);
-                context.Entry(model).State = EntityState.Modified;
                 if (unsaveChanges == false) await context.SaveChangesAsync();
                 return model;
             }
@@ -197,20 +198,44 @@ namespace Template.Business.Services.System
         }
         public T? SqlQueryRawCommand<T>(string query)
         {
-            using (var command = context.Database.GetDbConnection().CreateCommand())
+            try
             {
-                command.CommandText = query;
-
-                command.CommandType = CommandType.Text;
-
                 context.Database.OpenConnection();
 
-                command.ExecuteReader();
+                using var command = context.Database.GetDbConnection().CreateCommand();
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+
+                using var reader = command.ExecuteReader();
+                var result = new StringBuilder();
+
+                result.Append('[');
+                var first = true;
+                while (reader.Read())
+                {
+                    if (!first) result.Append(',');
+                    first = false;
+
+                    result.Append('{');
+                    for (var i = 0; i < reader.FieldCount; i++)
+                    {
+                        if (i > 0) result.Append(',');
+                        var name = reader.GetName(i);
+                        var value = reader.IsDBNull(i) ? "null" : JsonSerializer.Serialize(reader.GetValue(i));
+                        result.Append($"\"{name}\":{value}");
+                    }
+                    result.Append('}');
+                }
+                result.Append(']');
+
+                var json = result.ToString();
+
+                return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
-
-            var _result = string.Empty;
-
-            return JsonSerializer.Deserialize<T>(_result, new JsonSerializerOptions() { PropertyNameCaseInsensitive = false });
+            finally
+            {
+                context.Database.CloseConnection();
+            }
         }
 
         public async Task SaveChangesAsync()
