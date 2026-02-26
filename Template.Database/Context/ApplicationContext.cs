@@ -85,8 +85,8 @@ namespace Template.Database.Context
                     Changes = GetChanges(modifiedEntity),
                     CreatedById = entity.LastUpdatedById,
                     LastUpdatedById = entity.LastUpdatedById,
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now,   
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow,   
                     Hash = entity.GenerateHash(),
                 };
 

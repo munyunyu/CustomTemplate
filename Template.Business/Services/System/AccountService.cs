@@ -124,9 +124,9 @@ namespace Template.Business.Services.System
                 EntityId = Guid.Parse(user.Id),
                 EntityName = "ApplicationUser",
                 CreatedById = Guid.Parse(user.Id),
-                CreatedDate = DateTime.Now,
+                CreatedDate = DateTime.UtcNow,
                 LastUpdatedById = Guid.Parse(user.Id),
-                LastUpdatedDate = DateTime.Now,
+                LastUpdatedDate = DateTime.UtcNow,
             });
 
             return isvalid;

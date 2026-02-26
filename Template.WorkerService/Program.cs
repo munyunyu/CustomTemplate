@@ -3,7 +3,7 @@ using Template.Business.Interfaces.System;
 using Template.Business.Services.System;
 using Template.Database.Context;
 using Template.Library.Constants;
-using Template.Library.Models.POCO;
+using Template.Library.Models.Queue;
 using Template.WorkerService;
 using Template.WorkerService.Extensions;
 using Template.WorkerService.Job.SystemJob;
@@ -21,11 +21,10 @@ IHost host = Host.CreateDefaultBuilder(args)
         // ── Business services ─────────────────────────────────────────────────
         services.AddScoped<IDatabaseService, DatabaseService>();
 
-        // ── RabbitMQ ──────────────────────────────────────────────────────────
-        services.Configure<RabbitMQSettings>(configuration.GetSection(nameof(RabbitMQSettings)));
-        services.AddSingleton<IRabbitMQService, RabbitMQService>();
+        // ── In-process queue pipeline (replaces RabbitMQ for same-process use) 
+        services.AddSingleton<IBackgroundTaskQueue<EmailQueueMessage>, BackgroundTaskQueue<EmailQueueMessage>>();
 
-        // ── Background worker (RabbitMQ consumer) ─────────────────────────────
+        // ── Background worker (Channel<T> consumer) ─────────────────────────
         services.AddHostedService<Worker>();
 
         // ── Cron jobs ─────────────────────────────────────────────────────────

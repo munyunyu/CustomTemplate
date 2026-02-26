@@ -1,62 +1,60 @@
-using AutoMapper;
-using RabbitMQ.Client.Events;
-using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Template.Business.Interfaces.System;
-using Template.Library.Constants;
+using Template.Library.Enums;
+using Template.Library.Models.Queue;
+using Template.Library.Tables.Notification;
 
 namespace Template.WorkerService
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IRabbitMQService rabbitMQService;
+        private readonly IBackgroundTaskQueue<EmailQueueMessage> _emailQueue;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public Worker(ILogger<Worker> logger, IRabbitMQService rabbitMQService)
+        public Worker(
+            ILogger<Worker> logger,
+            IBackgroundTaskQueue<EmailQueueMessage> emailQueue,
+            IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
-            this.rabbitMQService = rabbitMQService;
-        }
-
-        public override Task StartAsync(CancellationToken cancellationToken)
-        {
-
-
-            return base.StartAsync(cancellationToken);
+            _emailQueue = emailQueue;
+            _scopeFactory = scopeFactory;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Email queue worker started");
 
-
-            while (!stoppingToken.IsCancellationRequested)
+            await foreach (var message in _emailQueue.DequeueAllAsync(stoppingToken))
             {
-                //rabbitMQService.Subscribe(queueName: RabbitQueue.GeneralEmailNotification, receivedHandler: Consumer_Received, shutdownHandler: null, durable: true, autoAck: false);
+                try
+                {
+                    _logger.LogInformation("Processing email queue item: {EmailQueueId}", message.EmailQueueId);
 
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(5000, stoppingToken);
-            }
-        }
+                    using var scope = _scopeFactory.CreateScope();
+                    var db = scope.ServiceProvider.GetRequiredService<IDatabaseService>();
 
-        public async Task Consumer_Received(object sender, BasicDeliverEventArgs e)
-        {
-            try
-            {
-                var body = e.Body.ToArray();
-                var brandId = Encoding.UTF8.GetString(body);
+                    var emailEntry = await db.GetAsync<TblEmailQueue>(x => x.Id == message.EmailQueueId);
+                    if (emailEntry == null)
+                    {
+                        _logger.LogWarning("Email queue entry {EmailQueueId} not found", message.EmailQueueId);
+                        continue;
+                    }
 
-                _logger.LogInformation("RabbitMQ parameter: {brandId}", brandId);
-                
-                throw new Exception("Error");
+                    // TODO: Implement actual SMTP sending via MailKit using TblEmailConfig
+                    emailEntry.SendAttempts++;
+                    emailEntry.Status = Status.Success;
+                    emailEntry.LastUpdatedDate = DateTime.UtcNow;
 
-                //rabbitMQService.BasicAck(e.DeliveryTag, false);
+                    await db.UpdateAsync(emailEntry);
 
-                await Task.Yield();
-            }
-            catch (Exception ex)
-            {
-                //rabbitMQService.BasicNack(e.DeliveryTag, false, false);
-                
-                _logger.LogError(ex, "RabbitMQ parameter: {parameter}", e.Body.ToArray());
+                    _logger.LogInformation("Email queue item {EmailQueueId} processed successfully", message.EmailQueueId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to process email queue item: {EmailQueueId}", message.EmailQueueId);
+                }
             }
         }
     }

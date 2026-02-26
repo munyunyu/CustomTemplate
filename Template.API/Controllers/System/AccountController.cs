@@ -46,7 +46,7 @@ namespace Template.Service.Controllers.System
                 if (!string.IsNullOrEmpty(model.Description)) user.Description = model.Description;
                 if (!string.IsNullOrEmpty(model.PhoneNumber)) user.PhoneNumber = model.PhoneNumber;
 
-                user.LastUpdatedDate = DateTime.Now;
+                user.LastUpdatedDate = DateTime.UtcNow;
                 user.LastUpdatedById = User.GetUserId();                
                 user.PhoneNumberConfirmed = false;             
 
@@ -59,7 +59,7 @@ namespace Template.Service.Controllers.System
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message, "UserId: {UserId} failed to update account", model.UserId);
+                logger.LogError(ex, "UserId: {UserId} failed to update account", model.UserId);
 
                 return new Response<string> { Code = Status.Failed, Message = ex.Message };
             }
@@ -78,8 +78,8 @@ namespace Template.Service.Controllers.System
                     Email = model.Email, 
                     UserName = model.Email, 
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now,
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow,
                     FirstName = model.FirstName,
                     LastName = model.LastName, 
                     PhoneNumber = model.PhoneNumber
@@ -98,7 +98,7 @@ namespace Template.Service.Controllers.System
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message, "User email: {email} failed to register", model.Email);
+                logger.LogError(ex, "User email: {email} failed to register", model.Email);
 
                 return new Response<ResponseRegisterAccount> { Code = Status.Failed, Message = ex.Message };
             }
@@ -153,7 +153,7 @@ namespace Template.Service.Controllers.System
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message, "User email: {email} failed to login", model.Email);
+                logger.LogError(ex, "User email: {email} failed to login", model.Email);
 
                 return new Response<ResponseLoginAccount> { Code = Status.Failed, Message = ex.Message };
             }
@@ -189,6 +189,7 @@ namespace Template.Service.Controllers.System
 
         [HttpPost]
         [Route("UpdateUserRole")]
+        [Authorize(Policy = SystemPolicy.AdminPolicyUpdate)]
         public async Task<Response<string>> UpdateUserRole(RequestUpdateUserRoleModel model)
         {
             try
@@ -212,7 +213,6 @@ namespace Template.Service.Controllers.System
             }
         }
 
-        [AllowAnonymous]
         [HttpGet]
         [Route("GetUserRolesAndClaims/{userId}")]
         public async Task<Response<ResponseUserRolesAndClaims>> GetUserRolesAndClaims(Guid userId)
@@ -229,7 +229,6 @@ namespace Template.Service.Controllers.System
             }
         }
 
-        [AllowAnonymous]
         [HttpGet]
         [Route("GetUserDetails/{userId}")]
         public async Task<Response<ApplicationUserViewModel>> GetUserDetails(Guid userId)
@@ -327,11 +326,11 @@ namespace Template.Service.Controllers.System
 
                 if (!result.Succeeded) return new Response<string> { Code = Status.Failed, Message = string.Join("|", result.Errors.Select(x => x.Description)) };
 
-                user.LastUpdatedDate = DateTime.Now;
+                user.LastUpdatedDate = DateTime.UtcNow;
                 user.LastUpdatedById = User.GetUserId();
-                user.LastPasswordChangeDate = DateTime.Now;
+                user.LastPasswordChangeDate = DateTime.UtcNow;
 
-                if (user.PasswordNeverExpires) user.PasswordExpiryDate = DateTime.Now.AddDays(60);
+                if (user.PasswordNeverExpires) user.PasswordExpiryDate = DateTime.UtcNow.AddDays(60);
 
                 await portalService.Account.UpdateAccountAsync(user);
 
@@ -359,9 +358,9 @@ namespace Template.Service.Controllers.System
 
                 if (!result.Succeeded) return new Response<string> { Code = Status.Failed, Message = string.Join("|", result.Errors.Select(x => x.Description)) };
 
-                user.LastUpdatedDate = DateTime.Now;
+                user.LastUpdatedDate = DateTime.UtcNow;
                 user.LastUpdatedById = User.GetUserId();
-                user.LastPasswordChangeDate = DateTime.Now;                
+                user.LastPasswordChangeDate = DateTime.UtcNow;                
                 user.PasswordNeverExpires = model.PasswordNeverExpires;
 
                 if (model.PasswordNeverExpires) user.PasswordExpiryDate = null;

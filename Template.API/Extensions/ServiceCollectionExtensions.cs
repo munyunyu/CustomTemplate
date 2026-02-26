@@ -16,6 +16,7 @@ using Template.Business.Services.System;
 using Template.Database.Context;
 using Template.Library.Constants;
 using Template.Library.Models.POCO;
+using Template.Library.Models.Queue;
 using Template.Library.Tables.User;
 
 namespace Template.Service.Extensions
@@ -89,6 +90,9 @@ namespace Template.Service.Extensions
             services.AddScoped<IPortalService, PortalService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddSingleton<IRabbitMQService, RabbitMQService>();
+
+            //In-process queue pipeline (Channel<T>) — for same-process background processing
+            services.AddSingleton<IBackgroundTaskQueue<EmailQueueMessage>, BackgroundTaskQueue<EmailQueueMessage>>();
 
 
             //services.AddHostedService<AdminUsersHostedService>();

@@ -28,5 +28,8 @@ namespace Template.Business.Interfaces.System
         Task SaveChangesAsync();
         Task<T?> GetLastAsync<T>(Expression<Func<T, bool>> func, Expression<Func<T, object>> orderBy, int maxDepth = 0) where T : BaseEntity;
         Task<T?> GetFirstAsync<T>(Expression<Func<T, bool>> func, int maxDepth = 0) where T : BaseEntity;
+        Task DeleteAsync<T>(T model) where T : BaseEntity;
+        Task DeleteRangeAsync<T>(IEnumerable<T> models) where T : BaseEntity;
+        Task SoftDeleteAsync<T>(Expression<Func<T, bool>> func) where T : BaseEntity;
     }
 }

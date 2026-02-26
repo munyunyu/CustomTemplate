@@ -39,9 +39,9 @@ namespace Template.Business.Services.Profile
                 Surname = model.Surname,
                 UserId = Guid.Parse(model.UserId),
                 LastUpdatedById = Guid.Parse(userId),
-                LastUpdatedDate = DateTime.Now,
+                LastUpdatedDate = DateTime.UtcNow,
                 CreatedById = Guid.Parse(userId),
-                CreatedDate = DateTime.Now,
+                CreatedDate = DateTime.UtcNow,
             };
 
             await database.AddAsync(table);
@@ -98,7 +98,7 @@ namespace Template.Business.Services.Profile
             profile.Phonenumber = model.Phonenumber;
             profile.Surname = model.Surname;
             profile.LastUpdatedById = Guid.Parse(userId);
-            profile.LastUpdatedDate = DateTime.Now;
+            profile.LastUpdatedDate = DateTime.UtcNow;
 
             await database.UpdateAsync(profile);
 

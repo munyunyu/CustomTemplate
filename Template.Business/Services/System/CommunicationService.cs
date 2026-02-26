@@ -63,8 +63,8 @@ namespace Template.Business.Services.System
                     Priority = Priority.High,
 
                     CreatedById = Guid.NewGuid(),
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now,
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow,
                     LastUpdatedById = Guid.NewGuid(),
 
                 };

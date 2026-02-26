@@ -1,1 +1,461 @@
-- Add email confirmation logic
+================================================================================
+  SOLUTION AUDIT - TODO & NON-STANDARD FINDINGS
+  Generated: 2026-02-26
+================================================================================
+
+Legend:
+  [CRITICAL]  - Security or data-loss risk, fix before production
+  [HIGH]      - Non-standard pattern that will cause real problems at scale
+  [MEDIUM]    - Code quality / maintainability improvement
+  [LOW]       - Nice-to-have / cosmetic
+
+================================================================================
+ 1. SECURITY
+================================================================================
+
+[CRITICAL] JWT signing key is hardcoded in appsettings.json
+  File: Template.API\appsettings.json:12
+  Value: "Template Project Created by Percy Munyunyu"
+  Fix: Move to User Secrets (dev) or Azure Key Vault / env var (prod).
+       Key should be at least 256-bit (32+ random bytes, base64 encoded).
+
+[CRITICAL] Serilog API key hardcoded in appsettings.json
+  File: Template.API\appsettings.json:21
+  Value: "INmmu3OOmpBAYxD4tzFk"
+  Fix: Move to User Secrets / env var.
+
+[CRITICAL] Admin user password hash is hardcoded in seed data
+  File: Template.Database\Metadata\DatabaseMetadata.cs:56
+  Fix: Generate hash at runtime via PasswordHasher or use env variables.
+       The commented-out block (lines 61-64) was the correct approach.
+
+[CRITICAL] CORS is wide open - SetIsOriginAllowed(origin => true)
+  File: Template.API\Extensions\CorsExtensions.cs:14
+  Fix: Restrict to known origins. Use configuration-based whitelist.
+  Note: AddCorsConfiguration() is defined but never called in Program.cs.
+
+[HIGH] Seed SMTP credentials are plaintext in DatabaseMetadata.cs
+  File: Template.Database\Metadata\DatabaseMetadata.cs:94-95
+  Values: SmtpUser = "user@example.com", SmtpPassword = "password"
+  Fix: Seed only in dev. For prod, encrypt or use a secrets store.
+
+[HIGH] GetUserRolesAndClaims endpoint is [AllowAnonymous]
+  File: Template.API\Controllers\System\AccountController.cs:232
+  Fix: This leaks user roles and claims to unauthenticated callers.
+       Remove [AllowAnonymous] or add an authorization policy.
+
+[HIGH] GetUserDetails endpoint is [AllowAnonymous]
+  File: Template.API\Controllers\System\AccountController.cs:233
+  Fix: Same - sensitive user data exposed without auth.
+
+[HIGH] AdminController [Authorize] attribute is commented out
+  File: Template.API\Controllers\System\AdminController.cs:12
+  Fix: Uncomment [Authorize(Roles = SystemRoles.Admin)].
+
+[MEDIUM] UpdateUserRole endpoint has no authorization policy
+  File: Template.API\Controllers\System\AccountController.cs:190-192
+  Fix: Add [Authorize(Policy = SystemPolicy.AdminPolicyUpdate)].
+
+
+================================================================================
+ 2. INBUILT PIPELINE - REPLACE RABBITMQ WITH Channel<T>
+================================================================================
+
+Currently RabbitMQ is configured but mostly commented-out / unused:
+  - Worker.cs: Subscribe call is commented out (line 33)
+  - Worker.cs: Consumer_Received throws unconditionally (line 49)
+  - AccountController Login: RabbitMQ publish is commented out (line 114)
+
+RabbitMQ adds a heavy external dependency (server install, management, etc.)
+that is unnecessary when producer and consumer live in the SAME PROCESS.
+
+PROPOSAL: Use System.Threading.Channels (built into .NET) as a lightweight
+in-process pipeline. This is the modern .NET pattern for background queues.
+
+  Step 1 - Create a generic pipeline service:
+
+    // Template.Business\Interfaces\System\IBackgroundTaskQueue.cs
+    public interface IBackgroundTaskQueue<T>
+    {
+        ValueTask EnqueueAsync(T item, CancellationToken ct = default);
+        IAsyncEnumerable<T> DequeueAllAsync(CancellationToken ct);
+    }
+
+    // Template.Business\Services\System\BackgroundTaskQueue.cs
+    public class BackgroundTaskQueue<T> : IBackgroundTaskQueue<T>
+    {
+        private readonly Channel<T> _channel;
+
+        public BackgroundTaskQueue(int capacity = 100)
+        {
+            var options = new BoundedChannelOptions(capacity)
+            {
+                FullMode = BoundedChannelFullMode.Wait
+            };
+            _channel = Channel.CreateBounded<T>(options);
+        }
+
+        public ValueTask EnqueueAsync(T item, CancellationToken ct = default)
+            => _channel.Writer.WriteAsync(item, ct);
+
+        public IAsyncEnumerable<T> DequeueAllAsync(CancellationToken ct)
+            => _channel.Reader.ReadAllAsync(ct);
+    }
+
+  Step 2 - Create typed queue messages:
+
+    public record EmailQueueMessage(Guid EmailQueueId);
+    public record NotificationMessage(Guid NotificationId, string Type);
+
+  Step 3 - Register as singleton in Program.cs (API + WorkerService):
+
+    services.AddSingleton<IBackgroundTaskQueue<EmailQueueMessage>,
+                          BackgroundTaskQueue<EmailQueueMessage>>();
+
+  Step 4 - Producer (API / CommunicationService): enqueue after creating row:
+
+    await _queue.EnqueueAsync(new EmailQueueMessage(table.Id));
+
+  Step 5 - Consumer (WorkerService): replace Worker.cs with:
+
+    protected override async Task ExecuteAsync(CancellationToken ct)
+    {
+        await foreach (var msg in _queue.DequeueAllAsync(ct))
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<IDatabaseService>();
+            // process email by msg.EmailQueueId
+        }
+    }
+
+  Step 6 - Keep IRabbitMQService + RabbitMQService as OPTIONAL for when you
+  actually need cross-process / cross-server messaging. But for same-process
+  email queue processing, Channel<T> is zero-dependency and more reliable.
+
+  Benefits:
+    - No external server needed (no RabbitMQ install)
+    - Back-pressure built in (BoundedChannel)
+    - Type-safe (no string serialization)
+    - Async enumeration (await foreach)
+    - Testable (mock IBackgroundTaskQueue<T>)
+
+
+================================================================================
+ 3. API - PROGRAM.CS & MIDDLEWARE
+================================================================================
+
+[HIGH] No global exception handling middleware
+  File: Template.API\Program.cs
+  Fix: Add app.UseExceptionHandler() or custom middleware that catches
+       unhandled exceptions and returns standardized error Response<T>.
+       Currently every controller action has its own try-catch returning
+       ex.Message - this leaks stack traces and internal details to clients.
+
+[HIGH] Swagger is enabled in production (lines 46-48)
+  File: Template.API\Program.cs:37-48
+  Fix: The else branch duplicates the dev branch. Either remove Swagger from
+       prod or keep it intentionally behind auth.
+
+[MEDIUM] Seeding only runs in Development (line 42)
+  File: Template.API\Program.cs:42
+  Fix: If you need seed data in staging/prod (e.g. roles), consider running
+       seeds unconditionally or via a separate command.
+
+[MEDIUM] No rate limiting on Login endpoint
+  File: Template.API\Controllers\System\AccountController.cs:107-160
+  Fix: Add app.UseRateLimiter() with a fixed-window policy on auth endpoints.
+
+[LOW] Unused using: Microsoft.Extensions.DependencyInjection
+  File: Template.API\Program.cs:4
+
+[LOW] Duplicate Swagger setup in if/else branches
+  File: Template.API\Program.cs:37-48
+
+
+================================================================================
+ 4. CONTROLLERS - NON-STANDARD PATTERNS
+================================================================================
+
+[HIGH] Controllers return Response<T> with Status enum instead of HTTP codes
+  File: All controllers
+  Issue: HTTP 200 is returned even on failures. Clients must inspect Code field.
+  Fix (long-term): Return proper IActionResult / Problem() for errors.
+  Fix (short-term): Add a middleware or ActionFilter that maps Status.Failed
+       to HTTP 400/500 automatically.
+
+[HIGH] Error messages leak exception details to clients
+  File: All controller catch blocks
+  Example: return new Response<string> { Code = Status.Failed, Message = ex.Message }
+  Fix: Log the exception server-side, return a generic "An error occurred" to
+       the client. Only return ex.Message in Development.
+
+[MEDIUM] Logger.LogError arguments are swapped in AccountController
+  File: Template.API\Controllers\System\AccountController.cs:62
+  Code: logger.LogError(ex.Message, "UserId: {UserId} ...", model.UserId)
+  Fix: First param should be exception, second is template:
+       logger.LogError(ex, "UserId: {UserId} ...", model.UserId)
+  Same issue on lines 101, 156.
+
+[MEDIUM] ProfileController.CreateProfile fetches user2 but never uses it
+  File: Template.API\Controllers\Profile\ProfileController.cs:100
+  Fix: Remove unused variable or implement intended logic.
+
+[LOW] Commented-out ForgotPassword endpoint
+  File: Template.API\Controllers\System\AccountController.cs:291-314
+  Fix: Implement or remove.
+
+[LOW] DateTime.Now used everywhere - should be DateTime.UtcNow for consistency
+  File: Multiple (AccountController, ProfileService, CommunicationService, etc.)
+
+
+================================================================================
+ 5. BUSINESS LAYER
+================================================================================
+
+[HIGH] DatabaseService.GetAll<T> (sync, single-result) is misnamed
+  File: Template.Business\Services\System\DatabaseService.cs:126-133
+  Code: Returns T? (single) but method name says "GetAll"
+  Fix: Rename to Get<T> or remove (duplicate of GetAsync<T>).
+
+[HIGH] IDatabaseService has no DeleteAsync<T> method
+  File: Template.Business\Interfaces\System\IDatabaseService.cs
+  Fix: Add soft-delete and hard-delete methods.
+
+[MEDIUM] IPasswordValidator interface is empty + impl lives in same file
+  File: Template.Business\Interfaces\System\IPasswordValidator.cs
+  Issue: CustomPasswordValidator<TUser> defined inside an interface file.
+         IPasswordValidator is never used.
+  Fix: Move CustomPasswordValidator to its own file in Services.
+
+[MEDIUM] CustomPasswordValidator is defined but never registered in DI
+  File: Template.API\Extensions\ServiceCollectionExtensions.cs
+  Fix: Register in AddCustomIdentity:
+       services.AddScoped<IPasswordValidator<ApplicationUser>,
+                          CustomPasswordValidator<ApplicationUser>>();
+
+[MEDIUM] AdminUsersHostedService uses Timer with async void pattern
+  File: Template.Business\Services\Hosted\AdminUsersHostedService.cs:39
+  Code: _timer = new Timer(async (x) => await DoWorkAsync(), ...)
+  Issue: async void - exceptions will crash the process silently.
+  Fix: Use PeriodicTimer in a BackgroundService, or wrap with try-catch. 
+
+[MEDIUM] AdminUsersHostedService loads ALL users into static property
+  File: Template.Business\Services\Hosted\AdminUsersHostedService.cs:54
+  Code: SystemUsers.Admins = admin_users;
+  Issue: Static mutable global state. All users loaded into memory every 5 min.
+  Fix: Use IMemoryCache with expiry, or query on demand.
+
+[MEDIUM] GenericLogger<T> wraps ILogger<T> without adding value
+  File: Template.Business\Services\System\GenericLogger.cs
+  Fix: Use ILogger<T> directly. ILogger handles null args internally.
+
+[MEDIUM] RabbitMQService does not implement IDisposable
+  File: Template.Business\Services\System\RabbitMQService.cs
+  Issue: _connection and Channel are never disposed on shutdown.
+  Fix: Implement IAsyncDisposable.
+
+[LOW] CommunicationService sets random Guids for audit fields
+  File: Template.Business\Services\System\CommunicationService.cs:65-66
+  Code: CreatedById = Guid.NewGuid()
+  Fix: Pass the actual user ID or use a system user constant.
+
+[LOW] AccountService.CheckPasswordAsync creates TblAuditLog manually
+  File: Template.Business\Services\System\AccountService.cs:119-130
+  Fix: Rely on SaveChangesAsync audit interceptor instead.
+
+
+================================================================================
+ 6. LIBRARY (MODELS, ENTITIES, EXTENSIONS)
+================================================================================
+
+[HIGH] BaseEntity.CreatedDate defaults to DateTime.Now (local time)
+  File: Template.Library\Tables\BaseEntity.cs:15
+  Fix: Use DateTime.UtcNow everywhere, or DateTimeOffset.
+
+[HIGH] BaseEntity has business logic (hash generation, admin lookup)
+  File: Template.Library\Tables\BaseEntity.cs:22-75
+  Issue: CreatedByIdName and LastUpdatedByIdName query static SystemUsers.Admins
+         - fragile, couples entity to static state, fails for non-admins.
+  Fix: Move name resolution to a service or projection layer.
+
+[HIGH] ViewModels inherit from BaseEntity / entity base classes
+  File: Template.Library\ViewsModels\System\ViewUserViewModel.cs:10
+        Template.Library\ViewsModels\Profile\ProfileViewModel.cs:10
+  Issue: ViewModels carry all BaseEntity fields (Hash, IsDeleted, etc.).
+         This leaks internal data to API responses.
+  Fix: Create clean DTOs/ViewModels without entity inheritance.
+
+[MEDIUM] Typo: "TblEmailTemplat" should be "TblEmailTemplate"
+  File: Template.Library\Tables\Notification\TblEmailTemplat.cs
+        Template.Library\Constants\EmailTemplate.cs (class name "EmailTemplat")
+  Fix: Rename + migration rename. // problem is on creating a project from a template, the 'Template' part will be renamed
+
+[MEDIUM] Typo: "StringExtenstions" should be "StringExtensions"
+  File: Template.Library\Extensions\StringExtenstions.cs:11
+
+[MEDIUM] PathExtensions has hardcoded entertainment paths
+  File: Template.Library\Extensions\PathExtensions.cs:18-34
+  Issue: Not template-appropriate. Also uses File.Exists instead of
+         Directory.Exists for a directory path.
+  Fix: Remove from template or make generic.
+
+[MEDIUM] Columns.cs maps A-AC to 1-29 (Excel column mapping)
+  File: Template.Library\Constants\Columns.cs
+  Fix: Remove from template if not universally needed, or document purpose.
+
+[MEDIUM] ApplicationSettings is missing ApiBaseUrl property
+  File: Template.Library\Models\POCO\ApplicationSettings.cs
+  But appsettings.json has: "ApiBaseUrl": "https://localhost:1083"
+  Fix: Add property or remove from config.
+
+[LOW] RequestLoginAccount has [Required] attributes commented out
+  File: Template.Library\Models\AccountModel.cs:88-94
+
+[LOW] RequestCreateProfileModel.UserId is "required string?" - contradictory
+  File: Template.Library\Models\ProfileModel.cs:13
+
+[LOW] DumyCodes.txt at solution root - remove from template
+  File: DumyCodes.txt
+
+[LOW] AutoMapperProfiles has duplicate CreateMap for ViewApplicationUser
+  File: Template.Library\Mapper\AutoMapperProfiles.cs:34-37
+  Fix: Remove the first one (line 34), keep the one with .ForMember.
+
+[LOW] Unused imports in many files (System.Net.Sockets in TblProfile, etc.)
+
+
+================================================================================
+ 7. DATABASE / EF CORE
+================================================================================
+
+[HIGH] .csproj files contain hardcoded NuGet paths from a different machine
+  File: Template.API\Template.API.csproj:9-55
+        Template.Database\Template.Database.csproj:9-55
+  Issue: <Content Remove="C:\Users\user\.nuget\packages\..."> references
+         paths from "C:\Users\user" - will not exist on other machines.
+  Fix: Delete all <Content Remove="..."> lines. They serve no purpose.
+
+[HIGH] ApplicationContext.SaveChangesAsync audit logic uses DateTime.Now
+  File: Template.Database\Context\ApplicationContext.cs:89
+  Fix: Use DateTime.UtcNow.
+
+[MEDIUM] DbSet properties are nullable (DbSet<T>?) but should not be
+  File: Template.Database\Context\ApplicationContext.cs:46-58
+  Issue: EF Core guarantees DbSet<T> is non-null after construction.
+  Fix: Remove ? from all DbSet<T> declarations.
+
+[MEDIUM] No EF Core migration for TblJobSchedule and TblJobHistory yet
+  Fix: Run:
+       dotnet ef migrations add AddJobScheduleAndHistory
+         --project Template.Database --startup-project Template.API
+       dotnet ef database update
+         --project Template.Database --startup-project Template.API
+
+[MEDIUM] SQL views (ViewApplicationUser, ViewSystemUserRoles) not created
+         by migrations - must be created manually
+  File: Template.Database\Context\ApplicationContext.cs:38-40
+  Fix: Add SQL view creation in a migration or document as manual step.
+
+[LOW] WorkerService csproj has EF Core SqlServer 9.0.0 but rest uses 10.0.1
+  File: Template.WorkerService\Template.WorkerService.csproj:13
+  Fix: Align to 10.0.1.
+
+[LOW] WorkerService Hosting package is 7.0.1, everything else is 10.x
+  File: Template.WorkerService\Template.WorkerService.csproj:11
+  Fix: Update to 10.0.1.
+
+
+================================================================================
+ 8. WORKER SERVICE
+================================================================================
+
+[HIGH] Worker.cs RabbitMQ consumer is non-functional
+  File: Template.WorkerService\Worker.cs:33,49
+  Issue: Subscribe is commented out. Consumer_Received throws unconditionally.
+  Fix: Implement properly, replace with Channel<T> pipeline (see S2),
+       or remove Worker hosted service until needed.
+
+[MEDIUM] Worker.cs loops with Task.Delay(5000) doing nothing useful
+  File: Template.WorkerService\Worker.cs:31-37
+  Fix: Remove the busy-wait loop if using Channel<T> await-based consumption.
+
+[MEDIUM] CronJobService Timer + SemaphoreSlim pattern could use PeriodicTimer
+  File: Template.WorkerService\Job\Base\CronJobService.cs
+  Fix: Consider PeriodicTimer for simpler code (.NET 6+).
+
+[LOW] EmailServiceJob has no actual SMTP send logic - marks as Success
+  File: Template.WorkerService\Job\SystemJob\EmailServiceJob.cs:43-47
+  Fix: Implement actual sending via MailKit, reading config from TblEmailConfig.
+
+
+================================================================================
+ 9. CONSOLE PROJECT
+================================================================================
+
+[MEDIUM] Duplicate using statements
+  File: Template.Console\Program.cs:1-6
+  Code: "using Microsoft.Extensions.Hosting;" and
+        "using Microsoft.Extensions.Logging;" appear twice each.
+  Fix: Remove duplicates.
+
+[LOW] Console project is mostly empty scaffold
+  Fix: Flesh out with a useful utility or document its purpose.
+
+
+================================================================================
+ 10. TEMPLATE / BUILD / CI
+================================================================================
+
+[MEDIUM] .github/workflows/ folder is empty - no CI/CD pipeline
+  Fix: Add a basic GitHub Actions workflow:
+       - dotnet restore -> dotnet build -> dotnet test
+       - Optional: dotnet ef migrations script for DB validation
+
+[MEDIUM] No unit test project in the solution
+  Fix: Add Template.Tests (xUnit + Moq/NSubstitute) with at least:
+       - DatabaseService CRUD tests
+       - AccountService auth flow tests
+       - CronJobService scheduling tests
+
+[LOW] No .editorconfig for consistent formatting across team
+
+[LOW] No Directory.Build.props for shared package versions
+  Fix: Centralize versions to avoid drift between projects.
+
+
+================================================================================
+ 11. SUMMARY - PRIORITY ORDER
+================================================================================
+
+  CRITICAL (fix before any deployment):
+    [ ] Move JWT signing key out of appsettings.json
+    [ ] Move Serilog API key out of appsettings.json
+    [ ] Fix CORS to restrict origins
+    [ ] Protect GetUserRolesAndClaims and GetUserDetails endpoints
+    [ ] Uncomment AdminController [Authorize]
+
+  HIGH (fix before production):
+    [ ] Add global exception handler middleware
+    [ ] Stop leaking ex.Message to API clients
+    [ ] Implement Channel<T> pipeline to replace broken RabbitMQ Worker
+    [ ] Fix hardcoded NuGet paths in .csproj files
+    [ ] Add DeleteAsync<T> to IDatabaseService
+    [ ] Fix logger argument order in AccountController
+    [ ] Use DateTime.UtcNow consistently (BaseEntity, ApplicationContext, etc.)
+
+  MEDIUM (fix during next sprint):
+    [ ] Register CustomPasswordValidator in DI
+    [ ] Add EF migration for job tables
+    [ ] Create unit test project
+    [ ] Add CI/CD pipeline
+    [ ] Fix ViewModel inheritance (do not extend BaseEntity)
+    [ ] Fix typos (EmailTemplat, StringExtenstions)
+    [ ] Clean up Console duplicate usings
+    [ ] Align package versions across projects
+
+  LOW (backlog):
+    [ ] Remove DumyCodes.txt
+    [ ] Remove PathExtensions entertainment paths
+    [ ] Implement ForgotPassword or remove commented code
+    [ ] Add .editorconfig
+    [ ] Add Directory.Build.props

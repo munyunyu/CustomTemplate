@@ -1,12 +1,12 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Template.API.Extensions;
 using Template.Business.Services.Hosted;
 using Template.Database.Context;
 using Template.Library.Mapper;
 using Template.Service.Extensions;
+using Template.Service.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +32,11 @@ builder.AddCustomSeriLogging();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
+builder.Services.AddCorsConfiguration(builder.Configuration);
+
 var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -41,13 +45,10 @@ if (app.Environment.IsDevelopment())
 
     await app.Services.SeedAsync(); // Seed roles & claims
 }
-else
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
+
+app.UseCors("FrontEnd");
 
 app.UseHealthChecks("/health", new HealthCheckOptions
 {

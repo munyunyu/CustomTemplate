@@ -12,7 +12,7 @@ namespace Template.Library.Tables
     public class BaseEntity
     {
         public Guid Id { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public Guid? CreatedById { get; set; }
         public DateTime? LastUpdatedDate { get; set; }
         public Guid? LastUpdatedById { get; set; }

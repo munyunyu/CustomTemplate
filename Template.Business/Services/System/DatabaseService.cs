@@ -253,5 +253,49 @@ namespace Template.Business.Services.System
                 throw new Exception(ex.GetAllMessages());
             }            
         }
+
+        public async Task DeleteAsync<T>(T model) where T : BaseEntity
+        {
+            try
+            {
+                context.Remove(model);
+                await context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception(ex.GetAllMessages());
+            }
+        }
+
+        public async Task DeleteRangeAsync<T>(IEnumerable<T> models) where T : BaseEntity
+        {
+            try
+            {
+                context.RemoveRange(models);
+                await context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception(ex.GetAllMessages());
+            }
+        }
+
+        public async Task SoftDeleteAsync<T>(Expression<Func<T, bool>> func) where T : BaseEntity
+        {
+            try
+            {
+                var entity = await context.Set<T>().FirstOrDefaultAsync(func);
+                if (entity == null) return;
+
+                entity.IsDeleted = true;
+                entity.LastUpdatedDate = DateTime.UtcNow;
+                context.Update(entity);
+                await context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception(ex.GetAllMessages());
+            }
+        }
     }
 }

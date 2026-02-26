@@ -9,7 +9,7 @@ using Template.Library.ViewsModels.System;
 
 namespace Template.Service.Controllers.System
 {
-    //[Authorize(Roles = SystemRoles.Admin)]
+    [Authorize(Roles = SystemRoles.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
