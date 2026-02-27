@@ -36,6 +36,7 @@ public class EmailServiceJob : IInvocable
 
             if (pending.Count == 0)
             {
+                _logger.LogInformation("EmailServiceJob completed. No pending emails");
                 await EndJobHistoryAsync(history, Status.Success, 0, "No pending emails");
                 return;
             }

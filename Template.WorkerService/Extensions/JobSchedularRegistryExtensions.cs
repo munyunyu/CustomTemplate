@@ -18,7 +18,7 @@ public static class JobSchedularRegistryExtensions
             scheduler.Schedule<DataIntegrityJob>().DailyAtHour(0).PreventOverlapping(nameof(DataIntegrityJob));
 
             scheduler.Schedule<NotificationJob>().EveryFiveMinutes().PreventOverlapping(nameof(NotificationJob));
-
+            
             scheduler.Schedule<SystemUsageStatsJob>().DailyAtHour(23).PreventOverlapping(nameof(SystemUsageStatsJob));
         })
         .OnError(exception =>
