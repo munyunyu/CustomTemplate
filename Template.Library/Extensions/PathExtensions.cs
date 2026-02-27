@@ -15,22 +15,5 @@ namespace Template.Library.Extensions
             return fullPath;
         }
 
-        public static string GetEntertainmentMovieAnimationPath(string base_drive_path)
-        {
-            string path = Path.Combine(base_drive_path, "entertaiment", "movie", "animations");
-
-            if (!File.Exists(path)) throw new Exception($"Path: {path} was not found");
-
-            return path;
-        }
-
-        public static string GetEntertainmentMovieActionPath(string base_drive_path)
-        {
-            string path = Path.Combine(base_drive_path, "entertaiment", "movie", "actions");
-
-            if (!File.Exists(path)) throw new Exception($"Path: {path} was not found");
-
-            return path;
-        }
     }
 }

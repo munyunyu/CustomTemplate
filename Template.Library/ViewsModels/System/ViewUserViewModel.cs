@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template.Library.Tables;
-
-namespace Template.Library.ViewsModels.System
+﻿namespace Template.Library.ViewsModels.System
 {
-    public class ViewUserViewModel :BaseEntity
+    public class ViewUserViewModel
     {
-        //public new string? Id { get; set; }
+        public Guid Id { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? UserName { get; set; }
@@ -19,13 +12,13 @@ namespace Template.Library.ViewsModels.System
         public DateTimeOffset? LockoutEnd { get; set; }
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
+        public DateTime CreatedDate { get; set; }
         public DateTime? LastLogin { get; set; }
-
     }
 
-    public class ApplicationUserViewModel : BaseEntity
+    public class ApplicationUserViewModel
     {
-        public new string? Id { get; set; }
+        public string? Id { get; set; }
         public string? Email { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -37,17 +30,20 @@ namespace Template.Library.ViewsModels.System
         public bool IsManuallyLocked { get; set; }
         public string? PhoneNumber { get; set; }
 
-        public virtual bool EmailConfirmed { get; set; }
-        public virtual bool PhoneNumberConfirmed { get; set; }
-        public virtual bool TwoFactorEnabled { get; set; }
-        public virtual DateTimeOffset? LockoutEnd { get; set; }
-        public virtual bool LockoutEnabled { get; set; }
-        public virtual int AccessFailedCount { get; set; }
+        public bool EmailConfirmed { get; set; }
+        public bool PhoneNumberConfirmed { get; set; }
+        public bool TwoFactorEnabled { get; set; }
+        public DateTimeOffset? LockoutEnd { get; set; }
+        public bool LockoutEnabled { get; set; }
+        public int AccessFailedCount { get; set; }
 
         public DateTime? LastLogin { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+        public string? Description { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public List<string>? Roles { get; set; }
         public List<string>? Claims { get; set; }
     }
-
 }

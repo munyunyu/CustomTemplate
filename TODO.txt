@@ -446,8 +446,6 @@ in-process pipeline. This is the modern .NET pattern for background queues.
   MEDIUM (fix during next sprint):
     [ ] Register CustomPasswordValidator in DI
     [ ] Add EF migration for job tables
-    [ ] Create unit test project
-    [ ] Add CI/CD pipeline
     [ ] Fix ViewModel inheritance (do not extend BaseEntity)
     [ ] Fix typos (EmailTemplat, StringExtenstions)
     [ ] Clean up Console duplicate usings

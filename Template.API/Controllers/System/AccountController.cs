@@ -91,7 +91,7 @@ namespace Template.Service.Controllers.System
 
                 var token = await portalService.Account.GenerateEmailConfirmationTokenAsync(user);
 
-                await portalService.Communication.SendConfirmEmailAsync(to: model.Email, template_name: EmailTemplat.ConfirmEmail, token: token, config_name: EmailConfig.Default);
+                await portalService.Communication.SendConfirmEmailAsync(to: model.Email, template_name: EmailTemplate.ConfirmEmail, token: token, config_name: EmailConfig.Default);
 
                 return new Response<ResponseRegisterAccount> { Code = Status.Success, Payload = new ResponseRegisterAccount { Email = model.Email, Message = "Account was created, please confirm your email" } };
 
@@ -111,8 +111,6 @@ namespace Template.Service.Controllers.System
         {
             try
             {
-                //portalService.Rabbit.Publish(RabbitQueue.GeneralEmailNotification, model.Email, true);
-
                 ApplicationUser? user = await portalService.Account.FindByNameAsync(model.Email);
 
                 if (user == null) return new Response<ResponseLoginAccount> { Code = Status.Failed, Message = "Email or password is not valid" };
@@ -286,31 +284,6 @@ namespace Template.Service.Controllers.System
                 return new Response<string> { Code = Status.Failed, Message = ex.Message };
             }
         }
-
-        //[HttpPost]
-        //[Route("ForgotPassword")]
-        //public async Task<Response<ResponseForgotPasswordViewModel>> ForgotPassword(RequestForgotPasswordViewModel model)
-        //{
-        //    try
-        //    {
-        //        var user = await userManager.FindByEmailAsync(model.Email);
-
-        //        if (user == null) return new Response<ResponseForgotPasswordViewModel> { Code = Status.Failed, Message = "Failed to confirm email address" };
-
-        //        var token = await userManager.GeneratePasswordResetTokenAsync(user);
-
-        //        if (string.IsNullOrEmpty(token)) return new Response<ResponseForgotPasswordViewModel> { Code = Status.Failed, Message = "Failed to generate password reset token" };
-
-        //        await portalService.CommunicationService.SendResetPasswordEmailToClientAsync(email: model.Email, userId: user.Id, token: token.Base64Encode());
-
-        //        return new Response<ResponseForgotPasswordViewModel> { Code = Status.Success, Payload = new ResponseForgotPasswordViewModel { Message = "Check your email to reset the password" } };
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new Response<ResponseForgotPasswordViewModel> { Code = Status.ServerError, Message = ex.Message };
-        //    }
-        //}
 
         [HttpPost]
         [Route("ChangePassword")]

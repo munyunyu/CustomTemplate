@@ -43,7 +43,8 @@ namespace Template.Service.Extensions
 
                })
                .AddEntityFrameworkStores<ApplicationContext>()
-               .AddDefaultTokenProviders();
+               .AddDefaultTokenProviders()
+               .AddPasswordValidator<CustomPasswordValidator<ApplicationUser>>();
         }
 
         public static void AddCustomAuthentication(this IServiceCollection services, WebApplicationBuilder builder)
@@ -78,7 +79,6 @@ namespace Template.Service.Extensions
         {
             //init POCO
             services.Configure<ApplicationSettings>(builder.Configuration.GetSection(nameof(ApplicationSettings)));
-            services.Configure<RabbitMQSettings>(builder.Configuration.GetSection(nameof(RabbitMQSettings)));
 
             //System
             services.AddScoped<IAccountService, AccountService>();
@@ -89,7 +89,6 @@ namespace Template.Service.Extensions
             //Other
             services.AddScoped<IPortalService, PortalService>();
             services.AddScoped<IProfileService, ProfileService>();
-            services.AddSingleton<IRabbitMQService, RabbitMQService>();
 
             //In-process queue pipeline (Channel<T>) — for same-process background processing
             services.AddSingleton<IBackgroundTaskQueue<EmailQueueMessage>, BackgroundTaskQueue<EmailQueueMessage>>();

@@ -33,7 +33,7 @@ namespace Template.Database.Context
             //Seed email configs and template
             data.SeedEmailConfigs();
 
-            data.SeedEmailTemplat();
+            data.SeedEmailTemplate();
 
             modelBuilder.Entity<ViewSystemUserRoles>().HasNoKey().ToView(nameof(ViewSystemUserRoles));
 
@@ -54,7 +54,7 @@ namespace Template.Database.Context
         //Notification
         public virtual DbSet<TblNotification>? TblNotification { get; set; }
         public virtual DbSet<TblEmailQueue>? TblEmailQueue { get; set; }
-        public virtual DbSet<TblEmailTemplat>? TblEmailTemplat { get; set; }
+        public virtual DbSet<TblEmailTemplate>? TblEmailTemplate { get; set; }
         public virtual DbSet<TblEmailConfig>? TblEmailConfig { get; set; }
 
 

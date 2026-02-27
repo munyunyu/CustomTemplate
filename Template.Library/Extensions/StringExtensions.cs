@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Template.Library.Extensions
 {
-    public static class StringExtenstions
+    public static class StringExtensions
     {
         public static string Base64Encode(this string plainText)
         {
