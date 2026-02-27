@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Database.Metadata;
+using Template.Library.Tables.Job;
 using Template.Library.Tables.Notification;
 using Template.Library.Tables.User;
 
@@ -55,6 +56,11 @@ namespace Template.Database.Context
             builder.Entity<TblEmailTemplate>().HasData(data);
         }
 
+        public void SeedJobSchedules()
+        {
+            var data = DatabaseMetadata.GetJobSchedules();
 
+            builder.Entity<TblJobSchedule>().HasData(data);
+        }
     }
 }

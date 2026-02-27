@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Template.Database.Context;
 using Template.Library.Constants;
+using Template.Library.Enums;
+using Template.Library.Tables.Job;
 using Template.Library.Tables.Notification;
 using Template.Library.Tables.User;
 
@@ -317,6 +319,59 @@ namespace Template.Database.Metadata
             };
 
             return templates;
+        }
+
+        public static TblJobSchedule[] GetJobSchedules()
+        {
+            var schedules = new TblJobSchedule[]
+            {
+                new TblJobSchedule
+                {
+                    Id = Guid.Parse("b1a1c2d3-e4f5-6789-abcd-ef0123456701"),
+                    JobName = "EmailServiceJob",
+                    CronExpression = "*/5 * * * *",
+                    IsEnabled = true,
+                    LastRunStatus = Status.Pending,
+                    CreatedById = Guid.Parse(admin_userId),
+                    CreatedDate = date,
+                    LastUpdatedDate = date,
+                },
+                new TblJobSchedule
+                {
+                    Id = Guid.Parse("b1a1c2d3-e4f5-6789-abcd-ef0123456702"),
+                    JobName = "DataIntegrityJob",
+                    CronExpression = "0 0 * * *",
+                    IsEnabled = true,
+                    LastRunStatus = Status.Pending,
+                    CreatedById = Guid.Parse(admin_userId),
+                    CreatedDate = date,
+                    LastUpdatedDate = date,
+                },
+                new TblJobSchedule
+                {
+                    Id = Guid.Parse("b1a1c2d3-e4f5-6789-abcd-ef0123456703"),
+                    JobName = "NotificationJob",
+                    CronExpression = "*/5 * * * *",
+                    IsEnabled = true,
+                    LastRunStatus = Status.Pending,
+                    CreatedById = Guid.Parse(admin_userId),
+                    CreatedDate = date,
+                    LastUpdatedDate = date,
+                },
+                new TblJobSchedule
+                {
+                    Id = Guid.Parse("b1a1c2d3-e4f5-6789-abcd-ef0123456704"),
+                    JobName = "SystemUsageStatsJob",
+                    CronExpression = "0 23 * * *",
+                    IsEnabled = true,
+                    LastRunStatus = Status.Pending,
+                    CreatedById = Guid.Parse(admin_userId),
+                    CreatedDate = date,
+                    LastUpdatedDate = date,
+                },
+            };
+
+            return schedules;
         }
     }
 }

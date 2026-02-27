@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.OpenTelemetry;
 
 InitializeDependencyInjection(args);
 
@@ -17,18 +19,34 @@ string startupPath = AppDomain.CurrentDomain.BaseDirectory;
 
 
 
-
-
-
-
 #region Dependency Injection
 static void InitializeDependencyInjection(string[] args)
 {
     // Build a Generic Host to enable Dependency Injection, Configuration, and Logging
     var host = Host.CreateDefaultBuilder(args)
+        .UseSerilog()
         .ConfigureServices((hostContext, services) =>
         {
             IConfiguration configuration = hostContext.Configuration;
+
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.OpenTelemetry(x =>
+                {
+                    x.Endpoint = configuration["Serilog:OpenTelemetry:Endpoint"];
+                    x.Protocol = (OtlpProtocol)Enum.Parse(typeof(OtlpProtocol), configuration["Serilog:OpenTelemetry:Protocol"] ?? "HttpProtobuf");
+                    x.Headers = new Dictionary<string, string>
+                    {
+                        ["X-Seq-ApiKey"] = configuration["Serilog:OpenTelemetry:ApiKey"] ?? ""
+                    };
+                    x.ResourceAttributes = new Dictionary<string, object>
+                    {
+                        ["service"] = configuration["Serilog:Service"] ?? "Template.Console",
+                        ["environment"] = hostContext.HostingEnvironment.EnvironmentName,
+                    };
+                })
+                .CreateLogger();
 
             // Register application services here
             // Example:

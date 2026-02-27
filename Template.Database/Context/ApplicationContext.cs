@@ -35,6 +35,8 @@ namespace Template.Database.Context
 
             data.SeedEmailTemplate();
 
+            data.SeedJobSchedules();
+
             modelBuilder.Entity<ViewSystemUserRoles>().HasNoKey().ToView(nameof(ViewSystemUserRoles));
 
             modelBuilder.Entity<ViewApplicationUser>().HasNoKey().ToView(nameof(ViewApplicationUser));

@@ -1,9 +1,32 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Radzen;
+using Serilog;
+using Serilog.Sinks.OpenTelemetry;
 using Template.Portal.Components;
 using Template.Portal.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.OpenTelemetry(x =>
+    {
+        x.Endpoint = builder.Configuration["Serilog:OpenTelemetry:Endpoint"];
+        x.Protocol = (OtlpProtocol)Enum.Parse(typeof(OtlpProtocol), builder.Configuration["Serilog:OpenTelemetry:Protocol"] ?? "HttpProtobuf");
+        x.Headers = new Dictionary<string, string>
+        {
+            ["X-Seq-ApiKey"] = builder.Configuration["Serilog:OpenTelemetry:ApiKey"] ?? ""
+        };
+        x.ResourceAttributes = new Dictionary<string, object>
+        {
+            ["service"] = builder.Configuration["Serilog:Service"] ?? "Template.Portal",
+            ["environment"] = builder.Environment.EnvironmentName,
+        };
+    })
+    .CreateLogger();
+
+builder.Services.AddSerilog();
 
 builder.Services.AddRazorPages();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
