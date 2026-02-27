@@ -5,6 +5,7 @@ using Template.API.Extensions;
 using Template.Business.Services.Hosted;
 using Template.Database.Context;
 using Template.Library.Mapper;
+using Template.Library.Views;
 using Template.Service.Extensions;
 using Template.Service.Middleware;
 
@@ -41,9 +42,12 @@ app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
+
     app.UseSwaggerUI();
 
     await app.Services.SeedAsync(); // Seed roles & claims
+
+    await app.Services.SeedViewsAsync(); //seed views
 }
 
 app.UseHttpsRedirection();

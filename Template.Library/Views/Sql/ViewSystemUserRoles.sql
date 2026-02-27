@@ -1,0 +1,15 @@
+CREATE OR ALTER VIEW [dbo].[ViewApplicationUserRoles]
+AS
+SELECT TOP (1000) 
+       [UserId][Id]
+      ,[RoleId]
+	  ,U.Email
+	  ,R.[Name]
+	  ,[CreatedDate]
+      ,[CreatedById]
+      ,[LastUpdatedDate]
+      ,[LastUpdatedById]
+      ,[IsDeleted]
+  FROM [TemplateDB].[dbo].[AspNetUserRoles]UR
+  LEFT JOIN [TemplateDB].[dbo].[AspNetUsers]U ON U.[Id] = UR.[UserId]
+  LEFT JOIN [TemplateDB].[dbo].[AspNetRoles]R ON R.[Id] = UR.[RoleId]

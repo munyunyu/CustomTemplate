@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Template.Database.Context;
 using Template.Library.Constants;
 using Template.Library.Extensions;
 using Template.Library.Tables.User;
+using Template.Library.Views;
 
 namespace Template.API.Extensions
 {
@@ -74,6 +77,27 @@ namespace Template.API.Extensions
             {
                 if (!userClaims.Any(c => c.Type == claim)) await userManager.AddClaimAsync(adminUser, new Claim(claim, claim));
             }
+        }
+
+        public static async Task SeedViewsAsync(this IServiceProvider services)
+        {
+            try
+            {
+                using var scope = services.CreateScope();
+
+                // Provision database views from embedded .sql files
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+
+                foreach (var (name, sql) in DatabaseViewProvisioner.GetViewDefinitions())
+                {
+                    await db.Database.ExecuteSqlRawAsync(sql);
+                }
+            }
+            catch (Exception)
+            {
+                //do nothing
+            }
+
         }
     }
 
