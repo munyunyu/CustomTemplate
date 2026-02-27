@@ -48,6 +48,7 @@ namespace Template.Database.Context
 
         public virtual DbSet<TblJobSchedule>? TblJobSchedule { get; set; }
         public virtual DbSet<TblJobHistory>? TblJobHistory { get; set; }
+        public virtual DbSet<TblSystemUsageStats>? TblSystemUsageStats { get; set; }
 
         public virtual DbSet<TblProfile>? TblProfile { get; set; }
 
