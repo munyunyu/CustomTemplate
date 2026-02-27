@@ -1,45 +1,25 @@
+using Coravel;
 using Microsoft.EntityFrameworkCore;
 using Template.Business.Interfaces.System;
 using Template.Business.Services.System;
 using Template.Database.Context;
-using Template.Library.Constants;
-using Template.Library.Models.Queue;
-using Template.WorkerService;
 using Template.WorkerService.Extensions;
-using Template.WorkerService.Job.SystemJob;
+using Template.WorkerService.Jobs;
 
-IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((hostContext, services) =>
-    {
-        IConfiguration configuration = hostContext.Configuration;
+IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, services) =>
+{
+    IConfiguration configuration = hostContext.Configuration;
 
-        // ── Database ──────────────────────────────────────────────────────────
-        services.AddDbContext<ApplicationContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")),
-            ServiceLifetime.Scoped);
+    services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
 
-        // ── Business services ─────────────────────────────────────────────────
-        services.AddScoped<IDatabaseService, DatabaseService>();
+    services.AddScoped<IDatabaseService, DatabaseService>();
 
-        // ── In-process queue pipeline (replaces RabbitMQ for same-process use) 
-        services.AddSingleton<IBackgroundTaskQueue<EmailQueueMessage>, BackgroundTaskQueue<EmailQueueMessage>>();
+    services.AddScheduler();
+    
+    services.AddCustomTransientServices();
 
-        // ── Background worker (Channel<T> consumer) ─────────────────────────
-        services.AddHostedService<Worker>();
+}).Build();
 
-        // ── Cron jobs ─────────────────────────────────────────────────────────
-        services.AddCronJob<EmailServiceJob>(c =>
-        {
-            c.TimeZoneInfo = TimeZoneInfo.Local;
-            c.CronExpression = CronExpressions.Every5Minutes;
-        });
-
-        services.AddCronJob<DataIntegrityServiceJob>(c =>
-        {
-            c.TimeZoneInfo = TimeZoneInfo.Local;
-            c.CronExpression = CronExpressions.DailyAt0030;
-        });
-    })
-    .Build();
+host.Services.RegisterScheduledJobs(); //Configure schedules job
 
 host.Run();

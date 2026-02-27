@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Template.Library.Enums;
 
 namespace Template.Library.Tables.Notification
 {
@@ -14,5 +10,9 @@ namespace Template.Library.Tables.Notification
 
     public class TblNotificationProp : BaseEntity
     {
+        public string? UserId { get; set; }
+        public string? Title { get; set; }
+        public string? Message { get; set; }
+        public Status Status { get; set; } = Status.Pending;
     }
 }
