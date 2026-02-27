@@ -18,7 +18,7 @@ namespace Template.Business.Services.Hosted
         private readonly ILogger<AdminUsersHostedService> logger;
         private readonly IConfiguration configuration;
         private readonly IServiceScopeFactory scopeFactory;
-        private Timer _timer;
+        private Timer? _timer;
 
         public AdminUsersHostedService(ILogger<AdminUsersHostedService> logger, IConfiguration configuration, IServiceScopeFactory scopeFactory)
         {

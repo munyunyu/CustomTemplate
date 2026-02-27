@@ -24,12 +24,12 @@ namespace Template.Business.Interfaces.System
             _context = context;
         }
 
-        public async Task<IdentityResult> ValidateAsync(UserManager<TUser> manager, TUser user, string password)
+        public async Task<IdentityResult> ValidateAsync(UserManager<TUser> manager, TUser user, string? password)
         {
             var result = await Task.FromResult(IdentityResult.Success);
 
             // Check if password matches any of the previous passwords
-            var previousPasswords = await _context.TblPasswordHistory
+            var previousPasswords = await _context.TblPasswordHistory!
                 .Where(ph => ph.UserId == user.Id)
                 .OrderByDescending(ph => ph.CreatedDate)
                 .Take(5) // Check against last 5 passwords
@@ -37,7 +37,7 @@ namespace Template.Business.Interfaces.System
 
             foreach (var oldPassword in previousPasswords)
             {
-                var passwordVerificationResult = manager.PasswordHasher.VerifyHashedPassword(user, oldPassword.PasswordHash, password);
+                var passwordVerificationResult = manager.PasswordHasher.VerifyHashedPassword(user, oldPassword.PasswordHash!, password!);
                 if (passwordVerificationResult == PasswordVerificationResult.Success)
                 {
                     return IdentityResult.Failed(new IdentityError

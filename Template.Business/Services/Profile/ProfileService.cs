@@ -25,7 +25,7 @@ namespace Template.Business.Services.Profile
         }
         public async Task<Guid> CreateProfileAsync(RequestCreateProfileModel model, string userId)
         {
-            var exists = await database.ExistAsync<TblProfile>(x => x.UserId == Guid.Parse(model.UserId));
+            var exists = await database.ExistAsync<TblProfile>(x => x.UserId == Guid.Parse(model.UserId!));
 
             if (exists) throw new GeneralException($"Profile account, already exists");
 
@@ -37,7 +37,7 @@ namespace Template.Business.Services.Profile
                 Email = model.Email,
                 Phonenumber = model.Phonenumber,
                 Surname = model.Surname,
-                UserId = Guid.Parse(model.UserId),
+                UserId = Guid.Parse(model.UserId!),
                 LastUpdatedById = Guid.Parse(userId),
                 LastUpdatedDate = DateTime.UtcNow,
                 CreatedById = Guid.Parse(userId),

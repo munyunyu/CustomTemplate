@@ -97,7 +97,7 @@ namespace Template.Service.Controllers.Profile
             {
                 ApplicationUser? user = await portalService.Account.FindByIdAsync(User.GetUserId());
 
-                ApplicationUser? user2 = await portalService.Account.FindByIdAsync(Guid.Parse(model.UserId));
+                ApplicationUser? user2 = await portalService.Account.FindByIdAsync(Guid.Parse(model.UserId!));
 
                 if (user == null) throw new Exception("Failed to get user claims");
 

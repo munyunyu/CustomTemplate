@@ -262,7 +262,7 @@ namespace Template.Business.Services.System
 
             foreach (var oldPassword in previousPasswords)
             {
-                var result = userManager.PasswordHasher.VerifyHashedPassword(user, oldPassword.PasswordHash, newPassword);
+                var result = userManager.PasswordHasher.VerifyHashedPassword(user, oldPassword.PasswordHash!, newPassword);
                 if (result == PasswordVerificationResult.Success)
                 {
                     return false; // Password found in history

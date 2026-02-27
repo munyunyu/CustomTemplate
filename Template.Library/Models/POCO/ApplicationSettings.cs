@@ -6,6 +6,6 @@ namespace Template.Library.Models.POCO
 {
     public class ApplicationSettings
     {
-        public string AppBaseUrl { get; set; }
+        public required string AppBaseUrl { get; set; }
     }
 }
